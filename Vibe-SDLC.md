@@ -114,11 +114,11 @@ graph TD
 
 | 文件 | 格式 | 存放路徑 | 說明 |
 |------|------|----------|------|
-| 產品需求文件(PRD) | ` 01-1-PRD.md` | `/docs/PRD.md` | 偏重產品面或客戶的需求及要求，可能衍生 UI/UX 需求。 |
-| 系統需求文件(SRD) | `01-2-SRD.md` | `/docs/SRD.md` | 偏重技術棧、框架以及系統在安全及性能上的要求。 |
-| API 介面規格 (API Spec) | `01-3-API_Spec.md` | `/docs/API_Spec.md` | API規格說明 |
+| 產品需求文件(PRD) | `01-1-PRD.md` | `/docs/01-1-PRD.md` | 偏重產品面或客戶的需求及要求，可能衍生 UI/UX 需求。 |
+| 系統需求文件(SRD) | `01-2-SRD.md` | `/docs/01-2-SRD.md` | 偏重技術棧、框架以及系統在安全及性能上的要求。 |
+| API 介面規格 (API Spec) | `01-3-API_Spec.md` | `/docs/01-3-API_Spec.md` | API規格說明 |
 | API 介面合約 | `API_Spec.yaml` | `/docs/API_Spec.yaml` | Open API 規格 |
-| 開發執行計畫(Dev Plan) | `02-Dev_Plan.md` | `/docs/Dev_Plan.md` |  |
+| 開發執行計畫(Dev Plan) | `02-Dev_Plan.md` | `/docs/02-Dev_Plan.md` |  |
 
 
 
@@ -130,8 +130,8 @@ graph TD
 
 | 步驟 | 執行者 | 操作 | 產出 |
 |------|--------|------|------|
-| 1 | **開發者** | 撰寫 PRD：定義功能清單、使用者故事、資料欄位（白話表格） | ` 01-1-PRD.md` |
-| 2 | **開發者** | 撰寫 SRD：定義系統架構、技術棧、安全性要求、效能指標 | ``01-2-SRD.md`` |
+| 1 | **開發者** | 撰寫 PRD：定義功能清單、使用者故事、資料欄位（白話表格） | `01-1-PRD.md` |
+| 2 | **開發者** | 撰寫 SRD：定義系統架構、技術棧、安全性要求、效能指標 | `01-2-SRD.md` |
 | 3 | **開發者** | 定義 API Spec：以 OpenAPI 格式定義所有端點、請求/回應結構 | `01-3-API_Spec.md`,<br />`API_Spec.yaml` |
 | 4 | **開發者** | 撰寫 Dev Plan：拆解里程碑、任務清單、任務間依賴關係 | `02-Dev_Plan.md` |
 | 5 | **開發者** | 將以上四份文件提交至 GitHub `/docs` 目錄 | Git commit |
@@ -339,7 +339,7 @@ sequenceDiagram
 |    |           | → 回到步驟 3，GitHub 重新執行 CI | — |
 | 5a | *Review 通過* | **開發者**點擊 Merge，合併至 `main` | Merge commit |
 | 6 | **GitHub** | 觸發 CD pipeline（如已配置） | 部署 |
-| 7 | **AI 助手** | 將 `Dev_Plan.md` 中對應任務標記為 `[x] Completed` | Dev Plan 更新 |
+| 7 | **AI 助手** | 將 `02-Dev_Plan.md` 中對應任務標記為 `[x] Completed` | Dev Plan 更新 |
 
 ### 7.4 PR (Pull Request / Merge Request) 格式規範
 
@@ -386,7 +386,7 @@ Closes #N
 | 1 | **GitHub** | CD pipeline 自動部署至測試環境 | 測試環境可用 |
 | 2 | **開發者** | 在測試環境進行驗收測試 | 驗收結果 |
 | 3 | **開發者** | 收集使用者回饋與問題報告 | 回饋清單 |
-| 4 | **開發者** | 根據回饋更新 `PRD.md`（需求變更）與 `Dev_Plan.md`（新增任務） | 更新後的規格 |
+| 4 | **開發者** | 根據回饋更新 `01-1-PRD.md`（需求變更）與 `02-Dev_Plan.md`（新增任務） | 更新後的規格 |
 | 5 | — | **回到 Phase 2**，啟動下一輪迭代 | — |
 
 ### 8.4 完成條件
@@ -402,13 +402,13 @@ Closes #N
 
 | 階段 | 場景 | 執行者 → AI 的提示詞 |
 |------|------|----------------------|
-| Phase 1 | 規格審查 | `"交叉比對 /docs 下的 PRD、SRD、API_Spec、Dev_Plan，列出不一致或遺漏的項目。"` |
-| Phase 2 | 計畫審核 | `"讀取 docs/Dev_Plan.md，確認是否涵蓋 SRD 中的安全實作與非功能性需求。"` |
-| Phase 2 | 建立 Issues | `"根據 Dev_Plan.md 的 M1 里程碑，建立 GitHub Issues，包含驗收標準、優先級與標籤。"` |
-| Phase 3 | 功能開發 | `"讀取 Issue #N，參考 SRD 技術規範與 API_Spec，在 feature 分支上實作。"` |
+| Phase 1 | 規格審查 | `"交叉比對 /docs 下的 01-1-PRD、01-2-SRD、01-3-API_Spec、02-Dev_Plan，列出不一致或遺漏的項目。"` |
+| Phase 2 | 計畫審核 | `"讀取 docs/02-Dev_Plan.md，確認是否涵蓋 SRD 中的安全實作與非功能性需求。"` |
+| Phase 2 | 建立 Issues | `"根據 02-Dev_Plan.md 的 M1 里程碑，建立 GitHub Issues，包含驗收標準、優先級與標籤。"` |
+| Phase 3 | 功能開發 | `"讀取 Issue #N，參考 01-2-SRD 技術規範與 01-3-API_Spec，在 feature 分支上實作。"` |
 | Phase 4 | 建立 PR | `"推送程式碼，建立 PR 並關聯 Issue #N，撰寫變更摘要。"` |
 | Phase 4 | CI 修正 | `"讀取 CI 失敗報告，修正錯誤後推送新 commit。"` |
-| Phase 5 | 回饋處理 | `"根據以下回饋更新 PRD，並在 Dev_Plan 中新增對應任務。"` |
+| Phase 5 | 回饋處理 | `"根據以下回饋更新 01-1-PRD，並在 02-Dev_Plan 中新增對應任務。"` |
 
 ---
 
@@ -416,7 +416,8 @@ Closes #N
 
 | 文件 | 路徑 | 維護者 | 更新時機 |
 |------|------|--------|----------|
-| PRD | `/docs/PRD.md` | 開發者 | Phase 1 建立、Phase 5 迭代更新 |
-| SRD | `/docs/SRD.md` | 開發者 | Phase 1 建立、需求變更時更新 |
-| API Spec | `/docs/API_Spec.yaml` | 開發者 | Phase 1 建立、介面變更時更新 |
-| Dev Plan | `/docs/Dev_Plan.md` | 開發者建立、AI 更新狀態 | Phase 1 建立、Phase 4 標記完成、Phase 5 新增任務 |
+| PRD | `/docs/01-1-PRD.md` | 開發者 | Phase 1 建立、Phase 5 迭代更新 |
+| SRD | `/docs/01-2-SRD.md` | 開發者 | Phase 1 建立、需求變更時更新 |
+| API Spec (說明) | `/docs/01-3-API_Spec.md` | 開發者 | Phase 1 建立、介面變更時更新 |
+| API Spec (合約) | `/docs/API_Spec.yaml` | 開發者 | Phase 1 建立、介面變更時更新 |
+| Dev Plan | `/docs/02-Dev_Plan.md` | 開發者建立、AI 更新狀態 | Phase 1 建立、Phase 4 標記完成、Phase 5 新增任務 |
