@@ -95,6 +95,88 @@ graph TD
 
 > 已渲染至： images/flowchart.png
 
+### 完整循序圖
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Dev as 開發者 (導演)
+    participant AI as AI 助手 (執行者)
+    participant GH as GitHub (中樞)
+
+    Note over Dev, GH: 【Phase 1：規格定義】
+
+    Dev->>Dev: 撰寫 PRD、SRD、API Spec、Dev Plan
+    Dev->>GH: 提交規格文件至 /docs
+    Dev->>AI: 指示交叉比對規格文件
+    AI->>AI: 比對 PRD / SRD / API Spec / Dev Plan 等文件
+    AI-->>Dev: 產出完整性審查報告
+    Dev->>Dev: 審閱報告，修正規格缺漏
+    Dev->>GH: 提交最終版規格
+
+    Note over Dev, GH: 【Phase 2：任務掛載】
+
+    Dev->>AI: 指示審核 Dev Plan 完整性
+    AI->>AI: 比對 Dev Plan 與 SRD 非功能性需求
+    AI-->>Dev: 產出遺漏項目報告
+    Dev->>Dev: 確認或補充遺漏項目
+    Dev->>AI: 指示按里程碑建立 Issues
+    AI->>GH: 逐一建立 GitHub Issues（含標題、描述、標籤、依賴）
+    GH-->>GH: Issues 同步至 Projects 看板
+    GH-->>Dev: 看板就緒通知
+    Dev->>Dev: 確認 Issue 清單與排序
+
+    Note over Dev, GH: 【Phase 3：開發循環】（每個 Issue 重複）
+
+    Dev->>AI: 指派 Issue #N
+    AI->>AI: 讀取 Issue 內容與相關規格
+    AI->>GH: 從 main 建立 feature 分支
+    AI->>AI: 實作功能程式碼
+    AI->>AI: 撰寫並執行單元測試
+    AI-->>Dev: 報告 Vibe Check 結果
+
+    alt Vibe Check 通過
+        Dev->>Dev: 核准，進入 Phase 4
+    else Vibe Check 未通過
+        Dev->>AI: 指出問題，要求修正
+        AI->>AI: 修正程式碼與測試
+        AI-->>Dev: 重新報告 Vibe Check 結果
+    end
+
+    Note over Dev, GH: 【Phase 4：自動化驗證與合併】
+
+    Dev->>AI: 指示推送程式碼並建立 PR
+    AI->>GH: git push 並建立 PR（含變更摘要、Closes #N）
+    activate GH
+    GH->>GH: Actions 執行 CI（合約測試、安全掃描、效能壓測）
+    GH-->>Dev: CI 結果報告
+    deactivate GH
+
+    alt CI 通過
+        Dev->>GH: Code Review → 核准 Merge
+        GH->>GH: 合併至 main
+    else CI 失敗
+        Dev->>AI: 轉交 CI 錯誤報告
+        AI->>AI: 修正程式碼
+        AI->>GH: 推送修正 commit
+        GH->>GH: 重新執行 CI
+        GH-->>Dev: 更新 CI 結果
+    end
+
+    AI->>GH: 更新 02-Dev_Plan.md 標記任務完成
+
+    Note over Dev, GH: 【Phase 5：交付與迭代】
+
+    GH->>GH: CD pipeline 自動部署至測試環境
+    Dev->>Dev: 驗收測試
+    Dev->>Dev: 收集使用者回饋
+    Dev->>GH: 更新 01-1-PRD.md 與 02-Dev_Plan.md
+
+    Note over Dev, GH: ↩ 回到 Phase 2 啟動下一輪迭代
+```
+
+> 已渲染至：images/full-sequence.png
+
 ---
 
 ## 4. Phase 1：規格定義 (Quad-Spec)
