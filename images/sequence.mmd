@@ -1,0 +1,24 @@
+sequenceDiagram
+    autonumber
+    actor Dev as 開發者 (導演)
+    participant AI as AI 助手 (執行者)
+    participant GH as GitHub (中樞)
+
+    Dev->>AI: 領取 Issue #N 並開發
+    AI->>GH: 建立 feature 分支
+    AI->>AI: 實作功能程式碼
+    AI->>AI: 生成並執行單元測試
+    AI-->>Dev: 本地驗證通過 ✓ (Vibe Check)
+    Dev->>AI: 推送並發起 PR
+    AI->>GH: git push & 建立 Pull Request (關聯 Issue)
+    activate GH
+    GH->>GH: Actions 執行 CI 測試
+    GH-->>Dev: CI 結果報告
+    deactivate GH
+    alt CI 通過
+        Dev->>GH: Code Review → Merge
+        GH->>GH: 觸發 CD 部署
+    else CI 失敗
+        Dev->>AI: 根據錯誤報告修正
+        AI->>GH: 推送修正 commit
+    end
