@@ -53,49 +53,7 @@
 
 ## 3. 流程總覽
 
-```mermaid
-graph TD
-    subgraph "Phase 1 — 規格定義"
-        A1[PRD：商業需求] --> A4
-        A2[SRD：系統規範] --> A4
-        A3[API Spec：介面規格] --> A4
-        A4[Dev Plan：執行計畫與里程碑]
-    end
-
-    subgraph "Phase 2 — 任務掛載"
-        A4 --> B1[AI：審核計畫完整性]
-        B1 --> B2[AI：自動建立 GitHub Issues]
-        B2 --> B3[GitHub Projects 看板就緒]
-    end
-
-    subgraph "Phase 3 — 開發循環"
-        B3 --> C1[按 Issue 順序領取任務]
-        C1 --> C2[AI：程式碼與測試生成]
-        C2 --> C3[本地驗證 Vibe Check]
-    end
-
-    subgraph "Phase 4 — 自動化驗證"
-        C3 --> D1[發起 PR 並關聯 Issue]
-        D1 --> D2[GitHub Actions CI 測試]
-        D2 --> D3{通過?}
-        D3 -- 是 --> D4[Merge 並更新 Dev Plan]
-        D3 -- 否 --> C2
-    end
-
-    subgraph "Phase 5 — 交付與迭代"
-        D4 --> E1[自動部署至測試環境]
-        E1 --> E2[收集回饋，更新 PRD 與 Dev Plan]
-        E2 --> B1
-    end
-
-    style A4 fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
-    style B2 fill:#f1f8e9,stroke:#33691e,stroke-width:2px
-    style D3 fill:#fff3e0,stroke:#e65100,stroke-width:2px
-```
-
-> 已渲染至： images/flowchart.png
-
-### 完整循序圖
+完整循序圖：
 
 ```mermaid
 sequenceDiagram
