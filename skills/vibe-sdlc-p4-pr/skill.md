@@ -65,6 +65,52 @@ Closes #N
 - 本地驗證：✅ Vibe Check 通過
 ```
 
+## Multi Sub Agent PR 流程
+
+當 Dev Plan 採用多 Sub Agent 並行開發時，PR 流程擴展為雙層審查：
+
+### 分支命名規範
+
+Sub Agent 建立的分支必須遵循：`feat/<agent>/<issue-N>-<簡述>`
+
+例如：`feat/backend/issue-12-auth-api`、`feat/frontend/issue-15-login-ui`
+
+### Worktree 使用
+
+每個 Sub Agent 使用獨立的 Git Worktree：
+
+```bash
+git worktree add ../worktree-backend feat/backend/issue-12-auth-api
+git worktree add ../worktree-frontend feat/frontend/issue-15-login-ui
+```
+
+### 雙層審查流程
+
+| 步驟 | 執行者 | 操作 | 說明 |
+|------|--------|------|------|
+| 1 | **Sub Agent** | 提交 PR，標題含任務編號 | PR 範圍僅限該 Agent 負責的目錄 |
+| 2 | **GitHub** | 觸發 CI | Lint、Type Check、Unit Test |
+| 3 | **A-Main** | 初審 | 確認 PR 範圍正確、CI 通過、無跨目錄修改 |
+| 4 | **H-Director** | 終審 & Merge | Code Review 後合併至 `main` |
+
+### PR 範圍限制
+
+Sub Agent 的 PR **禁止** 修改其負責範圍以外的檔案：
+
+| Agent | 允許路徑 |
+|-------|---------|
+| A-Backend | `/backend/**` |
+| A-Frontend | `/frontend/**` |
+| A-QA | `/tests/**` |
+| A-DevOps | `.github/**`, `docker/**` |
+| A-Main | 全專案 (整合用) |
+
+### 合併衝突處理
+
+- 同一並行群組內的 PR 依完成先後合併，無強制順序。
+- 合併後若其他 PR 產生衝突，由 **A-Main** 負責 rebase 解決。
+- Sub Agent **不得** 自行解決跨目錄衝突。
+
 ## 完成條件
 
 - [ ] CI 全部通過（綠燈）

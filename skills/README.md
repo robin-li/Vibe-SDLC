@@ -52,6 +52,8 @@ Vibe-SDLC Skills 是一組可直接在 [Claude Code](https://claude.ai/code) 中
 
 - **交付物**：PRD (`01-1-PRD.md`)、SRD (`01-2-SRD.md`)、API Spec (`01-3-API_Spec.md` + `API_Spec.yaml`)、Dev Plan (`02-Dev_Plan.md`)、審查報告 (`03-Docs_Review_Report.md`)
 - **AI 職責**：協助撰寫與優化規格、交叉比對所有規格文件找出不一致或遺漏、產出完整性審查報告
+- **Dev Plan 格式**：角色定義（Role Registry）、里程碑 Gantt、任務清單（含 AI Sessions / HRH 工作量估算）、任務詳細描述、並行群組視覺化（Mermaid）、技術棧、風險、Vibe Check 計畫、溝通協作
+- **Multi Sub Agent 協作規範**（Dev Plan 必含）：Worktree 使用（每 Sub Agent 獨立 Worktree）、分支命名 `feat/<agent>/<issue-N>-<簡述>`、雙層 PR 審查（A-Main 初審 → H-Director 終審）、PR 範圍限制
 - **完成條件**：規格文件皆已提交至 `/docs`、審查報告無未解決項目、開發計畫合理可行、開發者確認定稿
 - **參考範例**：`vibe-sdlc-p1-spec/examples/docs/`
 
@@ -77,6 +79,7 @@ Vibe-SDLC Skills 是一組可直接在 [Claude Code](https://claude.ai/code) 中
 
 - **AI 職責**：推送程式碼、建立 PR（關聯 Issue）、CI 失敗時根據報告修正、Merge 後更新 Dev Plan
 - **PR 包含**：變更摘要、關聯 Issue、變更清單、測試結果
+- **Multi Sub Agent 雙層審查**：Sub Agent 提交 PR → GitHub CI 自動檢查 → A-Main 初審（確認 PR 範圍僅限負責目錄）→ H-Director 終審 & Merge；合併衝突由 A-Main 負責 rebase 解決
 - **完成條件**：CI 綠燈、Code Review 核准、PR 合併、Dev Plan 更新
 
 ### Phase 5：交付與迭代 (`/vibe-sdlc-p5-release`)
@@ -268,6 +271,32 @@ AI 會讀取專案狀態，判斷你處於 Phase 1，並建議你呼叫 `/vibe-s
 > 2. 刪除操作應改為軟刪除（需求變更）
 > 3. 登入頁的文案不好看（暫不處理）
 > 請幫我整理並更新 PRD 和 Dev Plan。
+```
+
+---
+
+### 場景七：Multi Sub Agent 並行開發
+
+**讓 AI 產生含 Git 協作策略的 Dev Plan：**
+
+```
+> /vibe-sdlc-p1-spec
+> Dev Plan 請採用 Multi Sub Agent 架構，包含 A-Backend、A-Frontend、A-QA、A-DevOps，
+> 並依照規範加入 Worktree 配置與雙層 PR 審查流程。
+```
+
+**在 P4 以 Sub Agent 角色推送 PR：**
+
+```
+> /vibe-sdlc-p4-pr
+> 我是 A-Backend，Issue #12 已完成，請在 feat/backend/issue-12-auth-api 分支建立 PR。
+```
+
+**A-Main 執行初審後通知 H-Director：**
+
+```
+> PR #34 的 CI 已通過，A-Main 初審確認範圍正確（僅修改 /backend/**），
+> 請 H-Director 進行終審。
 ```
 
 ---

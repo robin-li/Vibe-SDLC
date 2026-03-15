@@ -52,6 +52,7 @@ Vibe-SDLC Skills 是一組可直接在 [Claude Code](https://claude.ai/code) 中
 
 - **交付物**：PRD (`01-1-PRD.md`)、SRD (`01-2-SRD.md`)、API Spec (`01-3-API_Spec.md` + `API_Spec.yaml`)、Dev Plan (`02-Dev_Plan.md`)
 - **AI 職責**：協助撰寫規格、交叉比對四份文件找出不一致或遺漏、產出審查報告
+- **Dev Plan 必含**：角色定義（Role Registry）、Gantt、任務清單（AI Sessions / HRH 估算）、並行群組 Mermaid 圖、Multi Sub Agent Git 協作策略（Worktree、分支命名、雙層 PR 審查、PR 範圍限制）
 - **完成條件**：規格文件皆已提交至 `/docs`、審查報告無未解決項目、開發者確認定稿
 
 ### Phase 2：任務掛載 (`/vibe-sdlc-p2-issues`)
@@ -76,6 +77,7 @@ Vibe-SDLC Skills 是一組可直接在 [Claude Code](https://claude.ai/code) 中
 
 - **AI 職責**：推送程式碼、建立 PR（關聯 Issue）、CI 失敗時根據報告修正、Merge 後更新 Dev Plan
 - **PR 包含**：變更摘要、關聯 Issue、變更清單、測試結果
+- **Multi Sub Agent 雙層審查**：Sub Agent PR → CI → A-Main 初審（PR 範圍確認）→ H-Director 終審 & Merge；衝突由 A-Main rebase 解決
 - **完成條件**：CI 綠燈、Code Review 核准、PR 合併、Dev Plan 更新
 
 ### Phase 5：交付與迭代 (`/vibe-sdlc-p5-release`)

@@ -502,6 +502,72 @@ AI Agents 缺乏人類常識，**文件的一致性絕對不容妥協**。
 
 **禁止事項**：任何 AI 角色不得在未經 H-Director 核准的情況下修改 `/docs` 下的規格文件。
 
+### 8.4 Git 協作策略 (Multi Sub Agent)
+
+多個 Sub Agent 並行開發時，必須遵守以下 Git 協作規範以避免衝突。
+
+#### Worktree 配置
+
+每個 Sub Agent 使用獨立的 Git Worktree，避免分支切換干擾：
+
+```bash
+# A-Main 在主 Worktree (專案根目錄)
+# Sub Agents 各自建立 Worktree
+git worktree add ../worktree-backend feat/backend/issue-12-auth-api
+git worktree add ../worktree-frontend feat/frontend/issue-15-login-ui
+git worktree add ../worktree-devops feat/devops/issue-20-docker
+```
+
+#### 分支命名規範
+
+```
+feat/<agent>/<issue-N>-<簡述>
+```
+
+| Agent | 分支範例 |
+|-------|---------|
+| A-Backend | `feat/backend/issue-12-auth-api` |
+| A-Frontend | `feat/frontend/issue-15-login-ui` |
+| A-QA | `feat/qa/issue-30-e2e-tests` |
+| A-DevOps | `feat/devops/issue-20-docker` |
+| A-Main | `feat/main/issue-40-integration` |
+
+#### PR 審查流程 (雙層審查)
+
+```mermaid
+flowchart LR
+    SUB["Sub Agent<br/>提交 PR"] --> CI["GitHub Actions<br/>CI 檢查"]
+    CI -->|通過| MAIN["A-Main<br/>初審"]
+    CI -->|失敗| SUB
+    MAIN -->|通過| DIR["H-Director<br/>終審 & Merge"]
+    MAIN -->|駁回| SUB
+    DIR -->|要求修改| SUB
+    DIR -->|核准| MERGE["合併至 main"]
+```
+
+| 審查層 | 審查者 | 檢查重點 |
+|--------|--------|---------|
+| **CI 自動檢查** | GitHub Actions | Lint、Type Check、Unit Test、Build |
+| **初審** | A-Main | PR 範圍是否僅限負責目錄、無跨域修改、邏輯正確性 |
+| **終審** | H-Director | 架構合理性、商業邏輯正確性、最終 Merge 決策 |
+
+#### PR 範圍限制
+
+| Agent 角色 | 允許修改的路徑 | 禁止修改 |
+|-----------|-------------|---------|
+| **A-Backend** | `/backend/**` | `/frontend/**`, `.github/**` |
+| **A-Frontend** | `/frontend/**` | `/backend/**`, `.github/**` |
+| **A-QA** | `/tests/**` | `/backend/**`, `/frontend/**` |
+| **A-DevOps** | `.github/**`, `docker/**`, `Dockerfile`, `docker-compose.yml` | `/backend/**`, `/frontend/**` |
+| **A-Main** | 全專案 | (無限制，用於整合與修復) |
+
+#### 合併順序與衝突處理
+
+- 同一並行群組內的 PR **無強制合併順序**，依完成先後合併。
+- 合併後若導致其他 PR 產生衝突，由 **A-Main** 負責 rebase 並解決。
+- Sub Agent **禁止**自行解決涉及其他 Agent 負責範圍的衝突。
+- 若衝突涉及架構性變更，由 **H-Director** 裁決解決方案。
+
 ---
 
 ## 附錄：自動化任務執行狀態追蹤

@@ -136,6 +136,57 @@ user_invocable: true
 - 任務分發流程：`flowchart LR`
 - 並行群組視覺化：`flowchart TB` (fork/join 模式)
 
+### Git 協作策略 (Multi Sub Agent)
+
+當多個 Sub Agents 並行開發時，Dev Plan 應包含以下 Git 協作規範：
+
+#### Worktree 使用
+
+- 每個 Sub Agent 應使用獨立的 **Git Worktree** 在各自的分支上開發，避免 `checkout` 切換衝突。
+- Worktree 建立命令：`git worktree add ../worktree-<agent> <branch>`
+- 主 Worktree 保留給 A-Main 執行整合工作。
+
+#### 分支命名規範
+
+```
+feat/<agent>/<issue-N>-<簡述>
+```
+
+範例：
+- `feat/backend/issue-12-auth-api`
+- `feat/frontend/issue-15-login-ui`
+- `feat/devops/issue-20-docker-setup`
+
+#### PR 審查流程 (雙層審查)
+
+```mermaid
+flowchart LR
+    SUB["Sub Agent<br/>提交 PR"] --> MAIN["A-Main<br/>初審 (自動)"]
+    MAIN -->|通過| DIR["H-Director<br/>終審 & Merge"]
+    MAIN -->|駁回| SUB
+    DIR -->|要求修改| SUB
+```
+
+1. **Sub Agent** 完成開發後提交 PR，目標分支為 `main`（或指定的整合分支）。
+2. **A-Main** 進行初審：確認 PR 範圍僅限該 Agent 負責的目錄、CI 通過、無型別錯誤。
+3. **H-Director** 進行終審：Code Review 後決定 Merge 或要求修改。
+
+#### 合併順序與衝突處理
+
+- 同一並行群組內的 PR，**無依賴關係者** 可依完成先後合併。
+- 若合併後產生衝突，由 **A-Main** 負責 rebase 並解決衝突。
+- 禁止 Sub Agent 直接修改其他 Agent 負責範圍內的檔案。
+
+#### PR 範圍限制
+
+| Sub Agent 角色 | 允許修改的路徑 |
+|---------------|-------------|
+| A-Backend | `/backend/**` |
+| A-Frontend | `/frontend/**` |
+| A-QA | `/tests/**` |
+| A-DevOps | `.github/**`, `docker/**`, `Dockerfile`, `docker-compose.yml` |
+| A-Main | 全專案 (整合與修復用) |
+
 ## 審查報告格式
 
 當執行步驟「交叉比對規格文件」時，按以下格式產出報告至 `/docs/03-Docs_Review_Report.md`：
