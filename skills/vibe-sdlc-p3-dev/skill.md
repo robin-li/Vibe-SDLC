@@ -26,11 +26,14 @@ user_invocable: true
 - 跳過測試直接提交
 - 在未獲開發者核准的情況下進入 Phase 4
 
+> **Sub Agent 情境**：若 Dev Plan 的角色定義中指定了 Sub Agent 角色（如 `A-Backend`、`A-Frontend`），AI 助手應識別當前任務對應的角色範圍，僅操作該角色負責的目錄與檔案。
+
 ## 前置條件
 
 - Phase 2 所有完成條件已達成
 - Projects 看板中有狀態為 `Todo` 的 Issue
 - 以下規格文件可供參考：
+  - `/docs/01-1-PRD.md`（產品需求，前端頁面與流程參考）
   - `/docs/01-2-SRD.md`（技術規範）
   - `/docs/01-3-API_Spec.md`（API 規格）
   - `/docs/API_Spec.yaml`（OpenAPI 合約）

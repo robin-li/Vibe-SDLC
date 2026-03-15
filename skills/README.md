@@ -20,8 +20,8 @@ Vibe-SDLC Skills 是一組可直接在 [Claude Code](https://claude.ai/code) 中
 | Slash Command | 階段 | 用途 |
 |---------------|------|------|
 | `/vibe-sdlc` | — | 流程總覽與導航，判斷目前該進入哪個 Phase |
-| `/vibe-sdlc-p1-spec` | Phase 1：規格定義 | 撰寫 / 審查 PRD、SRD、API Spec、Dev Plan |
-| `/vibe-sdlc-p2-issues` | Phase 2：任務掛載 | 審核 Dev Plan → 自動建立 GitHub Issues |
+| `/vibe-sdlc-p1-spec` | Phase 1：定義規格文件與計畫 | 撰寫 / 審查 PRD、SRD、API Spec、Dev Plan，產出完整性審查報告 |
+| `/vibe-sdlc-p2-issues` | Phase 2：任務掛載 | 依 Dev Plan 建立 GitHub Issues，建立 Project 看板 |
 | `/vibe-sdlc-p3-dev` | Phase 3：開發循環 | 領取 Issue → 實作 → 測試 → Vibe Check |
 | `/vibe-sdlc-p4-pr` | Phase 4：自動化驗證 | 推送程式碼 → 建立 PR → 處理 CI 結果 |
 | `/vibe-sdlc-p5-release` | Phase 5：交付與迭代 | 部署驗收 → 收集回饋 → 更新規格 |
@@ -46,20 +46,21 @@ Vibe-SDLC Skills 是一組可直接在 [Claude Code](https://claude.ai/code) 中
 
 ## 各 Phase 詳細說明
 
-### Phase 1：規格定義 (`/vibe-sdlc-p1-spec`)
+### Phase 1：定義規格文件與計畫 (`/vibe-sdlc-p1-spec`)
 
 建立專案的 **Single Source of Truth**。
 
-- **交付物**：PRD (`01-1-PRD.md`)、SRD (`01-2-SRD.md`)、API Spec (`01-3-API_Spec.md` + `API_Spec.yaml`)、Dev Plan (`02-Dev_Plan.md`)
-- **AI 職責**：協助撰寫規格、交叉比對四份文件找出不一致或遺漏、產出審查報告
-- **完成條件**：規格文件皆已提交至 `/docs`、審查報告無未解決項目、開發者確認定稿
+- **交付物**：PRD (`01-1-PRD.md`)、SRD (`01-2-SRD.md`)、API Spec (`01-3-API_Spec.md` + `API_Spec.yaml`)、Dev Plan (`02-Dev_Plan.md`)、審查報告 (`03-Docs_Review_Report.md`)
+- **AI 職責**：協助撰寫與優化規格、交叉比對所有規格文件找出不一致或遺漏、產出完整性審查報告
+- **完成條件**：規格文件皆已提交至 `/docs`、審查報告無未解決項目、開發計畫合理可行、開發者確認定稿
+- **參考範例**：`vibe-sdlc-p1-spec/examples/docs/`
 
 ### Phase 2：任務掛載 (`/vibe-sdlc-p2-issues`)
 
-將 Dev Plan 轉換為 **可追蹤的 GitHub Issues**。
+將 Dev Plan 轉換為 **可追蹤的 GitHub Issues**，並建立 Project 看板。
 
-- **AI 職責**：審核 Dev Plan 完整性（交叉比對 SRD 非功能性需求）、依里程碑逐一建立 Issues
-- **Issue 包含**：任務描述、驗收標準、技術參考、依賴關係、優先級與里程碑標籤
+- **AI 職責**：確認 P1 審查報告通過 → 依里程碑逐一建立 Issues → 建立 Project 看板
+- **Issue 包含**：任務描述、任務編號（對應 Dev Plan）、驗收標準、技術參考、依賴關係、優先級（P0–P3）與里程碑標籤
 - **完成條件**：所有任務皆轉為 Issues、Projects 看板就緒
 
 ### Phase 3：開發循環 (`/vibe-sdlc-p3-dev`)
@@ -128,7 +129,8 @@ skills/
 ├── vibe-sdlc/
 │   └── skill.md                     ← 總覽與導航
 ├── vibe-sdlc-p1-spec/
-│   └── skill.md                     ← Phase 1：規格定義
+│   ├── skill.md                     ← Phase 1：定義規格文件與計畫
+│   └── examples/docs/               ← 規格文件範例（PRD、SRD、API Spec、Dev Plan 等）
 ├── vibe-sdlc-p2-issues/
 │   └── skill.md                     ← Phase 2：任務掛載
 ├── vibe-sdlc-p3-dev/
@@ -184,11 +186,11 @@ AI 會讀取專案狀態，判斷你處於 Phase 1，並建議你呼叫 `/vibe-s
 
 ### 場景三：Phase 2 — 建立 GitHub Issues
 
-**審核 Dev Plan 並建立 Issues：**
+**建立 Issues（審查報告通過後）：**
 
 ```
 > /vibe-sdlc-p2-issues
-> 規格已經定稿了，請先審核 Dev Plan 的完整性，然後幫我建立 GitHub Issues。
+> 規格已經定稿了，審查報告也確認無誤，請幫我建立 GitHub Issues。
 ```
 
 **只建立特定里程碑的 Issues：**

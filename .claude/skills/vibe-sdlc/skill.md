@@ -20,7 +20,7 @@ user_invocable: true
 
 | Phase | 名稱 | Skill 指令 | 觸發時機 |
 |-------|------|-----------|----------|
-| 1 | 規格定義 (Quad-Spec) | `/vibe-sdlc-p1-spec` | 專案啟動，需撰寫或審查規格 |
+| 1 | 定義規格文件與計畫 | `/vibe-sdlc-p1-spec` | 專案啟動，需撰寫或審查規格 |
 | 2 | 任務掛載 (Plan → Issues) | `/vibe-sdlc-p2-issues` | 規格定稿，需建立 GitHub Issues |
 | 3 | 開發循環 (Execution Loop) | `/vibe-sdlc-p3-dev` | 日常開發，領取 Issue 進行實作 |
 | 4 | 自動化驗證 (CI/CD Gates) | `/vibe-sdlc-p4-pr` | 本地驗證通過，需推送 PR |
@@ -40,6 +40,8 @@ user_invocable: true
 - 建立 PR、處理 CI 失敗修正
 - 更新 Dev Plan 任務狀態
 
+> **角色代號映射**：Dev Plan 中使用 `H-Director`（導演）、`H-Reviewer`（審查員）等人類角色代號，以及 `A-Main`、`A-Backend`、`A-Frontend`、`A-QA`、`A-DevOps` 等 AI 角色代號，以支援多 Sub Agent 並行開發情境。詳見 Dev Plan 的「角色定義 (Role Registry)」章節。
+
 ### GitHub（中樞系統）
 - 存放真相來源（規格文件、程式碼）
 - 執行 CI/CD（Actions）
@@ -54,6 +56,7 @@ user_invocable: true
 | API Spec (說明) | `/docs/01-3-API_Spec.md` | 開發者 |
 | API Spec (合約) | `/docs/API_Spec.yaml` | 開發者 |
 | Dev Plan | `/docs/02-Dev_Plan.md` | 開發者建立、AI 更新狀態 |
+| 審查報告 | `/docs/03-Docs_Review_Report.md` | AI 產出、開發者審閱 |
 
 ## 行為指引
 

@@ -8,7 +8,8 @@ skills/
 ├── vibe-sdlc/
 │   └── skill.md                     ← 總覽與導航
 ├── vibe-sdlc-p1-spec/
-│   └── skill.md                     ← Phase 1：規格定義
+│   ├── skill.md                     ← Phase 1：定義規格文件與計畫
+│   └── examples/docs/               ← 規格文件範例（PRD、SRD、API Spec、Dev Plan 等）
 ├── vibe-sdlc-p2-issues/
 │   └── skill.md                     ← Phase 2：任務掛載
 ├── vibe-sdlc-p3-dev/

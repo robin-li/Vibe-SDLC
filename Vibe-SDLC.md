@@ -1,6 +1,6 @@
 # Vibe-SDLC：AI 輔助軟體開發生命週期標準作業程序
 
-> **版本**：v6.0 ｜ **最後更新**：2026-03-12
+> **版本**：v7.0 ｜ **最後更新**：2026-03-16
 
 ---
 
@@ -31,12 +31,24 @@
 
 | 職責範疇 | 具體內容 |
 |----------|----------|
-| 規格審查 | 交叉比對 PRD / SRD / API Spec / Dev Plan，產出差異報告 |
-| 任務建立 | 根據 Dev Plan 自動建立 GitHub Issues |
+| 規格審查 | 交叉比對 PRD / SRD / API Spec / Dev Plan，產出完整性審查報告 |
+| 任務建立 | 根據 Dev Plan 自動建立 GitHub Issues，並建立 Project 看板 |
 | 程式開發 | 在 feature 分支上實作程式碼，遵循 SRD 技術規範 |
 | 測試生成 | 撰寫並執行單元測試，確保本地驗證通過 |
 | PR 管理 | 推送程式碼、建立 PR、撰寫變更摘要、關聯 Issue |
 | 錯誤修正 | 根據 CI 失敗報告修正程式碼並重新提交 |
+
+**角色代號（Role Registry）**：Dev Plan 中以代號標識角色，全文保持一致，支援 Multi Sub-Agent 並行開發。
+
+| 類別 | 代號 | 名稱 | 說明 |
+|------|------|------|------|
+| 🧑 人類 | H-Director | 導演 | 最高決策、規格審查、Milestone 驗收、PR 合併 |
+| 🧑 人類 | H-Reviewer | 審查員 | 特定領域審查（UX/安全），可由 Director 兼任 |
+| 🤖 AI | A-Main | 主代理 | 統籌拆解 Issue、協調 Sub Agents、整合驗證 |
+| 🤖 AI | A-Backend | 後端子代理 | 專注後端 API、DB、ORM |
+| 🤖 AI | A-Frontend | 前端子代理 | 專注 UI 組件、頁面、狀態管理 |
+| 🤖 AI | A-QA | 測試子代理 | E2E 測試、覆蓋率 |
+| 🤖 AI | A-DevOps | 部署子代理 | CI/CD、Docker、監控 |
 
 ### 2.3 GitHub（中樞系統）
 
@@ -62,24 +74,24 @@ sequenceDiagram
     participant AI as AI 助手 (執行者)
     participant GH as GitHub (中樞)
 
-    Note over Dev, GH: 【Phase 1：規格定義】
+    Note over Dev, GH: 【Phase 1：定義規格文件與計畫】
 
-    Dev->>Dev: 撰寫 PRD、SRD、API Spec、Dev Plan
+    Dev->>AI: 討論並撰寫 PRD，優化後確認
+    Dev->>AI: 依據 PRD 撰寫 SRD，討論並優化
+    Dev->>AI: 定義 API Spec（OpenAPI 格式）
+    Dev->>AI: 依規格生成 Dev Plan，討論並優化
     Dev->>GH: 提交規格文件至 /docs
-    Dev->>AI: 指示交叉比對規格文件
+    Dev->>AI: 指示交叉比對所有規格文件
     AI->>AI: 比對 PRD / SRD / API Spec / Dev Plan 等文件
-    AI-->>Dev: 產出完整性審查報告
+    AI-->>Dev: 產出完整性審查報告（03-Docs_Review_Report.md）
     Dev->>Dev: 審閱報告，修正規格缺漏
     Dev->>GH: 提交最終版規格
 
     Note over Dev, GH: 【Phase 2：任務掛載】
 
-    Dev->>AI: 指示審核 Dev Plan 完整性
-    AI->>AI: 比對 Dev Plan 與 SRD 非功能性需求
-    AI-->>Dev: 產出遺漏項目報告
-    Dev->>Dev: 確認或補充遺漏項目
+    AI->>AI: 確認 P1 審查報告通過（無未解決遺漏）
     Dev->>AI: 指示按里程碑建立 Issues
-    AI->>GH: 逐一建立 GitHub Issues（含標題、描述、標籤、依賴）
+    AI->>GH: 逐一建立 GitHub Issues（含標題、描述、任務編號、標籤、依賴）
     GH-->>GH: Issues 同步至 Projects 看板
     GH-->>Dev: 看板就緒通知
     Dev->>Dev: 確認 Issue 清單與排序
@@ -137,11 +149,11 @@ sequenceDiagram
 
 ---
 
-## 4. Phase 1：規格定義 (Quad-Spec)
+## 4. Phase 1：定義規格文件與計畫
 
 ### 4.1 目的
 
-建立專案的完整真相來源（Single Source of Truth），此階段應充分與AI討論生成高品質規格文件與計畫，所有後續工作皆以此為依據。
+建立專案的完整真相來源（Single Source of Truth）。此階段應充分與 AI 討論生成高品質規格文件與計畫，所有後續工作皆以此為依據。
 
 ### 4.2 前置條件
 
@@ -150,83 +162,120 @@ sequenceDiagram
 
 ### 4.3 交付物
 
-
-
-| 文件 | 格式 | 存放路徑 | 說明 |
+| 文件 | 檔名 | 存放路徑 | 說明 |
 |------|------|----------|------|
-| 產品需求文件(PRD) | `01-1-PRD.md` | `/docs/01-1-PRD.md` | 偏重產品面或客戶的需求及要求，可能衍生 UI/UX 需求。 |
-| 系統需求文件(SRD) | `01-2-SRD.md` | `/docs/01-2-SRD.md` | 偏重技術棧、框架以及系統在安全及性能上的要求。 |
-| API 介面規格 (API Spec) | `01-3-API_Spec.md` | `/docs/01-3-API_Spec.md` | API規格說明 |
-| API 介面合約 | `API_Spec.yaml` | `/docs/API_Spec.yaml` | Open API 規格 |
-| 開發執行計畫(Dev Plan) | `02-Dev_Plan.md` | `/docs/02-Dev_Plan.md` |  |
+| 產品需求文件 (PRD) | `01-1-PRD.md` | `/docs/01-1-PRD.md` | 偏重產品面或客戶需求，可能衍生 UI/UX 需求 |
+| 系統需求文件 (SRD) | `01-2-SRD.md` | `/docs/01-2-SRD.md` | 偏重技術棧、框架以及系統安全性與效能要求 |
+| API 介面規格 | `01-3-API_Spec.md` | `/docs/01-3-API_Spec.md` | API 規格說明 |
+| API 介面合約 | `API_Spec.yaml` | `/docs/API_Spec.yaml` | OpenAPI 規格 |
+| 開發執行計畫 | `02-Dev_Plan.md` | `/docs/02-Dev_Plan.md` | 里程碑、任務拆解、角色定義、依賴關係 |
+| 規格審查報告 | `03-Docs_Review_Report.md` | `/docs/03-Docs_Review_Report.md` | 交叉比對結果、不一致與遺漏項目 |
 
-
-
-請注意：每個規格都應該賦予**規格編號**以利後續追蹤與討論。
-
-
+**重要**：
+- 每項規格都應賦予**規格編號**以利後續追蹤與討論。
+- 每個任務都應賦予**任務編號**以利後續追蹤與討論。
 
 ### 4.4 操作步驟
 
 | 步驟 | 執行者 | 操作 | 產出 |
 |------|--------|------|------|
-| 1 | **開發者** | 撰寫 PRD：定義功能清單、使用者故事、資料欄位（白話表格） | `01-1-PRD.md` |
-| 2 | **開發者** | 撰寫 SRD：定義系統架構、技術棧、安全性要求、效能指標 | `01-2-SRD.md` |
-| 3 | **開發者** | 定義 API Spec：以 OpenAPI 格式定義所有端點、請求/回應結構 | `01-3-API_Spec.md`,<br />`API_Spec.yaml` |
-| 4 | **開發者** | 撰寫 Dev Plan：拆解里程碑、任務清單、任務間依賴關係 | `02-Dev_Plan.md` |
-| 5 | **開發者** | 將以上四份文件提交至 GitHub `/docs` 目錄 | Git commit |
-| 6 | **AI 助手** | 交叉比對/docs格文件，產出完整性審查報告 | 審查報告 |
+| 1 | **開發者** | 撰寫 PRD：定義功能清單、使用者故事、資料欄位，與 AI 討論並優化 | `01-1-PRD.md` |
+| 2 | **開發者** | 撰寫 SRD：PRD 定義完成後，定義系統架構、技術棧、安全性要求、效能指標，與 AI 討論並優化 | `01-2-SRD.md` |
+| 3 | **開發者** | 定義 API Spec：以 OpenAPI 格式定義所有端點、請求/回應結構 | `01-3-API_Spec.md`, `API_Spec.yaml` |
+| 4 | **開發者** | 撰寫 Dev Plan：PRD、SRD、API Spec 定義完成後，拆解里程碑、任務清單、任務間依賴關係，與 AI 討論並優化 | `02-Dev_Plan.md` |
+| 5 | **開發者** | 確認以上文件均已提交至 `/docs` 目錄並推送至倉庫 | Git commit & push |
+| 6 | **AI 助手** | 交叉比對 `/docs` 下所有規格文件，產出完整性審查報告 | `03-Docs_Review_Report.md` |
 | 7 | **開發者** | 審閱報告，修正規格缺漏後重新提交 | 最終版規格 |
 
 ### 4.5 Dev Plan 格式規範
 
-可依需求規格相關文件，生成 Dev Plan 文件，然後與AI助手討論並優化：
+可依需求規格相關文件（PRD、SRD、API Spec 等）生成 Dev Plan，然後與 AI 討論並優化。
 
-  - 計畫視規模可以區分階段
-  - 每個階段以代辦事項的方式列表，每個事項，包含：
-    - 任務編號: 任務目標:
-      - 依賴(前置任務/條件)
-      - 輸入(參考)文件
-      - 執行步驟
-      - 產出
-      - 驗證方式(驗證方式可能參考其它測試計畫)
-      - 優先級(重要性)
+> 參考範例：`skills/vibe-sdlc-p1-spec/examples/docs/02-Dev_Plan.md`
 
+#### 核心設計原則
 
+1. **面向 AI Agentic Coding**：計畫以 Main Agent + Sub Agents 為執行單位，非傳統人類團隊。
+2. **API First 契約驅動**：前後端透過 `API_Spec.yaml` 解耦，Sub Agents 可高度並行開發。
+3. **Human Gate 機制**：每個 Milestone 設有人類驗收門（⛳），由人類導演決定是否進入下一階段。
+
+#### 文件結構（必須包含以下章節）
+
+1. **角色定義 (Role Registry)**：全文唯一角色定義來源（見 2.2 節角色代號表）
+2. **項目概況與時間表**：里程碑 Gantt 圖（Mermaid）、工作量估算
+3. **里程碑定義**：每個 Milestone 的目標、AI 執行策略、交付物、人類決策點
+4. **任務清單**：任務總覽表格 + 任務詳細描述 + 並行群組視覺化（Mermaid）
+5. **技術實施方案**：前後端技術棧、資料庫與部署配置
+6. **風險識別與應對**：AI 開發視角的風險（Regression、上下文不同步、除錯迴圈）
+7. **質量保證計畫 (Vibe Check)**：CI/CD 閘口、Human-in-the-Loop 審查
+8. **溝通與協作**：狀態同步中心、文件存取約定（Single Source of Truth）
+
+#### 任務總覽表格格式
 
 ```markdown
-## Milestone 1：基礎設施
-- [ ] Task1.1：環境建置與 CI/CD 配置
-      - 依賴: (無)
-      - 輸入: (無)
-      - 執行步驟: 執行技能 '初始化CICD Project1'
-      - 產出: 無
-      - 驗證: TEST_PLAN_ENV.md -> T1.1
-      - 優先級: P0
-- [ ] Task1.2：資料庫 Schema 設計與遷移
-      - 依賴: Task1.1
-      - 輸入: '/db/DB.md','/db/DB_SCHEMA.SQL'
-      - 執行步驟: 
-        1. 執行技能 '初始化數據庫'
-        2. 測試數據庫連線
-      - 產出: 無
-      - 驗證: TEST_PLAN_ENV.md -> T1.2
-      - 優先級: P0
-## Milestone 2：核心功能
-- [ ] Task 2.1：使用者認證模組
-      - 依賴: Task1.2
-      - 輸入: '/docs/01-1-PRD.md','/docs/UI_UX.md','01-2-SRD.md','/db/DB.md'
-      - 執行步驟: 開發使用者認證模組。
-      - 產出: 使用者認證模組相關源碼。
-      - 驗證: TEST_PLAN_UI.md -> T2.1
-      - 優先級: P0
-- [ ] ...
+| ID    | 任務名稱   | 優先級 | 負責角色  | 預估耗時        |
+|-------|-----------|-------|----------|----------------|
+| T-101 | [任務名稱] | P0    | A-Backend | ~N AI Sessions |
+| ⛳ M1 | M1 驗收門 | P0    | H-Director | ~N HRH        |
 ```
 
-### 4.6 完成條件
+- **預估耗時**：AI 角色用 `AI Sessions`（一次完整 Agent 對話執行）；人類角色用 `HRH`（Human Review Hours）。
+- **優先級**：`P0` 關鍵路徑必須完成｜`P1` 重要但非阻塞｜`P2` 建議完成（時間允許）｜`P3` 可選（有加分效果）
+
+#### 任務詳細描述格式
+
+```markdown
+**T-{ID}：{任務名稱}**
+- **任務描述**：詳細描述該任務的目標與步驟
+- **前置任務**：前置任務 ID，若無填 `(無)`
+- **輸入**：依賴或參考的文件，若無填 `(無)`
+- **產出**：此任務的輸出文件或源碼，若無填 `(無)`
+- **驗證**：如何驗證此任務已正確完成
+- **優先級**：P0 / P1 / P2 / P3
+```
+
+#### 並行與依賴規則
+
+- 使用「**並行群組 (G)**」標記可同時執行的任務，同一群組內可由不同 Sub Agents 同時開發
+- 群組之間依序進行，以 ⛳ **驗收門 (Human Gate)** 作為分界
+- 使用 Mermaid `flowchart` 的 fork/join 語法視覺化並行關係
+
+#### 繪圖規範
+
+文件中所有流程圖、時間表、依賴關係圖**一律使用 Mermaid 語法**，禁止使用 ASCII Art。建議：
+- 里程碑時間表：`gantt`
+- 任務分發流程：`flowchart LR`
+- 並行群組視覺化：`flowchart TB`（fork/join 模式）
+
+### 4.6 審查報告格式
+
+當執行步驟 6（交叉比對規格文件）時，按以下格式產出報告至 `/docs/03-Docs_Review_Report.md`：
+
+```markdown
+# 規格完整性審查報告
+
+## 審查範圍
+- 比對文件：01-1-PRD.md, 01-2-SRD.md, 01-3-API_Spec.md, 02-Dev_Plan.md, ...
+
+## 不一致項目
+| 編號 | 文件 | 不一致描述 | 建議修正 |
+|------|------|-----------|---------|
+
+## 遺漏項目
+| 編號 | 文件 | 遺漏描述 | 應補充至 |
+|------|------|---------|---------|
+
+## 結論
+- 不一致項目：N 項
+- 遺漏項目：N 項
+- 建議：[通過 / 需修正後重新審查]
+```
+
+### 4.7 完成條件
 
 - [ ] 規格文件皆已提交至 `/docs`
 - [ ] AI 審查報告無未解決的遺漏項目
+- [ ] 開發計畫合理可行
 - [ ] 開發者確認規格定稿
 
 ---
@@ -235,24 +284,23 @@ sequenceDiagram
 
 ### 5.1 目的
 
-將 Dev Plan 轉換為 GitHub Issues，使每項任務皆可追蹤、可分派、可度量。
+將 Dev Plan 轉換為 GitHub Issues，使每項任務皆可追蹤、可分派、可度量，並建立 Project 看板。
 
 ### 5.2 前置條件
 
-- Phase 1 所有完成條件已達成
+- Phase 1 所有完成條件已達成（含 `03-Docs_Review_Report.md` 無未解決項目）
 - GitHub Projects 看板已建立
+- `/docs` 目錄下所有規格文件（含 `API_Spec.yaml` 等）皆已提交
 
 ### 5.3 操作步驟
 
 | 步驟 | 執行者 | 操作 | 產出 |
 |------|--------|------|------|
-| 1 | **開發者** | 指示 AI 審核 Dev Plan 完整性 | — |
-| 2 | **AI 助手** | 讀取 `02-Dev_Plan.md`，交叉比對 SRD 中的安全實作與非功能性需求，列出遺漏項目 | 審核報告 |
-| 3 | **開發者** | 審閱報告，確認或補充遺漏項目 | 核准結果 |
-| 4 | **開發者** | 指示 AI 按里程碑建立 Issues | — |
-| 5 | **AI 助手** | 依 Dev Plan 逐一建立 GitHub Issues，每個 Issue 包含：標題、描述、優先級標籤、里程碑標籤、依賴關係說明 | GitHub Issues |
-| 6 | **GitHub** | 自動將 Issues 同步至 Projects 看板 | 看板就緒 |
-| 7 | **開發者** | 確認看板上的 Issue 清單與排序是否正確 | 最終確認 |
+| 1 | **AI 助手** | 確認 P1 審查報告（`03-Docs_Review_Report.md`）通過，無未解決的遺漏項目 | 確認結果 |
+| 2 | **開發者** | 指示 AI 按里程碑建立 Issues | — |
+| 3 | **AI 助手** | 依 Dev Plan 逐一建立 GitHub Issues，每個 Issue 包含：標題、描述、任務編號、優先級標籤、里程碑標籤、依賴關係說明 | GitHub Issues |
+| 4 | **GitHub** | 自動將 Issues 同步至 Projects 看板 | 看板就緒 |
+| 5 | **開發者** | 確認看板上的 Issue 清單與排序是否正確 | 最終確認 |
 
 ### 5.4 Issue 格式規範
 
@@ -261,6 +309,9 @@ sequenceDiagram
 ```markdown
 ## 任務描述
 [具體要實作的功能或工作內容]
+
+## 任務編號
+[對應 Dev Plan 中的任務編號，如 T-101]
 
 ## 產出文件
 - [ ] [文件 1]（如適用）
@@ -279,7 +330,7 @@ sequenceDiagram
 - 前置任務：#[Issue 編號]（如適用）
 
 ## 標籤
-- 優先級：P0 / P1 / P2
+- 優先級：P0 / P1 / P2 / P3
 - 里程碑：M1 / M2 / M3 / M4
 - 類型：feature / infra / security / test
 ```
@@ -287,7 +338,7 @@ sequenceDiagram
 ### 5.5 完成條件
 
 - [ ] Dev Plan 中的所有任務皆已轉為 GitHub Issues
-- [ ] 每個 Issue 皆有完整的驗收標準與標籤
+- [ ] 每個 Issue 皆有完整的驗收標準、任務編號與標籤
 - [ ] Projects 看板已正確顯示所有 Issues
 
 ---
@@ -302,6 +353,13 @@ sequenceDiagram
 
 - Phase 2 所有完成條件已達成
 - Projects 看板中有狀態為 `Todo` 的 Issue
+- 以下規格文件可供參考：
+  - `/docs/01-1-PRD.md`（產品需求，前端頁面與流程參考）
+  - `/docs/01-2-SRD.md`（技術規範）
+  - `/docs/01-3-API_Spec.md`（API 規格）
+  - `/docs/API_Spec.yaml`（OpenAPI 合約）
+
+> **Sub Agent 情境**：若 Dev Plan 的角色定義中指定了 Sub Agent 角色（如 `A-Backend`、`A-Frontend`），AI 助手應識別當前任務對應的角色範圍，僅操作該角色負責的目錄與檔案。
 
 ### 6.3 操作步驟
 
@@ -442,10 +500,11 @@ Closes #N
 
 | 階段 | 場景 | 執行者 → AI 的提示詞 |
 |------|------|----------------------|
-| Phase 1 | 規格審查 | `"交叉比對 /docs 下的 01-1-PRD、01-2-SRD、01-3-API_Spec、02-Dev_Plan，列出不一致或遺漏的項目。"` |
-| Phase 2 | 計畫審核 | `"讀取 docs/02-Dev_Plan.md，確認是否涵蓋 SRD 中的安全實作與非功能性需求。"` |
-| Phase 2 | 建立 Issues | `"根據 02-Dev_Plan.md 的 M1 里程碑，建立 GitHub Issues，包含驗收標準、優先級與標籤。"` |
-| Phase 3 | 功能開發 | `"讀取 Issue #N，參考 01-2-SRD 技術規範與 01-3-API_Spec，在 feature 分支上實作。"` |
+| Phase 1 | 撰寫規格 | `"我要開發 [專案簡述]，請幫我撰寫 PRD。"` |
+| Phase 1 | 規格審查 | `"交叉比對 /docs 下的所有規格文件，產出完整性審查報告至 03-Docs_Review_Report.md。"` |
+| Phase 2 | 建立 Issues | `"P1 審查報告已通過，請根據 02-Dev_Plan.md 的 M1 里程碑建立 GitHub Issues，包含任務編號、驗收標準、優先級與標籤。"` |
+| Phase 2 | 指定里程碑 | `"先只建 Milestone 1 的 Issues，M2 之後等 M1 完成再說。"` |
+| Phase 3 | 功能開發 | `"讀取 Issue #N，參考 01-1-PRD、01-2-SRD、01-3-API_Spec，在 feature 分支上實作。"` |
 | Phase 4 | 建立 PR | `"推送程式碼，建立 PR 並關聯 Issue #N，撰寫變更摘要。"` |
 | Phase 4 | CI 修正 | `"讀取 CI 失敗報告，修正錯誤後推送新 commit。"` |
 | Phase 5 | 回饋處理 | `"根據以下回饋更新 01-1-PRD，並在 02-Dev_Plan 中新增對應任務。"` |
@@ -461,3 +520,4 @@ Closes #N
 | API Spec (說明) | `/docs/01-3-API_Spec.md` | 開發者 | Phase 1 建立、介面變更時更新 |
 | API Spec (合約) | `/docs/API_Spec.yaml` | 開發者 | Phase 1 建立、介面變更時更新 |
 | Dev Plan | `/docs/02-Dev_Plan.md` | 開發者建立、AI 更新狀態 | Phase 1 建立、Phase 4 標記完成、Phase 5 新增任務 |
+| 規格審查報告 | `/docs/03-Docs_Review_Report.md` | AI 產出、開發者審閱 | Phase 1 交叉比對後產出、規格修正後重新審查 |
