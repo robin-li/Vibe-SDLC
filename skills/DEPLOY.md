@@ -9,7 +9,15 @@ skills/
 │   └── skill.md                     ← 總覽與導航
 ├── vibe-sdlc-p1-spec/
 │   ├── skill.md                     ← Phase 1：定義規格文件與計畫
-│   └── examples/docs/               ← 規格文件範例（PRD、SRD、API Spec、Dev Plan 等）
+│   └── examples/docs/               ← 規格文件範例
+│       ├── 01-1-PRD.md              ← 產品需求文件範例
+│       ├── 01-2-SRD.md              ← 系統需求文件範例
+│       ├── 01-3-API_Spec.md         ← API 介面規格範例
+│       ├── 01-4-UI_UX_Design.md     ← UI/UX 設計文件範例
+│       ├── 02-Dev_Plan.md           ← 開發計畫範例
+│       ├── 03-Docs_Review_Report.md ← 規格審查報告範例
+│       ├── 04-CI_CD_Spec.md         ← CI/CD 規格文件範例
+│       └── API_Spec.yaml            ← OpenAPI 合約範例
 ├── vibe-sdlc-p2-issues/
 │   └── skill.md                     ← Phase 2：任務掛載
 ├── vibe-sdlc-p3-dev/
@@ -80,13 +88,13 @@ git commit -m "Add Vibe-SDLC skills for AI-assisted development workflow"
 /vibe-sdlc
 ```
 
-若看到流程總覽與 Phase 導航，表示部署成功。
+若看到進度儀表板與 Phase 導航，表示部署成功。
 
 ## 使用方式
 
 | 指令 | 用途 |
 |------|------|
-| `/vibe-sdlc` | 查看流程總覽，判斷目前該進入哪個 Phase |
+| `/vibe-sdlc` | 產出進度儀表板（里程碑進度、待審 PR、待驗證 Issue），自動判斷當前 Phase |
 | `/vibe-sdlc-p1-spec` | 撰寫或審查規格文件 |
 | `/vibe-sdlc-p2-issues` | 審核 Dev Plan → 建立 GitHub Issues |
 | `/vibe-sdlc-p3-dev` | 領取 Issue → 開發 → 測試 → Vibe Check |
