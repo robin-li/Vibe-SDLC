@@ -1,6 +1,6 @@
 # Vibe-SDLC：AI 輔助軟體開發生命週期標準作業程序
 
-> **版本**：v7.0 ｜ **最後更新**：2026-03-16
+> **版本**：v8.0 ｜ **最後更新**：2026-03-18
 
 ---
 
@@ -43,7 +43,8 @@
 | 類別 | 代號 | 名稱 | 說明 |
 |------|------|------|------|
 | 🧑 人類 | H-Director | 導演 | 最高決策、規格審查、Milestone 驗收、PR 合併 |
-| 🧑 人類 | H-Reviewer | 審查員 | 特定領域審查（UX/安全），可由 Director 兼任 |
+| 🧑 人類 | H-Reviewer | 審查員 | 特定領域審查（安全/合規性），可由 Director 兼任 |
+| 🧑 人類 | H-UxReviewer | UX 審查員 | UX 相關審查（視覺效果、互動體驗、裝置相容性），可由 Director 兼任 |
 | 🤖 AI | A-Main | 主代理 | 統籌拆解 Issue、協調 Sub Agents、整合驗證 |
 | 🤖 AI | A-Backend | 後端子代理 | 專注後端 API、DB、ORM |
 | 🤖 AI | A-Frontend | 前端子代理 | 專注 UI 組件、頁面、狀態管理 |
@@ -96,7 +97,7 @@ sequenceDiagram
     GH-->>Dev: 看板就緒通知
     Dev->>Dev: 確認 Issue 清單與排序
 
-    Note over Dev, GH: 【Phase 3：開發循環】（每個 Issue 重複）
+    Note over Dev, GH: 【Phase 3：開發循環 + 自動建 PR】（每個 Issue 重複）
 
     Dev->>AI: 指派 Issue #N
     AI->>AI: 讀取 Issue 內容與相關規格
@@ -106,17 +107,17 @@ sequenceDiagram
     AI-->>Dev: 報告 Vibe Check 結果
 
     alt Vibe Check 通過
-        Dev->>Dev: 核准，進入 Phase 4
+        Dev->>AI: 核准
+        AI->>GH: 自動推送分支 + 建立 PR（含 Closes #N）
+        AI-->>Dev: 回報 PR 連結
     else Vibe Check 未通過
         Dev->>AI: 指出問題，要求修正
         AI->>AI: 修正程式碼與測試
         AI-->>Dev: 重新報告 Vibe Check 結果
     end
 
-    Note over Dev, GH: 【Phase 4：自動化驗證與合併】
+    Note over Dev, GH: 【Phase 4：CI 監控與合併後作業】
 
-    Dev->>AI: 指示推送程式碼並建立 PR
-    AI->>GH: git push 並建立 PR（含變更摘要、Closes #N）
     activate GH
     GH->>GH: Actions 執行 CI（合約測試、安全掃描、效能壓測）
     GH-->>Dev: CI 結果報告
@@ -134,6 +135,7 @@ sequenceDiagram
     end
 
     AI->>GH: 更新 02-Dev_Plan.md 標記任務完成
+    AI-->>Dev: 提醒手動驗證 Issues（如有）
 
     Note over Dev, GH: 【Phase 5：交付與迭代】
 
@@ -168,8 +170,10 @@ sequenceDiagram
 | 系統需求文件 (SRD) | `01-2-SRD.md` | `/docs/01-2-SRD.md` | 偏重技術棧、框架以及系統安全性與效能要求 |
 | API 介面規格 | `01-3-API_Spec.md` | `/docs/01-3-API_Spec.md` | API 規格說明 |
 | API 介面合約 | `API_Spec.yaml` | `/docs/API_Spec.yaml` | OpenAPI 規格 |
+| UI/UX 設計文件 | `01-4-UI_UX_Design.md` | `/docs/01-4-UI_UX_Design.md` | 視覺與互動設計規格（如適用） |
 | 開發執行計畫 | `02-Dev_Plan.md` | `/docs/02-Dev_Plan.md` | 里程碑、任務拆解、角色定義、依賴關係 |
 | 規格審查報告 | `03-Docs_Review_Report.md` | `/docs/03-Docs_Review_Report.md` | 交叉比對結果、不一致與遺漏項目 |
+| CI/CD 規格文件（選用） | `04-CI_CD_Spec.md` | `/docs/04-CI_CD_Spec.md` | CI Workflow 定義、品質閘門、Docker 部署配置（複雜專案建議獨立） |
 
 **重要**：
 - 每項規格都應賦予**規格編號**以利後續追蹤與討論。
@@ -213,12 +217,17 @@ sequenceDiagram
 #### 任務總覽表格格式
 
 ```markdown
-| ID    | 任務名稱   | 優先級 | 負責角色  | 預估耗時        |
-|-------|-----------|-------|----------|----------------|
-| T-101 | [任務名稱] | P0    | A-Backend | ~N AI Sessions |
-| ⛳ M1 | M1 驗收門 | P0    | H-Director | ~N HRH        |
+| ID | 任務名稱 | 優先級 | 負責角色 | 前置任務 | PR 策略 | 預估耗時 |
+|----|---------|-------|---------|---------|--------|----------|
+| T-101 | [任務名稱] | P0 | A-Backend | — | 與 T-102 合併 | ~N AI Sessions |
+| T-102 | [任務名稱] | P0 | A-Backend | — | 與 T-101 合併 | ~N AI Sessions |
+| T-103 | [任務名稱] | P0 | A-Frontend | — | 獨立 PR | ~N AI Sessions |
+| T-104 | [任務名稱] | P0 | A-DevOps | T-102, T-103 | 獨立 PR | ~N AI Sessions |
+| ⛳ M1 | M1 驗收門 | P0 | H-Director | T-103, T-104 | — | ~N HRH |
 ```
 
+- **前置任務**：直接在總覽表中列出依賴關係，使依賴鏈一目了然。若無前置任務填 `—`。
+- **PR 策略**：同一 Agent 的多個無依賴任務應合併為一個 PR（如「與 T-102 合併」），其餘填「獨立 PR」。驗收門填 `—`。
 - **預估耗時**：AI 角色用 `AI Sessions`（一次完整 Agent 對話執行）；人類角色用 `HRH`（Human Review Hours）。
 - **優先級**：`P0` 關鍵路徑必須完成｜`P1` 重要但非阻塞｜`P2` 建議完成（時間允許）｜`P3` 可選（有加分效果）
 
@@ -226,19 +235,45 @@ sequenceDiagram
 
 ```markdown
 **T-{ID}：{任務名稱}**
-- **任務描述**：詳細描述該任務的目標與步驟
-- **前置任務**：前置任務 ID，若無填 `(無)`
-- **輸入**：依賴或參考的文件，若無填 `(無)`
-- **產出**：此任務的輸出文件或源碼，若無填 `(無)`
-- **驗證**：如何驗證此任務已正確完成
+- **任務描述**：概述該任務的目標
+- **主要步驟**：
+  1. 步驟一：具體操作描述
+  2. 步驟二：具體操作描述
+- **前置任務**：前置任務 ID，若無填 `（無）`
+- **輸入**：依賴或參考的文件，若無填 `（無）`
+- **產出**：此任務的輸出/產出文件或源碼，若無填 `（無）`
+- **驗證**：
+  - ✅ 自動：可在 CI 中自動執行的驗證（單元測試、lint、type check、build）
+  - 👁️ 手動：需人工操作的驗證（視覺效果、裝置測試、外部 API 整合）
 - **優先級**：P0 / P1 / P2 / P3
 ```
+
+> **驗證分類**：每個驗證條件必須標記為 `✅ 自動` 或 `👁️ 手動`，明確區分 CI 可執行與需人工操作的項目。
 
 #### 並行與依賴規則
 
 - 使用「**並行群組 (G)**」標記可同時執行的任務，同一群組內可由不同 Sub Agents 同時開發
+- 同一並行群組內，同一 Agent 的多個任務在 Agent 內部為**依序執行**，但與其他 Agent 的任務仍為跨 Agent 並行
 - 群組之間依序進行，以 ⛳ **驗收門 (Human Gate)** 作為分界
 - 使用 Mermaid `flowchart` 的 fork/join 語法視覺化並行關係
+
+#### Dev Plan 常見錯誤防範
+
+- **CI/CD 時序原則**：CI Workflow 必須在 M1 建立，正確依賴鏈為 `骨架任務 → CI 任務 → 功能開發任務`
+- **Bootstrap PR 規則**：CI 建立前的初始化 PR 由 H-Director 直接審查合併，不經過 CI 閘門
+- **手動驗證任務**：`👁️ 手動` 驗證項應建立獨立 Issue，指派給對應審查角色（H-UxReviewer / H-Reviewer / H-Director）
+- **任務拆分原則**：功能性質不同的工作不應合併為同一任務
+
+#### Git 協作策略 (Multi Sub Agent)
+
+當多個 Sub Agents 並行開發時，Dev Plan 應包含：
+
+- **Worktree 使用**：每個 Sub Agent 使用獨立的 Git Worktree，避免 checkout 切換衝突
+- **分支命名**：`feat/<agent>/<issue-N>-<簡述>`（如 `feat/backend/issue-12-auth-api`）
+- **Bootstrap 階段**：CI 建立前的 PR 由 H-Director 直接審查，不經 CI 閘門
+- **雙層 PR 審查**：Sub Agent PR → CI → A-Main 初審（範圍確認）→ H-Director 終審 & Merge
+- **PR 範圍限制**：Sub Agent 僅修改負責目錄內的檔案
+- **合併衝突**：由 A-Main 負責 rebase 解決
 
 #### 繪圖規範
 
@@ -289,7 +324,6 @@ sequenceDiagram
 ### 5.2 前置條件
 
 - Phase 1 所有完成條件已達成（含 `03-Docs_Review_Report.md` 無未解決項目）
-- GitHub Projects 看板已建立
 - `/docs` 目錄下所有規格文件（含 `API_Spec.yaml` 等）皆已提交
 
 ### 5.3 操作步驟
@@ -297,14 +331,30 @@ sequenceDiagram
 | 步驟 | 執行者 | 操作 | 產出 |
 |------|--------|------|------|
 | 1 | **AI 助手** | 確認 P1 審查報告（`03-Docs_Review_Report.md`）通過，無未解決的遺漏項目 | 確認結果 |
-| 2 | **開發者** | 指示 AI 按里程碑建立 Issues | — |
-| 3 | **AI 助手** | 依 Dev Plan 逐一建立 GitHub Issues，每個 Issue 包含：標題、描述、任務編號、優先級標籤、里程碑標籤、依賴關係說明 | GitHub Issues |
-| 4 | **GitHub** | 自動將 Issues 同步至 Projects 看板 | 看板就緒 |
-| 5 | **開發者** | 確認看板上的 Issue 清單與排序是否正確 | 最終確認 |
+| 2 | **AI 助手** | 確認 `gh` CLI 已認證，詢問 GitHub repo 名稱與 H-Director 的 GitHub username | 基本資訊 |
+| 3 | **開發者** | 指示 AI 按里程碑建立 Issues（或全部） | — |
+| 4 | **AI 助手** | 建立所需的 Labels（優先級、里程碑、類型、角色、審查類型）與 Milestones | Labels + Milestones |
+| 5 | **AI 助手** | 依 Dev Plan 逐一建立 GitHub Issues（開發任務） | GitHub Issues（開發） |
+| 6 | **AI 助手** | 掃描所有任務的 `👁️ 手動` 驗證項，為每個手動驗證項建立獨立的驗證 Issue | GitHub Issues（驗證） |
+| 7 | **AI 助手** | Issues 全部建立完成後，主動詢問開發者是否建立 GitHub Project 看板 | — |
+| 8 | **AI 助手** | 若同意，建立 Project → 加入 Issues → **連結至 Repo**（`gh project link`） | Project 看板就緒 |
+| 9 | **開發者** | 前往 Repo 的 Projects tab 確認看板上的 Issue 清單與排序 | 最終確認 |
 
-### 5.4 Issue 格式規範
+### 5.4 Labels 與 Milestones 規範
 
-每個 Issue 應包含以下欄位：
+建立 Issues 前必須先建立：
+
+| 類別 | 標籤 | 說明 |
+|------|------|------|
+| 優先級 | `P0` / `P1` / `P2` / `P3` | 對應任務優先級 |
+| 里程碑 | `M1` ~ `M4` | 對應 Dev Plan 里程碑 |
+| 類型 | `feature` / `infra` / `security` / `test` / `verification` / `gate` | 任務類型 |
+| 角色 | `A-Backend` / `A-Frontend` / `A-DevOps` / `A-QA` / `A-Main` / `H-Director` | Dev Plan 中定義的角色 |
+| 審查類型 | `ux-review` / `review` / `acceptance` | 手動驗證 Issue 專用 |
+
+### 5.5 Issue 格式規範
+
+每個開發任務 Issue 應包含以下欄位：
 
 ```markdown
 ## 任務描述
@@ -312,6 +362,9 @@ sequenceDiagram
 
 ## 任務編號
 [對應 Dev Plan 中的任務編號，如 T-101]
+
+## 主要步驟
+[從 Dev Plan 複製該任務的主要步驟，確保資訊完整]
 
 ## 產出文件
 - [ ] [文件 1]（如適用）
@@ -333,13 +386,37 @@ sequenceDiagram
 - 優先級：P0 / P1 / P2 / P3
 - 里程碑：M1 / M2 / M3 / M4
 - 類型：feature / infra / security / test
+- 負責角色：A-Backend / A-Frontend / A-DevOps / A-QA / A-Main
+
+## PR 策略
+[獨立 PR / 與 T-XXX 合併為一個 PR / 無 PR（Review 任務）]
 ```
 
-### 5.5 完成條件
+### 5.6 手動驗證 Issue 格式
 
-- [ ] Dev Plan 中的所有任務皆已轉為 GitHub Issues
+當任務包含 `👁️ 手動` 驗證項時，每個手動驗證項應建立獨立 Issue：
+
+- **標題格式**：`[驗證] T-{ID} {驗證項目簡述}`
+- **指派規則**：視覺/互動 → H-UxReviewer；安全/合規 → H-Reviewer；端到端驗收 → H-Director
+- **前置任務**：對應的開發任務 Issue（功能完成後才能驗證）
+
+### 5.7 Issue 生命週期與關閉規範
+
+| Issue 類型 | 關閉方式 | 關閉者 |
+|-----------|---------|--------|
+| 開發任務 | PR 合併時自動關閉（`Closes #N`） | GitHub 自動 |
+| 手動驗證 | 審查者完成驗證後手動關閉，需附驗證結果 comment | H-Reviewer / H-UxReviewer / H-Director |
+| 驗收門（⛳） | H-Director 驗收通過後手動關閉 | H-Director |
+| 取消/延期 | 附說明原因後手動關閉，加上 `wontfix` 或 `deferred` 標籤 | H-Director |
+
+### 5.8 完成條件
+
+- [ ] 所需 Labels 與 Milestones 皆已建立
+- [ ] Dev Plan 中的所有開發任務皆已轉為 GitHub Issues
+- [ ] 所有 `👁️ 手動` 驗證項皆已建立獨立的驗證 Issues
 - [ ] 每個 Issue 皆有完整的驗收標準、任務編號與標籤
-- [ ] Projects 看板已正確顯示所有 Issues
+- [ ] GitHub Project 已建立並連結至 Repo
+- [ ] 所有 Issues 已加入 Project 看板
 
 ---
 
@@ -347,7 +424,7 @@ sequenceDiagram
 
 ### 6.1 目的
 
-按 Issue 順序逐一完成開發，確保每個任務皆通過本地驗證後才進入審核流程。
+按 Issue 順序逐一完成開發，Vibe Check 通過後**自動建立 PR** 進入審核流程。
 
 ### 6.2 前置條件
 
@@ -358,24 +435,37 @@ sequenceDiagram
   - `/docs/01-2-SRD.md`（技術規範）
   - `/docs/01-3-API_Spec.md`（API 規格）
   - `/docs/API_Spec.yaml`（OpenAPI 合約）
+  - `/docs/01-4-UI_UX_Design.md`（UI/UX 規格）
 
-> **Sub Agent 情境**：若 Dev Plan 的角色定義中指定了 Sub Agent 角色（如 `A-Backend`、`A-Frontend`），AI 助手應識別當前任務對應的角色範圍，僅操作該角色負責的目錄與檔案。
+### 6.3 Sub Agent 情境
 
-### 6.3 操作步驟
+若 Dev Plan 的角色定義中指定了 Sub Agent 角色（如 `A-Backend`、`A-Frontend`），請遵守：
+
+1. **獨立 session**：每個 Sub Agent 在獨立的 Claude Code terminal session 中執行
+2. **Worktree 對應**：啟動前先切換至對應的 Git Worktree 目錄（`../worktree-<agent>`）
+3. **最小 context 原則**：僅讀取完成任務所需的規格文件
+4. **跨代理溝通**：透過 GitHub Issue Comments 與 PR Comments 與 A-Main 溝通
+5. **操作範圍**：僅操作該角色負責的目錄與檔案
+
+### 6.4 操作步驟
 
 | 步驟 | 執行者 | 操作 | 產出 |
 |------|--------|------|------|
 | 1 | **開發者** | 從看板 `Todo` 欄位挑選最高優先級 Issue，指派給 AI | — |
-| 2 | **AI 助手** | 讀取 Issue 內容，確認理解任務範圍與驗收標準 | 任務確認 |
-| 3 | **AI 助手** | 從 `main` 建立 feature 分支（命名：`feature/issue-N-簡述`） | feature 分支 |
+| 2 | **AI 助手** | 讀取 Issue 內容，確認理解任務範圍與驗收標準；移至 `In Progress` | 任務確認 |
+| 3 | **AI 助手** | 從 `main` 建立 feature 分支（命名：`feat/<agent>/issue-N-簡述`） | feature 分支 |
 | 4 | **AI 助手** | 參考 SRD 技術規範與 API Spec，實作功能程式碼 | 功能程式碼 |
 | 5 | **AI 助手** | 撰寫對應的單元測試 | 測試程式碼 |
 | 6 | **AI 助手** | 執行本地測試，確認全部通過 | 測試結果 |
-| 7 | **AI 助手** | 向開發者報告本地驗證結果（Vibe Check） | 驗證報告 |
-| 8 | **開發者** | 審閱 Vibe Check 結果，決定是否進入 Phase 4 | 核准 / 駁回 |
+| 7 | **AI 助手** | 向開發者報告本地驗證結果（Vibe Check），含 PR 預覽 | 驗證報告 |
+| 8 | **開發者** | 審閱 Vibe Check 結果，核准或駁回 | 核准 / 駁回 |
 | — | *若駁回* | **開發者**指出問題，回到步驟 4 修正 | — |
+| 9 | **AI 助手** | 核准後自動：推送分支 → 建立 PR（含 `Closes #N`） → 回報 PR 連結 | Pull Request |
+| 10 | **AI 助手** | 提醒開發者進行 Code Review，或等待 CI 結果 | — |
 
-### 6.4 循序圖
+> **關鍵設計**：Vibe Check 通過後，AI 自動完成「推送 + 建 PR」，無需額外呼叫 Phase 4。Phase 4 僅在需要處理 CI 失敗或 Merge 後作業時使用。
+
+### 6.5 循序圖
 
 ```mermaid
 sequenceDiagram
@@ -392,7 +482,9 @@ sequenceDiagram
     AI-->>Dev: 報告 Vibe Check 結果
 
     alt 驗證通過
-        Dev->>AI: 核准，進入 Phase 4
+        Dev->>AI: 核准
+        AI->>GH: 自動推送分支 + 建立 PR（含 Closes #N）
+        AI-->>Dev: 回報 PR 連結
     else 驗證未通過
         Dev->>AI: 指出問題，要求修正
         AI->>AI: 修正程式碼與測試
@@ -400,44 +492,40 @@ sequenceDiagram
     end
 ```
 
-> 已渲染至 images/sequence.png
-
-
-### 6.5 完成條件
+### 6.6 完成條件
 
 - [ ] 功能程式碼已完成且符合 SRD 規範
 - [ ] 單元測試全部通過
 - [ ] 開發者已核准 Vibe Check 結果
+- [ ] PR 已建立並回報連結
 
 ---
 
-## 7. Phase 4：自動化驗證與合併 (CI/CD Gates)
+## 7. Phase 4：CI 監控與合併後作業 (CI/CD Gates)
 
 ### 7.1 目的
 
-透過自動化測試與人工審閱雙重門檻，確保合併至 `main` 的程式碼符合品質標準。
+監控 PR 的 CI 結果，處理失敗修正，並在合併後執行 Dev Plan 更新與驗證提醒。
+
+> **注意**：PR 的建立已在 Phase 3 中自動完成。Phase 4 聚焦於 CI 監控、失敗修正與合併後作業。
 
 ### 7.2 前置條件
 
-- Phase 3 所有完成條件已達成（Vibe Check 通過）
+- Phase 3 已完成，PR 已建立（由 Phase 3 自動推送與建立）
+- PR 正在等待 CI 結果或開發者 Code Review
 
 ### 7.3 操作步驟
 
 | 步驟 | 執行者 | 操作 | 產出 |
 |------|--------|------|------|
-| 1 | **開發者** | 指示 AI 推送程式碼並建立 PR | — |
-| 2 | **AI 助手** | 執行 `git push`，建立 Pull Request，內容包含：變更摘要、關聯 Issue（`Closes #N`）、測試結果 | Pull Request |
-| 3 | **GitHub** | 自動觸發 Actions，執行以下檢查： | CI 報告 |
-|   |          | — 合約測試（API 規格一致性） | |
-|   |          | — 安全性掃描（依賴漏洞、OWASP） | |
-|   |          | — 效能壓測（回應時間、吞吐量） | |
-| 4a | *CI 通過* | **開發者**進行 Code Review，審閱程式碼邏輯 | Review 意見 |
-| 4b | *CI 失敗* | **開發者**將 CI 報告轉交 AI，回到步驟修正 ↓ | — |
-| 5b | *CI 失敗* | **AI 助手**根據 CI 錯誤報告修正程式碼，推送新 commit | 修正 commit |
-|    |           | → 回到步驟 3，GitHub 重新執行 CI | — |
-| 5a | *Review 通過* | **開發者**點擊 Merge，合併至 `main` | Merge commit |
-| 6 | **GitHub** | 觸發 CD pipeline（如已配置） | 部署 |
-| 7 | **AI 助手** | 將 `02-Dev_Plan.md` 中對應任務標記為 `[x] Completed` | Dev Plan 更新 |
+| 1 | **AI 助手** | 使用 `gh pr checks` 監控 CI 結果 | CI 狀態報告 |
+| 2a | *CI 通過* | **AI 助手** 通知開發者可進行 Code Review | — |
+| 2b | *CI 失敗* | **AI 助手** 讀取失敗報告，分析原因，修正程式碼，推送新 commit | 修正 commit |
+|    |           | → 回到步驟 1，GitHub 重新執行 CI | — |
+| 3 | **開發者** | Code Review，核准後點擊 Merge | Merge commit |
+| 4 | **GitHub** | 觸發 CD pipeline（如已配置） | 部署 |
+| 5 | **AI 助手** | 將 `02-Dev_Plan.md` 中對應任務標記為 `[x] Completed` | Dev Plan 更新 |
+| 6 | **AI 助手** | 提醒開發者：若該任務有對應的手動驗證 Issues，現在可交由審查角色開始驗證 | 驗證提醒 |
 
 ### 7.4 PR (Pull Request / Merge Request) 格式規範
 
@@ -474,8 +562,9 @@ Closes #N
 
 ### 8.2 前置條件
 
-- 當前里程碑的所有 Issue 皆已合併
-- Dev Plan 中對應里程碑的任務皆標記為完成
+- 當前里程碑的所有**開發任務 Issues** 皆已合併（PR `Closes #N` 自動關閉）
+- 當前里程碑的所有**手動驗證 Issues**（標籤 `verification`）皆已由審查角色關閉（附驗證結果 comment）
+- `02-Dev_Plan.md` 中對應里程碑的任務皆標記為完成
 
 ### 8.3 操作步驟
 
@@ -504,9 +593,10 @@ Closes #N
 | Phase 1 | 規格審查 | `"交叉比對 /docs 下的所有規格文件，產出完整性審查報告至 03-Docs_Review_Report.md。"` |
 | Phase 2 | 建立 Issues | `"P1 審查報告已通過，請根據 02-Dev_Plan.md 的 M1 里程碑建立 GitHub Issues，包含任務編號、驗收標準、優先級與標籤。"` |
 | Phase 2 | 指定里程碑 | `"先只建 Milestone 1 的 Issues，M2 之後等 M1 完成再說。"` |
-| Phase 3 | 功能開發 | `"讀取 Issue #N，參考 01-1-PRD、01-2-SRD、01-3-API_Spec，在 feature 分支上實作。"` |
-| Phase 4 | 建立 PR | `"推送程式碼，建立 PR 並關聯 Issue #N，撰寫變更摘要。"` |
-| Phase 4 | CI 修正 | `"讀取 CI 失敗報告，修正錯誤後推送新 commit。"` |
+| Phase 3 | 功能開發 | `"請處理 Issue #N，實作使用者註冊 API。"` |
+| Phase 3 | 核准建 PR | `"LGTM，核准。"`（AI 自動推送分支並建立 PR） |
+| Phase 4 | CI 修正 | `"CI 掛了，這是錯誤報告：[貼上 CI 錯誤訊息]，請分析原因並修正。"` |
+| Phase 4 | 合併後更新 | `"PR 已 merge，請更新 Dev Plan 的任務狀態。"` |
 | Phase 5 | 回饋處理 | `"根據以下回饋更新 01-1-PRD，並在 02-Dev_Plan 中新增對應任務。"` |
 
 ---
@@ -519,5 +609,7 @@ Closes #N
 | SRD | `/docs/01-2-SRD.md` | 開發者 | Phase 1 建立、需求變更時更新 |
 | API Spec (說明) | `/docs/01-3-API_Spec.md` | 開發者 | Phase 1 建立、介面變更時更新 |
 | API Spec (合約) | `/docs/API_Spec.yaml` | 開發者 | Phase 1 建立、介面變更時更新 |
+| UI/UX 設計 | `/docs/01-4-UI_UX_Design.md` | 開發者 | Phase 1 建立（如適用）、UI 變更時更新 |
 | Dev Plan | `/docs/02-Dev_Plan.md` | 開發者建立、AI 更新狀態 | Phase 1 建立、Phase 4 標記完成、Phase 5 新增任務 |
 | 規格審查報告 | `/docs/03-Docs_Review_Report.md` | AI 產出、開發者審閱 | Phase 1 交叉比對後產出、規格修正後重新審查 |
+| CI/CD 規格 | `/docs/04-CI_CD_Spec.md` | 開發者 | Phase 1 建立（選用，複雜專案建議獨立） |
