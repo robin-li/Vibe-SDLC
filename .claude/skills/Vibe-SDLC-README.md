@@ -84,7 +84,8 @@ Vibe-SDLC Skills 是一組可直接在 [Claude Code](https://claude.ai/code) 中
 
 按 Issue 逐一完成開發，Vibe Check 通過後**自動建立 PR**。
 
-- **AI 職責**：讀取 Issue → 建立 feature 分支 → 參考 SRD / API Spec 實作 → 撰寫測試 → 報告 Vibe Check → **核准後自動推送分支並建立 PR**
+- **AI 職責**：同步工作目錄 → 讀取 Issue → 建立 feature 分支 → 參考 SRD / API Spec 實作 → 撰寫測試 → 報告 Vibe Check → **核准後自動推送分支並建立 PR**
+- **工作目錄同步**：每次領取新 Issue 前，必須先 `git fetch origin` → 處理未提交變更 → `git rebase origin/main`，確保 feature 分支基於最新 main
 - **分支命名**：`feat/<agent>/issue-N-簡述`
 - **PR 自動建立**：Vibe Check 通過且開發者核准後，AI 自動推送分支、建立 PR（含 `Closes #N`）、回報 PR 連結，無需額外呼叫 `/vibe-sdlc-p4-pr`
 - **Sub Agent 情境**：每個 Sub Agent 獨立 session、獨立 Worktree、最小 context 原則（僅讀取任務所需規格）、跨代理透過 GitHub Comments 溝通、操作範圍限於負責目錄
@@ -96,7 +97,7 @@ Vibe-SDLC Skills 是一組可直接在 [Claude Code](https://claude.ai/code) 中
 
 > **注意**：PR 的建立已在 Phase 3 中自動完成。Phase 4 僅在需要處理 CI 失敗或 Merge 後作業時使用。
 
-- **AI 職責**：監控 CI 結果、CI 失敗時修正程式碼並重新提交、Merge 後更新 Dev Plan、提醒手動驗證
+- **AI 職責**：監控 CI 結果、CI 失敗時修正程式碼並重新提交、Merge 後同步工作目錄並更新 Dev Plan、提醒手動驗證
 - **Multi Sub Agent 雙層審查**：Sub Agent 提交 PR → GitHub CI 自動檢查 → A-Main 初審（確認 PR 範圍僅限負責目錄）→ H-Director 終審 & Merge；合併衝突由 A-Main 負責 rebase 解決
 - **手動驗證提醒**：Merge 後若該任務有對應的 `verification` Issue，提醒開發者通知審查角色開始驗證
 - **完成條件**：CI 綠燈、Code Review 核准、PR 合併、Dev Plan 更新
