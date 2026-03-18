@@ -35,7 +35,8 @@
 | 任務建立 | 根據 Dev Plan 自動建立 GitHub Issues，並建立 Project 看板 |
 | 程式開發 | 在 feature 分支上實作程式碼，遵循 SRD 技術規範 |
 | 測試生成 | 撰寫並執行單元測試，確保本地驗證通過 |
-| PR 管理 | 推送程式碼、建立 PR、撰寫變更摘要、關聯 Issue |
+| 自主排查 | 遇到問題、Bug 或錯誤時，優先自行調查與解決，無法解決時才上報開發者 |
+| PR 管理 | Vibe Check 通過後自動推送分支、建立 PR（含 `Closes #N`）、回報 PR 連結 |
 | 錯誤修正 | 根據 CI 失敗報告修正程式碼並重新提交 |
 
 **角色代號（Role Registry）**：Dev Plan 中以代號標識角色，全文保持一致，支援 Multi Sub-Agent 並行開發。
@@ -99,10 +100,11 @@ sequenceDiagram
 
     Note over Dev, GH: 【Phase 3：開發循環 + 自動建 PR】（每個 Issue 重複）
 
+    AI->>GH: 同步工作目錄（fetch + rebase）
     Dev->>AI: 指派 Issue #N
     AI->>AI: 讀取 Issue 內容與相關規格
     AI->>GH: 從 main 建立 feature 分支
-    AI->>AI: 實作功能程式碼
+    AI->>AI: 實作功能程式碼（遇問題優先自行排查）
     AI->>AI: 撰寫並執行單元測試
     AI-->>Dev: 報告 Vibe Check 結果
 
@@ -134,7 +136,7 @@ sequenceDiagram
         GH-->>Dev: 更新 CI 結果
     end
 
-    AI->>GH: 更新 02-Dev_Plan.md 標記任務完成
+    AI->>GH: 同步工作目錄 + 更新 02-Dev_Plan.md 標記任務完成並推送
     AI-->>Dev: 提醒手動驗證 Issues（如有）
 
     Note over Dev, GH: 【Phase 5：交付與迭代】
@@ -451,17 +453,19 @@ sequenceDiagram
 
 | 步驟 | 執行者 | 操作 | 產出 |
 |------|--------|------|------|
+| 0 | **AI 助手** | 同步工作目錄：`git fetch origin` → 處理未提交變更 → `git rebase origin/main`；檢查是否有已合併的分支與 worktree 需清理（列出清單讓開發者確認後才刪除） | 工作目錄就緒 |
 | 1 | **開發者** | 從看板 `Todo` 欄位挑選最高優先級 Issue，指派給 AI | — |
 | 2 | **AI 助手** | 讀取 Issue 內容，確認理解任務範圍與驗收標準；移至 `In Progress` | 任務確認 |
 | 3 | **AI 助手** | 從 `main` 建立 feature 分支（命名：`feat/<agent>/issue-N-簡述`） | feature 分支 |
-| 4 | **AI 助手** | 參考 SRD 技術規範與 API Spec，實作功能程式碼 | 功能程式碼 |
+| 4 | **AI 助手** | 參考 SRD 技術規範與 API Spec，實作功能程式碼；遇到問題優先自行調查與解決 | 功能程式碼 |
 | 5 | **AI 助手** | 撰寫對應的單元測試 | 測試程式碼 |
-| 6 | **AI 助手** | 執行本地測試，確認全部通過 | 測試結果 |
+| 6 | **AI 助手** | 執行本地測試，確認全部通過；若遇到非本次變更造成的失敗，先自行排查歸因 | 測試結果 |
 | 7 | **AI 助手** | 向開發者報告本地驗證結果（Vibe Check），含 PR 預覽 | 驗證報告 |
 | 8 | **開發者** | 審閱 Vibe Check 結果，核准或駁回 | 核准 / 駁回 |
 | — | *若駁回* | **開發者**指出問題，回到步驟 4 修正 | — |
 | 9 | **AI 助手** | 核准後自動：推送分支 → 建立 PR（含 `Closes #N`） → 回報 PR 連結 | Pull Request |
 | 10 | **AI 助手** | 提醒開發者進行 Code Review，或等待 CI 結果 | — |
+| 11 | **AI 助手** | 若 Issue 屬於 Review 類任務（PR 策略為「無 PR」）：審查 → 發現確定性 bug 直接修正 → 測試 → 建 fix PR → 一併報告 Review 結果與 PR 連結 | Review 報告 + fix PR |
 
 > **關鍵設計**：Vibe Check 通過後，AI 自動完成「推送 + 建 PR」，無需額外呼叫 Phase 4。Phase 4 僅在需要處理 CI 失敗或 Merge 後作業時使用。
 
@@ -492,7 +496,32 @@ sequenceDiagram
     end
 ```
 
-### 6.6 完成條件
+### 6.6 既有測試失敗處理規則
+
+Vibe Check 階段可能遇到「非本次變更造成的測試失敗」。處理方式：
+
+| 情況 | 判斷方式 | 處理 |
+|------|---------|------|
+| **Flaky test** | 重跑測試後通過；或單獨跑該測試檔案通過 | 記錄在 Vibe Check 報告中，不阻擋 PR |
+| **既有 bug** | 失敗的測試與本次修改的檔案無關 | 若修正簡單（< 10 行），一併修正；若複雜，記錄後建議另開 Issue |
+| **本次變更導致** | `git diff` 涉及失敗測試相關的檔案 | 必須修正後才能建立 PR |
+
+> **關鍵原則**：先自行排查（單獨跑失敗測試 → 檢查 `git diff` → 判斷歸因），確認後再決定處理方式，不要遇到失敗就停下來問開發者。
+
+### 6.7 Review 類任務處理流程
+
+部分 Issue 屬於 Review 類任務（如 Prompt Review、Code Review），其 PR 策略為「無 PR」。處理方式：
+
+1. 閱讀待審查的程式碼（如 Prompt 模板、API 實作）
+2. 對照規格文件進行品質審查
+3. **發現確定性 bug**（欄位不一致、邏輯錯誤、安全漏洞）→ **直接修正**，不需停下來詢問
+4. 修正後執行測試（Vibe Check）
+5. Vibe Check 通過 → 自動建立 fix PR
+6. 將 Review 報告發佈至 Issue Comments，並在 Vibe Check 報告中附上 PR 連結
+
+> **設計層面的建議（非 bug）**：標記為「建議改善（非阻擋性）」，由開發者決定是否採納。
+
+### 6.8 完成條件
 
 - [ ] 功能程式碼已完成且符合 SRD 規範
 - [ ] 單元測試全部通過
@@ -513,6 +542,7 @@ sequenceDiagram
 
 - Phase 3 已完成，PR 已建立（由 Phase 3 自動推送與建立）
 - PR 正在等待 CI 結果或開發者 Code Review
+- 若需修正 CI 失敗，建議先同步工作目錄（參見 Phase 3「工作目錄同步」），確保修正基於最新程式碼
 
 ### 7.3 操作步驟
 
@@ -524,8 +554,9 @@ sequenceDiagram
 |    |           | → 回到步驟 1，GitHub 重新執行 CI | — |
 | 3 | **開發者** | Code Review，核准後點擊 Merge | Merge commit |
 | 4 | **GitHub** | 觸發 CD pipeline（如已配置） | 部署 |
-| 5 | **AI 助手** | 將 `02-Dev_Plan.md` 中對應任務標記為 `[x] Completed` | Dev Plan 更新 |
-| 6 | **AI 助手** | 提醒開發者：若該任務有對應的手動驗證 Issues，現在可交由審查角色開始驗證 | 驗證提醒 |
+| 5 | **AI 助手** | **先同步工作目錄**：`git fetch origin && git rebase origin/main`（確保包含剛合併的變更） | 工作目錄同步 |
+| 6 | **AI 助手** | 將 `02-Dev_Plan.md` 中對應任務標記為 `[x] Completed`，提交更新並推送 | Dev Plan 更新 |
+| 7 | **AI 助手** | 提醒開發者：若該任務有對應的手動驗證 Issues，現在可交由審查角色開始驗證 | 驗證提醒 |
 
 ### 7.4 PR (Pull Request / Merge Request) 格式規範
 
