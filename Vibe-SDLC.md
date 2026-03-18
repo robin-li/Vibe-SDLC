@@ -453,7 +453,7 @@ sequenceDiagram
 
 | 步驟 | 執行者 | 操作 | 產出 |
 |------|--------|------|------|
-| 0 | **AI 助手** | 同步工作目錄：`git fetch origin` → 處理未提交變更 → `git rebase origin/main`；檢查是否有已合併的分支與 worktree 需清理（列出清單讓開發者確認後才刪除） | 工作目錄就緒 |
+| 0 | **AI 助手** | 同步工作目錄：`git fetch --prune` → 處理未提交變更 → `git rebase origin/main`；檢查已合併的本地/遠端分支與 worktree（自動排除受保護分支：main/master/develop/dev/testing/staging/uat/release/*），列出清單讓開發者確認後才刪除 | 工作目錄就緒 |
 | 1 | **開發者** | 從看板 `Todo` 欄位挑選最高優先級 Issue，指派給 AI | — |
 | 2 | **AI 助手** | 讀取 Issue 內容，確認理解任務範圍與驗收標準；移至 `In Progress` | 任務確認 |
 | 3 | **AI 助手** | 從 `main` 建立 feature 分支（命名：`feat/<agent>/issue-N-簡述`） | feature 分支 |

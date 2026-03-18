@@ -86,7 +86,7 @@ Vibe-SDLC Skills 是一組可直接在 [Claude Code](https://claude.ai/code) 中
 按 Issue 逐一完成開發，Vibe Check 通過後**自動建立 PR**。
 
 - **AI 職責**：同步工作目錄 → 讀取 Issue → 建立 feature 分支 → 實作 → 撰寫測試 → 遇到問題優先自行調查與解決 → Vibe Check 通過後**立即自動推送並建立 PR** → 彙報結果與 PR 連結
-- **工作目錄同步**：每次領取新 Issue 前，必須先 `git fetch origin` → 處理未提交變更 → `git rebase origin/main`，確保 feature 分支基於最新 main；同步後檢查是否有已合併的分支與 worktree 需要清理（列出清單讓開發者確認後才刪除）
+- **工作目錄同步**：每次領取新 Issue 前，必須先 `git fetch --prune` → 處理未提交變更 → `git rebase origin/main`，確保 feature 分支基於最新 main；同步後檢查是否有已合併的分支與 worktree 需要清理（自動排除受保護分支：main/master/develop/dev/testing/staging/uat/release/*），列出清單讓開發者確認後才刪除
 - **分支命名**：`feat/<agent>/issue-N-簡述`
 - **PR 自動建立**：Vibe Check 通過即自動推送分支、建立 PR（含 `Closes #N`）、回報 PR 連結，**無需等待人類核准**。人類審核集中在 GitHub PR Code Review 環節
 - **Review 類任務**：若 Issue 的 PR 策略為「無 PR（Review 任務）」，則走 Review 流程：審查 → 發現確定性 bug 直接修正 → 測試 → 建 fix PR → 一併報告 Review 結果與 PR 連結。設計層面的建議標記為「非阻擋性」，由開發者決定
