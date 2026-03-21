@@ -31,6 +31,8 @@ Vibe-SDLC 是一個定義 Vibe-Coding 軟體開發生命週期（Software Develo
 1. **人類決策、AI 執行、GitHub 管控**
 2. 所有開發工作皆以 `/docs` 中的規格文件為唯一真相來源
 3. 每個階段有明確的前置條件與完成條件，未達成不得跳過
+4. **規格文件版本化管理**：任何對 `/docs` 規格文件的修改，都必須同步更新該文件的版本號、最後更新日期、版本修訂說明表格，確保修訂軌跡可追溯
+5. **臨時需求即時同步**：開發過程中若有臨時新增需求、Bug 修正導致規格變更、或新增 Issue，應即時回溯修改對應的規格文件與 Dev Plan，而非等到迭代結束才統一更新
 
 ### 流程階段
 
@@ -43,12 +45,31 @@ Vibe-SDLC 是一個定義 Vibe-Coding 軟體開發生命週期（Software Develo
 | 4 | CI 監控與合併後作業 | `/vibe-sdlc-p4-pr` | 監控 CI → 修正失敗 → Merge 後更新 Dev Plan → 手動驗證提醒 |
 | 5 | 交付與迭代 | `/vibe-sdlc-p5-release` | 部署驗收 → 收集回饋 → 更新規格 → 下一輪迭代 |
 
+### Skill 維護規則
+
+1. **`.claude/skills/` 為 skill 的開發主目錄**：所有 skill 的新增與修改都在 `.claude/skills/` 下進行
+2. **同步至 `skills/` 作為發佈資源**：`.claude/skills/` 的變更必須同步複製至 `skills/` 對應目錄，`skills/` 是供外部使用者安裝的發佈來源
+3. **Skill 變更時必須同步更新說明文件**（包含但不限於）：
+
+   | 文件 | 用途 | 同步重點 |
+   |------|------|---------|
+   | `./README.md` | 專案門面，含 Quick Start | Phase 表格、特性摘要、目錄結構 |
+   | `./Vibe-SDLC.md` | 完整 SOP 規範 | 操作步驟、完成條件、角色職責 |
+   | `./skills/README.md` | Skill 詳細介紹與使用範例 | Phase 詳細說明、使用範例 |
+   | `./skills/DEPLOY.md` | 安裝部署說明 | 檔案清單、安裝步驟 |
+   | `./.claude/skills/Vibe-SDLC-README.md` | 與 `skills/README.md` 內容一致 | 全文同步 |
+
+4. **檢查清單**：每次 skill 變更後，確認以上文件中的相關描述（Phase 名稱、步驟編號、完成條件、核心原則等）是否需要連動更新。若不確定，以 `.claude/skills/` 下的 `skill.md` 為權威來源
+
 ### 目錄結構
 
 ```
 Vibe-SDLC/
 ├── CLAUDE.md                           ← 專案指引（本文件）
-├── skills/                             ← Skills 源碼（發佈用）
+├── README.md                           ← 專案門面說明（含 Quick Start）
+├── Vibe-SDLC.md                        ← 完整 SOP 規範文件
+├── install.sh                          ← 一鍵安裝腳本
+├── skills/                             ← Skills 發佈資源（由 .claude/skills/ 同步而來）
 │   ├── README.md                       ← 完整使用說明與範例
 │   ├── DEPLOY.md                       ← 部署方式說明
 │   ├── vibe-sdlc/skill.md             ← 總覽與導航
@@ -57,7 +78,14 @@ Vibe-SDLC/
 │   ├── vibe-sdlc-p3-dev/skill.md      ← Phase 3 skill
 │   ├── vibe-sdlc-p4-pr/skill.md       ← Phase 4 skill
 │   └── vibe-sdlc-p5-release/skill.md  ← Phase 5 skill
-└── .claude/skills/                     ← 本專案部署的 skills（與 skills/ 同步）
+└── .claude/skills/                     ← Skills 開發主目錄（本專案同時使用）
+    ├── Vibe-SDLC-README.md             ← 與 skills/README.md 同步
+    ├── vibe-sdlc/skill.md             ← 總覽與導航
+    ├── vibe-sdlc-p1-spec/             ← Phase 1 skill + examples/docs/
+    ├── vibe-sdlc-p2-issues/skill.md   ← Phase 2 skill
+    ├── vibe-sdlc-p3-dev/skill.md      ← Phase 3 skill
+    ├── vibe-sdlc-p4-pr/skill.md       ← Phase 4 skill
+    └── vibe-sdlc-p5-release/skill.md  ← Phase 5 skill
 ```
 
 ### 規格文件範例

@@ -4,7 +4,10 @@
 
 ```
 skills/
+├── README.md                        ← 完整使用說明與範例
 ├── DEPLOY.md                        ← 本說明文件
+├── local-tunnel/
+│   └── skill.md                     ← 發佈本地服務至公網
 ├── vibe-sdlc/
 │   └── skill.md                     ← 總覽與導航
 ├── vibe-sdlc-p1-spec/
@@ -23,7 +26,7 @@ skills/
 ├── vibe-sdlc-p3-dev/
 │   └── skill.md                     ← Phase 3：開發循環
 ├── vibe-sdlc-p4-pr/
-│   └── skill.md                     ← Phase 4：自動化驗證
+│   └── skill.md                     ← Phase 4：CI 監控與合併後作業
 └── vibe-sdlc-p5-release/
     └── skill.md                     ← Phase 5：交付與迭代
 ```
@@ -47,7 +50,27 @@ user_invocable: true
 ---
 ```
 
-## 部署方式
+## 一鍵安裝（推薦）
+
+在 Vibe-SDLC 專案根目錄下執行安裝腳本：
+
+```bash
+# 互動式安裝（會引導你選擇安裝模式）
+./install.sh
+
+# 或直接指定模式
+./install.sh global                        # 全域安裝，所有專案可用
+./install.sh project /path/to/my-project   # 安裝至指定專案
+./install.sh shared  /path/to/my-project   # 安裝至指定專案並提交 Git
+```
+
+安裝腳本會自動：
+- 檢查來源目錄是否完整
+- 列出即將安裝的 skills 清單
+- 複製 skills 至目標位置（若已存在則更新）
+- 驗證安裝結果
+
+## 手動部署
 
 Claude Code 的 skills 支援三個層級的部署位置，依據你的需求選擇：
 
@@ -64,9 +87,8 @@ cp -r skills/vibe-sdlc* ~/.claude/skills/
 將 skill 子目錄複製到目標專案的 `.claude/skills/` 目錄：
 
 ```bash
-# 在目標專案根目錄下執行
-mkdir -p .claude/skills
-cp -r /path/to/Vibe-SDLC/skills/vibe-sdlc* .claude/skills/
+mkdir -p /path/to/my-project/.claude/skills
+cp -r skills/vibe-sdlc* /path/to/my-project/.claude/skills/
 ```
 
 ### 方式三：共享部署（團隊共用，納入版本控制）
@@ -74,9 +96,10 @@ cp -r /path/to/Vibe-SDLC/skills/vibe-sdlc* .claude/skills/
 將 skill 子目錄放在專案的 `.claude/skills/` 目錄並提交至 Git：
 
 ```bash
-mkdir -p .claude/skills
-cp -r /path/to/Vibe-SDLC/skills/vibe-sdlc* .claude/skills/
-git add .claude/skills/
+mkdir -p /path/to/my-project/.claude/skills
+cp -r skills/vibe-sdlc* /path/to/my-project/.claude/skills/
+cd /path/to/my-project
+git add .claude/skills/vibe-sdlc*/
 git commit -m "Add Vibe-SDLC skills for AI-assisted development workflow"
 ```
 
