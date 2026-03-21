@@ -45,10 +45,12 @@ Vibe-SDLC 是一個定義 Vibe-Coding 軟體開發生命週期（Software Develo
 | 4 | CI 監控與合併後作業 | `/vibe-sdlc-p4-pr` | 監控 CI → 修正失敗 → Merge 後更新 Dev Plan → 手動驗證提醒 |
 | 5 | 交付與迭代 | `/vibe-sdlc-p5-release` | 部署驗收 → 收集回饋 → 更新規格 → 下一輪迭代 |
 
-### Skill 維護規則
+### Skill 維護規則 
 
 1. **`.claude/skills/` 為 skill 的開發主目錄**：所有 skill 的新增與修改都在 `.claude/skills/` 下進行
-2. **同步至 `skills/` 作為發佈資源**：`.claude/skills/` 的變更必須同步複製至 `skills/` 對應目錄，`skills/` 是供外部使用者安裝的發佈來源
+
+2. **同步至 `skills/` 作為發佈資源**：`.claude/skills/` 的變更必須同步複製至 `skills/` 對應目錄，`skills/` 是供外部使用者安裝的發佈來源。
+
 3. **Skill 變更時必須同步更新說明文件**（包含但不限於）：
 
    | 文件 | 用途 | 同步重點 |
@@ -60,6 +62,8 @@ Vibe-SDLC 是一個定義 Vibe-Coding 軟體開發生命週期（Software Develo
    | `./.claude/skills/Vibe-SDLC-README.md` | 與 `skills/README.md` 內容一致 | 全文同步 |
 
 4. **檢查清單**：每次 skill 變更後，確認以上文件中的相關描述（Phase 名稱、步驟編號、完成條件、核心原則等）是否需要連動更新。若不確定，以 `.claude/skills/` 下的 `skill.md` 為權威來源
+
+5. 當使用者說「同步技能」或「同步 skills」時即觸發此同步及更新的動作，並依上述原則更新說明文件。
 
 ### 目錄結構
 
