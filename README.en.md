@@ -12,7 +12,7 @@ Upgrade AI from "can write code" to "can run an entire software development life
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Skills-blueviolet)](https://docs.anthropic.com/en/docs/claude-code)
 [![GitHub CLI](https://img.shields.io/badge/GitHub_CLI-Required-orange)](https://cli.github.com/)
 
-[Quick Start](#-quick-start) · [Workflow](#-five-development-phases) · [Installation](#-installation) · [Examples](./skills/README.md) · [Full SOP](./Vibe-SDLC.md)
+[Quick Start](#-quick-start) · [Workflow](#-five-development-phases) · [Installation](#-installation) · [Examples](#-usage-examples) · [Full SOP](./Vibe-SDLC.md)
 
 </div>
 
@@ -30,6 +30,7 @@ Vibe-SDLC is a complete software development lifecycle packaged as **Claude Code
 | **No Skipping Phases** | Each phase has clear preconditions and completion criteria — must be met before proceeding |
 | **Version-Controlled Specs** | Any spec modification must update version number, date, and revision notes |
 | **Real-Time Sync** | Ad-hoc requirements, bug fixes, or spec changes during development must be reflected in specs immediately |
+| **Real-Time Triage** | When developers report bugs/requests directly, AI asks how to handle (fix now / create Issue / defer) before acting |
 
 ---
 
@@ -202,6 +203,177 @@ cp -r skills/local-tunnel /path/to/my-project/.claude/skills/
 </details>
 
 After installation, type `/vibe-sdlc` to verify — you should see the progress dashboard.
+
+---
+
+## 💡 Usage Examples
+
+The following scenarios show how developers (directors) interact with the AI assistant at each phase.
+
+### Scenario 1: Check Project Progress — Dashboard
+
+```
+> /vibe-sdlc
+```
+
+The AI will automatically collect GitHub Issues, PR, CI status data and generate a **progress dashboard**, including:
+- Milestone completion progress (progress bar + percentage)
+- Pending PRs and CI status
+- In-progress Issues and pending verification Issues
+- Recently merged PRs
+- Current Phase detection with specific recommendations
+
+Great for daily stand-ups or when unsure what to do next.
+
+---
+
+### Scenario 2: Phase 1 — Writing Spec Documents
+
+**Start writing a PRD from scratch:**
+
+```
+> /vibe-sdlc-p1-spec
+> I want to build a Todo List API with CRUD operations. Users need to log in to access their own todos.
+> Please help me write the PRD.
+```
+
+**Already have specs, request cross-review:**
+
+```
+> /vibe-sdlc-p1-spec
+> I've placed the PRD, SRD, API Spec, and Dev Plan in /docs. Please perform a cross-reference review.
+```
+
+**Fix issues from review report:**
+
+```
+> Review report item #3 says SRD is missing rate limiting specs. Please add it —
+> limit to 60 requests per user per minute.
+```
+
+---
+
+### Scenario 3: Phase 2 — Creating GitHub Issues
+
+**Review Dev Plan and create Issues (after review report passes):**
+
+```
+> /vibe-sdlc-p2-issues
+> Specs are finalized and the review report confirms no issues. Please create GitHub Issues.
+```
+
+**Only create Issues for a specific milestone:**
+
+```
+> /vibe-sdlc-p2-issues
+> Just create Milestone 1 Issues for now. We'll handle M2+ after M1 is done.
+```
+
+---
+
+### Scenario 4: Phase 3 — Daily Development Loop
+
+**Assign an Issue to AI for development:**
+
+```
+> /vibe-sdlc-p3-dev
+> Please work on Issue #5 — implement the user registration API.
+```
+
+After completing development and testing, when Vibe Check passes, the AI will **immediately push the branch and create a PR**, then report results and the PR link. Issues encountered during development are investigated and resolved independently first — only escalated when stuck. You just need to do Code Review on GitHub.
+
+**Add requirements during AI development:**
+
+```
+> Add a test case: should return 400 Bad Request when email format is invalid.
+```
+
+**Found an issue during Code Review:**
+
+```
+> Please switch to bcrypt for password hashing instead of SHA-256. Push again after fixing.
+```
+
+---
+
+### Scenario 5: Phase 4 — CI Monitoring & Post-Merge
+
+**When CI fails (PR was auto-created by Phase 3):**
+
+```
+> /vibe-sdlc-p4-pr
+> CI failed. Here's the error report: [paste CI error message]
+> Please analyze and fix.
+```
+
+**Update progress after merge:**
+
+```
+> PR has been merged. Please update the Dev Plan task status.
+> Are there more Issues on the board? If so, continue with the next one.
+```
+
+---
+
+### Scenario 6: Phase 5 — Milestone Delivery
+
+**Confirm milestone completion status:**
+
+```
+> /vibe-sdlc-p5-release
+> All M1 Issues should be merged. Please confirm and generate a completion report.
+```
+
+**Provide feedback and start next iteration:**
+
+```
+> Tested in staging, here's the feedback:
+> 1. List page needs pagination (new requirement)
+> 2. Delete should be soft-delete (requirement change)
+> 3. Login page copy needs work (defer for now)
+> Please organize and update the PRD and Dev Plan.
+```
+
+---
+
+### Scenario 7: Multi Sub Agent Parallel Development
+
+**Have AI generate a Dev Plan with Git collaboration strategy:**
+
+```
+> /vibe-sdlc-p1-spec
+> Dev Plan should use Multi Sub Agent architecture with A-Backend, A-Frontend, A-QA, A-DevOps,
+> and include Worktree configuration and two-layer PR review workflow per the spec.
+```
+
+**Sub Agent auto-creates PR after Vibe Check passes:**
+
+```
+> /vibe-sdlc-p3-dev
+> I'm A-Backend. Please work on Issue #12 — implement Auth API.
+(AI completes development → Vibe Check → auto-creates PR)
+```
+
+**A-Main monitors CI and coordinates merging:**
+
+```
+> /vibe-sdlc-p4-pr
+> PR #34 CI has passed. A-Main confirms scope is correct (only modifies /backend/**).
+> Please have H-Director do the final review.
+```
+
+---
+
+### Prompt Tips
+
+| Tip | Description | Example |
+|-----|-------------|---------|
+| **Be specific** | Tell AI which Issue to work on | `Please work on Issue #12` |
+| **Set constraints** | Specify tech choices or limits | `Use PostgreSQL, not SQLite` |
+| **One phase at a time** | Do one phase per step | `Just review the Dev Plan, don't create Issues` |
+| **Reference specs** | Point to specific sections | `See SRD section 3.2 security requirements` |
+| **Provide context** | Paste error messages or screenshots | `CI error: [error message]` |
+| **Batch confirm** | Approve multiple items at once | `Accept all suggestions from the review report, fix them all at once` |
 
 ---
 

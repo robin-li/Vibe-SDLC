@@ -12,7 +12,7 @@ Nâng cấp AI từ "viết code được" lên "chạy được toàn bộ quy 
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Skills-blueviolet)](https://docs.anthropic.com/en/docs/claude-code)
 [![GitHub CLI](https://img.shields.io/badge/GitHub_CLI-Required-orange)](https://cli.github.com/)
 
-[Bắt đầu nhanh](#-bắt-đầu-nhanh) · [Quy trình](#-năm-giai-đoạn-phát-triển) · [Cài đặt](#-cài-đặt) · [Ví dụ](./skills/README.md) · [SOP đầy đủ](./Vibe-SDLC.md)
+[Bắt đầu nhanh](#-bắt-đầu-nhanh) · [Quy trình](#-năm-giai-đoạn-phát-triển) · [Cài đặt](#-cài-đặt) · [Ví dụ](#-ví-dụ-sử-dụng) · [SOP đầy đủ](./Vibe-SDLC.md)
 
 </div>
 
@@ -30,6 +30,7 @@ Vibe-SDLC là một quy trình phát triển phần mềm hoàn chỉnh được
 | **Không bỏ qua giai đoạn** | Mỗi giai đoạn có điều kiện tiên quyết và điều kiện hoàn thành rõ ràng — phải đạt được mới được tiếp tục |
 | **Quản lý phiên bản** | Mọi sửa đổi đặc tả phải cập nhật đồng thời số phiên bản, ngày tháng và bảng ghi chú thay đổi |
 | **Đồng bộ tức thì** | Yêu cầu phát sinh, sửa bug hoặc thay đổi đặc tả trong quá trình phát triển phải được phản ánh ngay vào tài liệu đặc tả |
+| **Phân loại tức thì** | Khi nhà phát triển báo bug/yêu cầu trực tiếp, AI hỏi cách xử lý (sửa ngay / tạo Issue / hoãn lại) trước khi hành động |
 
 ---
 
@@ -203,6 +204,177 @@ cp -r skills/local-tunnel /path/to/my-project/.claude/skills/
 </details>
 
 Sau khi cài đặt, nhập `/vibe-sdlc` để xác minh — bạn sẽ thấy bảng tiến độ.
+
+---
+
+## 💡 Ví dụ sử dụng
+
+Dưới đây minh họa cách nhà phát triển (đạo diễn) tương tác với trợ lý AI ở từng giai đoạn.
+
+### Tình huống 1: Kiểm tra tiến độ dự án — Bảng tiến độ
+
+```
+> /vibe-sdlc
+```
+
+AI sẽ tự động thu thập dữ liệu GitHub Issues, PR, trạng thái CI và tạo **bảng tiến độ**, bao gồm:
+- Tiến độ hoàn thành từng milestone (thanh tiến độ + phần trăm)
+- PR đang chờ duyệt và trạng thái CI
+- Issue đang thực hiện và Issue chờ xác minh
+- PR được merge gần đây
+- Phát hiện Phase hiện tại và đưa ra đề xuất cụ thể
+
+Phù hợp sử dụng khi bắt đầu ngày làm việc hoặc khi không chắc bước tiếp theo là gì.
+
+---
+
+### Tình huống 2: Phase 1 — Viết tài liệu đặc tả
+
+**Bắt đầu viết PRD từ đầu:**
+
+```
+> /vibe-sdlc-p1-spec
+> Tôi muốn phát triển một Todo List API, hỗ trợ thao tác CRUD. Người dùng cần đăng nhập mới truy cập được todo của mình.
+> Hãy giúp tôi viết PRD.
+```
+
+**Đã có đặc tả, yêu cầu đánh giá chéo:**
+
+```
+> /vibe-sdlc-p1-spec
+> Tôi đã đặt PRD, SRD, API Spec, Dev Plan vào /docs rồi. Hãy thực hiện đánh giá chéo.
+```
+
+**Sửa theo kết quả đánh giá:**
+
+```
+> Mục #3 trong báo cáo đánh giá nói SRD thiếu đặc tả rate limiting. Hãy bổ sung —
+> giới hạn 60 request mỗi người dùng mỗi phút.
+```
+
+---
+
+### Tình huống 3: Phase 2 — Tạo GitHub Issues
+
+**Kiểm tra Dev Plan và tạo Issues (sau khi báo cáo đánh giá đạt):**
+
+```
+> /vibe-sdlc-p2-issues
+> Đặc tả đã hoàn tất, báo cáo đánh giá xác nhận không có vấn đề. Hãy tạo GitHub Issues.
+```
+
+**Chỉ tạo Issues cho milestone cụ thể:**
+
+```
+> /vibe-sdlc-p2-issues
+> Tạm thời chỉ tạo Issues cho Milestone 1. M2 trở đi đợi M1 xong rồi tính.
+```
+
+---
+
+### Tình huống 4: Phase 3 — Vòng lặp phát triển hàng ngày
+
+**Giao Issue cho AI phát triển:**
+
+```
+> /vibe-sdlc-p3-dev
+> Hãy xử lý Issue #5 — triển khai API đăng ký người dùng.
+```
+
+Sau khi hoàn thành phát triển và kiểm thử, khi Vibe Check đạt, AI sẽ **ngay lập tức push branch và tạo PR**, sau đó báo cáo kết quả kèm link PR. Trong quá trình phát triển, gặp vấn đề AI sẽ ưu tiên tự điều tra và giải quyết — chỉ báo cáo khi không thể xử lý. Bạn chỉ cần Code Review trên GitHub.
+
+**Thêm yêu cầu trong quá trình AI phát triển:**
+
+```
+> Thêm một test case: khi định dạng email không hợp lệ phải trả về 400 Bad Request.
+```
+
+**Phát hiện vấn đề khi Code Review:**
+
+```
+> Hãy đổi sang dùng bcrypt để hash mật khẩu, đừng dùng SHA-256. Sửa xong push lại.
+```
+
+---
+
+### Tình huống 5: Phase 4 — Giám sát CI & hậu merge
+
+**Khi CI thất bại (PR đã được Phase 3 tự động tạo):**
+
+```
+> /vibe-sdlc-p4-pr
+> CI lỗi rồi. Đây là báo cáo lỗi: [dán thông báo lỗi CI]
+> Hãy phân tích nguyên nhân và sửa.
+```
+
+**Cập nhật tiến độ sau merge:**
+
+```
+> PR đã merge rồi. Hãy cập nhật trạng thái task trong Dev Plan.
+> Còn Issue nào trên bảng không? Nếu có thì tiếp tục xử lý cái tiếp theo.
+```
+
+---
+
+### Tình huống 6: Phase 5 — Bàn giao milestone
+
+**Xác nhận trạng thái hoàn thành milestone:**
+
+```
+> /vibe-sdlc-p5-release
+> Tất cả Issue của M1 đáng lẽ đều đã merge. Hãy xác nhận và tạo báo cáo hoàn thành.
+```
+
+**Đưa phản hồi và bắt đầu vòng lặp tiếp theo:**
+
+```
+> Đã chạy qua môi trường test, có vài phản hồi:
+> 1. Trang danh sách cần chức năng phân trang (yêu cầu mới)
+> 2. Thao tác xóa nên đổi thành soft-delete (thay đổi yêu cầu)
+> 3. Nội dung trang đăng nhập chưa đẹp (tạm hoãn)
+> Hãy tổng hợp và cập nhật PRD cùng Dev Plan.
+```
+
+---
+
+### Tình huống 7: Phát triển song song Multi Sub Agent
+
+**Để AI tạo Dev Plan có chiến lược Git:**
+
+```
+> /vibe-sdlc-p1-spec
+> Dev Plan hãy dùng kiến trúc Multi Sub Agent, gồm A-Backend, A-Frontend, A-QA, A-DevOps,
+> và thêm cấu hình Worktree cùng quy trình đánh giá PR hai lớp theo đặc tả.
+```
+
+**Sub Agent tự động tạo PR sau khi Vibe Check đạt:**
+
+```
+> /vibe-sdlc-p3-dev
+> Tôi là A-Backend. Hãy xử lý Issue #12 — triển khai Auth API.
+(AI hoàn thành phát triển → Vibe Check → tự động tạo PR)
+```
+
+**A-Main giám sát CI và điều phối merge:**
+
+```
+> /vibe-sdlc-p4-pr
+> PR #34 CI đã pass. A-Main xác nhận phạm vi đúng (chỉ sửa /backend/**).
+> Mời H-Director duyệt cuối.
+```
+
+---
+
+### Mẹo sử dụng prompt
+
+| Mẹo | Mô tả | Ví dụ |
+|-----|-------|-------|
+| **Giao việc rõ ràng** | Nói AI xử lý Issue nào | `Hãy xử lý Issue #12` |
+| **Đặt ràng buộc** | Chỉ định công nghệ hoặc giới hạn | `Dùng PostgreSQL, không dùng SQLite` |
+| **Từng bước một** | Mỗi lần chỉ làm một giai đoạn | `Chỉ đánh giá Dev Plan, đừng tạo Issues` |
+| **Tham chiếu đặc tả** | Trỏ đến phần cụ thể | `Xem yêu cầu bảo mật ở SRD mục 3.2` |
+| **Cung cấp ngữ cảnh** | Dán thông báo lỗi hoặc ảnh chụp | `CI báo lỗi: [thông báo lỗi]` |
+| **Xác nhận hàng loạt** | Duyệt nhiều mục cùng lúc | `Chấp nhận tất cả đề xuất trong báo cáo, sửa một lần` |
 
 ---
 
