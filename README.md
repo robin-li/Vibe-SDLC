@@ -12,7 +12,7 @@
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Skills-blueviolet)](https://docs.anthropic.com/en/docs/claude-code)
 [![GitHub CLI](https://img.shields.io/badge/GitHub_CLI-Required-orange)](https://cli.github.com/)
 
-[快速開始](#-快速開始) · [流程總覽](#-五個開發階段) · [安裝方式](#-安裝方式) · [使用範例](./skills/README.md) · [完整 SOP](./Vibe-SDLC.md)
+[快速開始](#-快速開始) · [流程總覽](#-五個開發階段) · [安裝方式](#-安裝方式) · [使用範例](#-使用範例) · [完整 SOP](./Vibe-SDLC.md)
 
 </div>
 
@@ -203,6 +203,177 @@ cp -r skills/local-tunnel /path/to/my-project/.claude/skills/
 </details>
 
 安裝後輸入 `/vibe-sdlc` 驗證，看到進度儀表板即成功。
+
+---
+
+## 💡 使用範例
+
+以下展示開發者（導演）在各階段如何下 prompt 與 AI 助手互動。
+
+### 場景一：查看專案進度 — 進度儀表板
+
+```
+> /vibe-sdlc
+```
+
+AI 會自動收集 GitHub Issues、PR、CI 狀態等數據，產出**進度儀表板**，包含：
+- 各里程碑完成進度（進度條 + 百分比）
+- 待審 PR 與 CI 狀態
+- 進行中 Issue 與待驗證 Issue
+- 最近合併的 PR
+- 判斷當前 Phase 並給出具體建議
+
+適合在每天開工前、不確定下一步該做什麼時使用。
+
+---
+
+### 場景二：Phase 1 — 撰寫規格文件
+
+**從零開始撰寫 PRD：**
+
+```
+> /vibe-sdlc-p1-spec
+> 我要開發一個 Todo List API，支援 CRUD 操作，使用者需登入才能存取自己的待辦事項。
+> 請幫我撰寫 PRD。
+```
+
+**已有規格，請求交叉審查：**
+
+```
+> /vibe-sdlc-p1-spec
+> 我已經把 PRD、SRD、API Spec、Dev Plan 都放在 /docs 下了，請進行交叉比對審查。
+```
+
+**針對審查結果修正：**
+
+```
+> 審查報告第 3 項提到 SRD 缺少 rate limiting 規格，請幫我補上，
+> 限制為每個使用者每分鐘 60 次請求。
+```
+
+---
+
+### 場景三：Phase 2 — 建立 GitHub Issues
+
+**審核 Dev Plan 並建立 Issues（審查報告通過後）：**
+
+```
+> /vibe-sdlc-p2-issues
+> 規格已經定稿了，審查報告也確認無誤，請幫我建立 GitHub Issues。
+```
+
+**只建立特定里程碑的 Issues：**
+
+```
+> /vibe-sdlc-p2-issues
+> 先只建 Milestone 1 的 Issues 就好，M2 之後的等 M1 完成再說。
+```
+
+---
+
+### 場景四：Phase 3 — 日常開發循環
+
+**指派 Issue 給 AI 開發：**
+
+```
+> /vibe-sdlc-p3-dev
+> 請處理 Issue #5，實作使用者註冊 API。
+```
+
+AI 完成開發與測試後，Vibe Check 通過會**立即自動推送分支並建立 PR**，然後向你彙報結果與 PR 連結。開發過程中遇到問題會優先自行排查與解決，無法解決時才上報。你只需在 GitHub 上進行 Code Review。
+
+**若 AI 開發過程中你想追加需求：**
+
+```
+> 追加一個測試案例：當 email 格式不正確時應回傳 400 Bad Request。
+```
+
+**若你在 Code Review 中發現問題：**
+
+```
+> 密碼雜湊請改用 bcrypt，不要用 SHA-256。修正後重新推送。
+```
+
+---
+
+### 場景五：Phase 4 — CI 監控與合併後作業
+
+**CI 失敗時（PR 已由 Phase 3 自動建立）：**
+
+```
+> /vibe-sdlc-p4-pr
+> CI 掛了，這是錯誤報告：[貼上 CI 錯誤訊息]
+> 請分析原因並修正。
+```
+
+**Merge 後更新進度：**
+
+```
+> PR 已經 merge 了，請更新 Dev Plan 的任務狀態。
+> 看板上還有 Issue 嗎？有的話繼續處理下一個。
+```
+
+---
+
+### 場景六：Phase 5 — 里程碑交付
+
+**確認里程碑完成狀態：**
+
+```
+> /vibe-sdlc-p5-release
+> M1 的所有 Issue 應該都 merge 了，請確認一下並產出完成報告。
+```
+
+**提供回饋並啟動下一輪迭代：**
+
+```
+> 測試環境跑過了，有幾個回饋：
+> 1. 列表頁需要分頁功能（新需求）
+> 2. 刪除操作應改為軟刪除（需求變更）
+> 3. 登入頁的文案不好看（暫不處理）
+> 請幫我整理並更新 PRD 和 Dev Plan。
+```
+
+---
+
+### 場景七：Multi Sub Agent 並行開發
+
+**讓 AI 產生含 Git 協作策略的 Dev Plan：**
+
+```
+> /vibe-sdlc-p1-spec
+> Dev Plan 請採用 Multi Sub Agent 架構，包含 A-Backend、A-Frontend、A-QA、A-DevOps，
+> 並依照規範加入 Worktree 配置與雙層 PR 審查流程。
+```
+
+**Sub Agent 的 Vibe Check 通過後自動建 PR：**
+
+```
+> /vibe-sdlc-p3-dev
+> 我是 A-Backend，請處理 Issue #12，實作 Auth API。
+（AI 完成開發 → Vibe Check → 核准後自動建 PR）
+```
+
+**A-Main 監控 CI 並協調合併：**
+
+```
+> /vibe-sdlc-p4-pr
+> PR #34 的 CI 已通過，A-Main 初審確認範圍正確（僅修改 /backend/**），
+> 請 H-Director 進行終審。
+```
+
+---
+
+### 提示技巧
+
+| 技巧 | 說明 | 範例 |
+|------|------|------|
+| **明確指派** | 告訴 AI 處理哪個 Issue | `請處理 Issue #12` |
+| **給定約束** | 指定技術選型或限制 | `使用 PostgreSQL，不要用 SQLite` |
+| **分段操作** | 一次只做一個階段 | `先只審核 Dev Plan，不要建 Issues` |
+| **引用規格** | 指向特定文件章節 | `參考 SRD 3.2 節的安全要求` |
+| **附上上下文** | 貼上錯誤訊息或截圖 | `CI 報錯了：[錯誤訊息]` |
+| **批次確認** | 一次核准多項操作 | `審查報告的建議全部接受，請一次修正` |
 
 ---
 
