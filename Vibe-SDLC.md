@@ -80,7 +80,7 @@
 |----------|----------|
 | 規格審查 | 交叉比對 PRD / SRD / API Spec / Dev Plan，產出完整性審查報告 |
 | 任務建立 | 根據 Dev Plan 自動建立 GitHub Issues，並建立 Project 看板 |
-| 程式開發 | 在 feature 分支上實作程式碼，遵循 SRD 技術規範 |
+| 程式開發 | 在對應分支上實作程式碼（per-issue 分支或 `dev/main-agent`），遵循 SRD 技術規範 |
 | 測試生成 | 撰寫並執行單元測試，確保本地驗證通過 |
 | 自主排查 | 遇到問題、Bug 或錯誤時，優先自行調查與解決，無法解決時才上報開發者 |
 | PR 管理 | Vibe Check 通過後自動推送分支、建立 PR（含 `Closes #N`）、回報 PR 連結 |

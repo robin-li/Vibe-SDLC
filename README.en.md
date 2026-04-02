@@ -149,7 +149,7 @@ Issues serve as the sole cross-session communication channel. AI auto-posts comm
 Native support for highly parallel multi-agent development, using `API_Spec.yaml` as the frontend-backend decoupling contract:
 
 - **Worktree Isolation** — each Sub Agent uses an independent Git Worktree
-- **Branch Naming** — `feat/<agent>/<issue-N>-<description>`
+- **Branch Strategy** — ⛔ Direct push to main is strictly prohibited. With Issue → `feat/<agent>/<issue-N>-<description>`; No Issue (small fix) → `dev/main-agent`
 - **Two-Layer PR Review** — Sub Agent PR → CI → A-Main review → H-Director final review
 - **PR Scope Restriction** — A-Backend can only modify `/backend/**`, violations are rejected
 

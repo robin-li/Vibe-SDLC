@@ -150,7 +150,7 @@ Issue là kênh giao tiếp duy nhất xuyên suốt các session. AI tự độ
 Hỗ trợ sẵn phát triển song song với nhiều Sub Agent, sử dụng `API_Spec.yaml` làm hợp đồng tách biệt frontend-backend:
 
 - **Cách ly Worktree** — mỗi Sub Agent sử dụng Git Worktree độc lập
-- **Đặt tên branch** — `feat/<agent>/<issue-N>-<mô-tả>`
+- **Chiến lược branch** — ⛔ Nghiêm cấm push trực tiếp vào main. Có Issue → `feat/<agent>/<issue-N>-<mô-tả>`; Không có Issue (sửa nhỏ) → `dev/main-agent`
 - **Đánh giá PR hai lớp** — Sub Agent PR → CI → A-Main đánh giá → H-Director duyệt cuối
 - **Giới hạn phạm vi PR** — A-Backend chỉ được sửa `/backend/**`, vi phạm sẽ bị từ chối
 

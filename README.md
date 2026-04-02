@@ -149,7 +149,7 @@ Issue 是跨 session 的唯一溝通媒介，AI 在關鍵時刻自動發佈 Comm
 原生支援多 Sub Agent 高度並行開發，以 `API_Spec.yaml` 作為前後端解耦契約：
 
 - **Worktree 隔離** — 每個 Sub Agent 使用獨立 Git Worktree
-- **分支命名** — `feat/<agent>/<issue-N>-<簡述>`
+- **分支策略** — ⛔ 嚴禁直接 push main。有 Issue → `feat/<agent>/<issue-N>-<簡述>`；無 Issue 小修 → `dev/main-agent`
 - **雙層 PR 審查** — Sub Agent PR → CI → A-Main 初審 → H-Director 終審
 - **PR 範圍限制** — A-Backend 只能修改 `/backend/**`，違者駁回
 

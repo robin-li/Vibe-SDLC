@@ -16,7 +16,7 @@ user_invocable: true
 
 你是 AI 助手（執行者）。在此階段你的職責是：
 - 讀取指派的 Issue，確認理解任務範圍與驗收標準
-- 從 `main` 建立 feature 分支
+- 根據分支策略建立對應分支（per-issue 分支或 `dev/main-agent` 分支）
 - 參考 SRD 技術規範與 API Spec 實作程式碼
 - 撰寫並執行單元測試
 - 遇到問題、Bug或錯誤時，優先嘗試自行調查與解決
@@ -59,7 +59,7 @@ user_invocable: true
 | 2 | **AI 助手** | 讀取 Issue 內容，確認理解任務範圍與驗收標準 | 任務確認 |
 | 3 | **AI 助手** | **領取 Issue**：更新看板狀態為 `In Progress`，發佈「領取 Comment」（詳見下方「Issue 狀態追蹤規範」） | Issue Comment |
 | 4 | **AI 助手** | **同步工作目錄**（詳見下方「工作目錄同步規範」） | 最新 main |
-| 5 | **AI 助手** | 從 `main` 建立 feature 分支（命名：`feat/<agent>/issue-N-簡述`） | feature 分支 |
+| 5 | **AI 助手** | 根據分支策略建立分支（詳見「分支策略」章節） | 工作分支 |
 | 6 | **AI 助手** | 參考 SRD 技術規範與 API Spec，實作功能程式碼 | 功能程式碼 |
 | 7 | **AI 助手** | 撰寫對應的單元測試 | 測試程式碼 |
 | 8 | **AI 助手** | 執行本地測試（Vibe Check），確認全部通過 | 測試結果 |
@@ -68,18 +68,53 @@ user_invocable: true
 
 > **核心原則**：Vibe Check 通過 = 自動推送 + 建 PR，**無需等待人類核准**。人類審核集中在 GitHub PR 的 Code Review 環節。Phase 4 僅在需要處理 CI 失敗或合併後作業時使用。
 
-## 提交與合併規則
+## 分支策略
 
-根據修改來源與範圍，決定是否需要走 feature branch → PR 流程：
+**⛔ 嚴格禁止直接 push 至 main**，無論改動大小，一律透過分支 + PR 流程。
 
-| 情境 | 提交方式 | 說明 |
-|------|---------|------|
-| **功能開發**（領取 Issue） | feature branch → PR | 必須走完整流程，無論改動大小 |
-| **分流選項 1（直接修）且改動 ≤ 5 行** | 直接 commit + push main | 適合 typo、文案、簡單 config |
-| **分流選項 1 但改動 > 5 行** | feature branch → PR | 改動較大仍需 PR 審查 |
-| **聯調模式連續修正** | 累積修正後統一 commit + push main | 避免頻繁重建，統一部署 |
+### 分支判斷規則
 
-> **原則**：寧可多走 PR，不可漏走。若不確定，預設走 feature branch。
+| 條件 | 分支類型 | 分支命名 | 說明 |
+|------|---------|---------|------|
+| **有 Issue**（領取 Issue 開發） | Per-issue 分支 | `feat/<agent>/issue-N-簡述` | 所有 Issue-based 開發，無論改動大小 |
+| **無 Issue**（分流選項 1 小修、聯調小修正） | 固定名稱短期分支 | `dev/main-agent` | 適合 typo、文案、簡單 config、聯調連續小修 |
+
+> **簡單規則**：有 Issue → per-issue 分支；無 Issue（小修）→ `dev/main-agent`。
+
+### `dev/main-agent` 分支生命週期
+
+`dev/main-agent` 是一個**固定名稱的短期分支**（fixed-name short-lived branch），不是長期存活的分支。
+
+**建立時機**：需要進行無 Issue 小修時，從最新 main 建立：
+```bash
+git checkout main && git pull origin main
+git checkout -b dev/main-agent
+```
+
+**提交 PR 時機**（滿足任一即提交）：
+- 小修已達到一個自然停止點（如一組相關修正完成）
+- 聯調測試結束
+- 開發者明確說「push」或「推送」
+
+**合併後處理**：PR 合併後**立即刪除** `dev/main-agent` 分支（本地 + 遠端），下次需要時重新從最新 main 建立。
+
+```bash
+# PR 合併後
+git checkout main && git pull origin main
+git branch -d dev/main-agent
+git push origin --delete dev/main-agent 2>/dev/null
+```
+
+### 提交與合併規則
+
+| 情境 | 分支 | 提交方式 |
+|------|------|---------|
+| **功能開發**（領取 Issue） | `feat/<agent>/issue-N-簡述` | feature branch → PR |
+| **分流選項 1（直接修，無 Issue）** | `dev/main-agent` | dev/main-agent → PR |
+| **聯調模式連續修正（無 Issue）** | `dev/main-agent` | 累積修正後 dev/main-agent → PR |
+| **聯調模式修正（有 Issue）** | `feat/<agent>/issue-N-簡述` | feature branch → PR |
+
+> **原則**：所有變更一律走 PR，嚴禁直接 push main。
 
 ## 即時回報分流補充
 
@@ -433,7 +468,7 @@ Closes #N
 
 | 選項 | 聯調中的行為 |
 |------|------------|
-| **1 — 直接修正** | 立即修正，修正完成後詢問是否重新部署（`docker compose up -d --build`）。適合 UI 微調、文案、簡單邏輯錯誤。 |
+| **1 — 直接修正** | 切換至 `dev/main-agent` 分支（若不存在則從最新 main 建立），立即修正，修正完成後詢問是否重新部署（`docker compose up -d --build`）。適合 UI 微調、文案、簡單邏輯錯誤。 |
 | **2 — 建 Issue 再修正** | 先 `gh issue create` 建立 Issue（含重現步驟、截圖引用、嚴重程度標籤），然後立即修正，修正完成後詢問是否重新部署。 |
 | **3 — 先記下來** | 暫存至待建立清單，繼續聯調。開發者說「整理」或「建立 Issues」時批量建立。適合非阻塞性問題、改善建議。 |
 
@@ -441,7 +476,7 @@ Closes #N
 
 聯調過程中可能連續修正多個問題。AI 應：
 
-1. **累積修正後一次部署**：若開發者連續回報多個小問題且都選「1 — 直接修正」，可累積修正後統一詢問是否重新部署，避免頻繁重建
+1. **累積修正後一次部署**：若開發者連續回報多個小問題且都選「1 — 直接修正」，在 `dev/main-agent` 分支上累積修正後統一詢問是否重新部署，避免頻繁重建
 2. **每次部署前確認**：列出本輪已修正的項目，確認後再執行部署
 3. **部署後主動提示**：部署完成後提示開發者繼續測試
 
@@ -451,7 +486,7 @@ Closes #N
 
 1. 檢查是否有選項 3 暫存的待建立 Issues，若有則提醒
 2. 列出本輪聯調的修正摘要（含哪些已建 Issue、哪些直接修正）
-3. 詢問是否需要 commit 並推送
+3. 若 `dev/main-agent` 分支有未推送的 commit，提交 PR 並在合併後刪除該分支
 
 ## 既有測試失敗處理規則
 
@@ -489,7 +524,7 @@ Vibe Check 階段可能遇到「非本次變更造成的測試失敗」（既有
    - 將看板狀態更新為 `In Progress`（或以可行的方式標註）
    - 發佈「🚀 任務領取」Comment 至 Issue（含角色、分支名稱、worktree 路徑）
 5. **執行工作目錄同步**（git fetch → 處理未提交變更 → rebase origin/main），確認本地 main 為最新狀態
-6. 從最新 main 建立 feature 分支並開始實作
+6. 根據分支策略，從最新 main 建立對應分支（有 Issue → `feat/<agent>/issue-N-簡述`；無 Issue 小修 → `dev/main-agent`）並開始實作
 7. 實作過程中，以下規格文件可供參考：
    - `/docs/01-1-PRD.md`（產品需求，前端頁面與流程參考）
    - `/docs/01-2-SRD.md`（技術規範）

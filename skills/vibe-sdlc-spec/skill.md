@@ -266,14 +266,19 @@ user_invocable: true
 
 #### 分支命名規範
 
-```
-feat/<agent>/<issue-N>-<簡述>
-```
+**⛔ 嚴格禁止直接 push 至 main**，所有變更一律透過分支 + PR 流程。
 
-範例：
+| 條件 | 分支命名 | 說明 |
+|------|---------|------|
+| **有 Issue** | `feat/<agent>/issue-N-簡述` | 所有 Issue-based 開發 |
+| **無 Issue（小修）** | `dev/main-agent` | 固定名稱短期分支，PR 合併後刪除，下次重建 |
+
+Per-issue 分支範例：
 - `feat/backend/issue-12-auth-api`
 - `feat/frontend/issue-15-login-ui`
 - `feat/devops/issue-20-docker-setup`
+
+`dev/main-agent` 生命週期：從 main 建立 → 累積小修 → 提交 PR → 合併後刪除 → 下次需要時重新建立。
 
 #### Bootstrap 階段（CI 建立前的 PR 處理）
 
