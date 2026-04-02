@@ -1,5 +1,5 @@
 ---
-name: vibe-sdlc-p1-spec
+name: vibe-sdlc-spec
 description: >
   Vibe-SDLC Phase 1：定義規格文件與計畫，協助撰寫與審查 PRD、SRD、API Spec、Dev Plan。
   使用時機：專案啟動需要建立規格文件與計畫，或需要審查既有規格的完整性與一致性。
@@ -373,4 +373,4 @@ flowchart LR
    - PRD 各功能需求是否標注對應的 UI/UX 設計章節參考（如有 UI/UX 設計文件）
    - SRD 前端技術棧是否參考 UI/UX 的 Design Tokens
    - UI/UX 設計文件是否反向參考 PRD、SRD、API Spec
-6. 審查完成且無遺漏後，提示開發者可進入 Phase 2（`/vibe-sdlc-p2-issues`）
+6. 審查完成且無遺漏後，提示開發者可進入 Phase 2（`/vibe-sdlc-issues`）

@@ -1,5 +1,5 @@
 ---
-name: vibe-sdlc-p5-release
+name: vibe-sdlc-release
 description: >
   Vibe-SDLC Phase 5：交付與迭代 (Release & Feedback)。協助部署驗收、收集回饋、更新規格文件。
   使用時機：里程碑完成，需要部署至測試環境、進行驗收、收集回饋並啟動下一輪迭代。
@@ -209,4 +209,4 @@ user_invocable: true
    當前進度已同步至 GitHub，新 session 可透過 `/vibe-sdlc` 快速恢復狀態。
 ```
 
-9. 提示開發者回到 Phase 2（`/vibe-sdlc-p2-issues`）啟動下一輪迭代
+9. 提示開發者回到 Phase 2（`/vibe-sdlc-issues`）啟動下一輪迭代

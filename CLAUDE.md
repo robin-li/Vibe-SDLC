@@ -39,11 +39,11 @@ Vibe-SDLC 是一個定義 Vibe-Coding 軟體開發生命週期（Software Develo
 | Phase | 名稱 | Skill 指令 | 說明 |
 |-------|------|-----------|------|
 | — | 進度儀表板 | `/vibe-sdlc` | 產出里程碑進度、待審 PR、待驗證 Issue 儀表板，自動判斷當前 Phase |
-| 1 | 定義規格文件與計畫 | `/vibe-sdlc-p1-spec` | 撰寫 PRD、SRD、API Spec、UI/UX、Dev Plan、審查報告、CI/CD Spec |
-| 2 | 任務掛載 | `/vibe-sdlc-p2-issues` | 建立 Labels/Milestones → 開發 Issues → 驗證 Issues → Project 看板 |
-| 3 | 開發循環 | `/vibe-sdlc-p3-dev` | 領取 Issue → 實作 → 測試 → Vibe Check → 自動建 PR |
-| 4 | CI 監控與合併後作業 | `/vibe-sdlc-p4-pr` | 監控 CI → 修正失敗 → Merge 後更新 Dev Plan → 手動驗證提醒 |
-| 5 | 交付與迭代 | `/vibe-sdlc-p5-release` | 部署驗收 → 收集回饋 → 更新規格 → 下一輪迭代 |
+| 1 | 定義規格文件與計畫 | `/vibe-sdlc-spec` | 撰寫 PRD、SRD、API Spec、UI/UX、Dev Plan、審查報告、CI/CD Spec |
+| 2 | 任務掛載 | `/vibe-sdlc-issues` | 建立 Labels/Milestones → 開發 Issues → 驗證 Issues → Project 看板 |
+| 3 | 開發循環 | `/vibe-sdlc-dev` | 領取 Issue → 實作 → 測試 → Vibe Check → 自動建 PR |
+| 4 | CI 監控與合併後作業 | `/vibe-sdlc-pr` | 監控 CI → 修正失敗 → Merge 後更新 Dev Plan → 手動驗證提醒 |
+| 5 | 交付與迭代 | `/vibe-sdlc-release` | 部署驗收 → 收集回饋 → 更新規格 → 下一輪迭代 |
 
 ### Skill 維護規則 
 
@@ -77,24 +77,24 @@ Vibe-SDLC/
 │   ├── README.md                       ← 完整使用說明與範例
 │   ├── DEPLOY.md                       ← 部署方式說明
 │   ├── vibe-sdlc/skill.md             ← 總覽與導航
-│   ├── vibe-sdlc-p1-spec/             ← Phase 1 skill + examples/docs/
-│   ├── vibe-sdlc-p2-issues/skill.md   ← Phase 2 skill
-│   ├── vibe-sdlc-p3-dev/skill.md      ← Phase 3 skill
-│   ├── vibe-sdlc-p4-pr/skill.md       ← Phase 4 skill
-│   └── vibe-sdlc-p5-release/skill.md  ← Phase 5 skill
+│   ├── vibe-sdlc-spec/             ← Phase 1 skill + examples/docs/
+│   ├── vibe-sdlc-issues/skill.md   ← Phase 2 skill
+│   ├── vibe-sdlc-dev/skill.md      ← Phase 3 skill
+│   ├── vibe-sdlc-pr/skill.md       ← Phase 4 skill
+│   └── vibe-sdlc-release/skill.md  ← Phase 5 skill
 └── .claude/skills/                     ← Skills 開發主目錄（本專案同時使用）
     ├── Vibe-SDLC-README.md             ← 與 skills/README.md 同步
     ├── vibe-sdlc/skill.md             ← 總覽與導航
-    ├── vibe-sdlc-p1-spec/             ← Phase 1 skill + examples/docs/
-    ├── vibe-sdlc-p2-issues/skill.md   ← Phase 2 skill
-    ├── vibe-sdlc-p3-dev/skill.md      ← Phase 3 skill
-    ├── vibe-sdlc-p4-pr/skill.md       ← Phase 4 skill
-    └── vibe-sdlc-p5-release/skill.md  ← Phase 5 skill
+    ├── vibe-sdlc-spec/             ← Phase 1 skill + examples/docs/
+    ├── vibe-sdlc-issues/skill.md   ← Phase 2 skill
+    ├── vibe-sdlc-dev/skill.md      ← Phase 3 skill
+    ├── vibe-sdlc-pr/skill.md       ← Phase 4 skill
+    └── vibe-sdlc-release/skill.md  ← Phase 5 skill
 ```
 
 ### 規格文件範例
 
-Phase 1 skill 包含完整的規格文件範例（`skills/vibe-sdlc-p1-spec/examples/docs/`）：
+Phase 1 skill 包含完整的規格文件範例（`skills/vibe-sdlc-spec/examples/docs/`）：
 
 | 文件 | 說明 |
 |------|------|

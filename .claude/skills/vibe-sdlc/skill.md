@@ -21,7 +21,7 @@ user_invocable: true
 
 ## 即時回報分流
 
-當開發者在對話中**直接描述 Bug、功能需求、改善建議**（而非透過 `/vibe-sdlc-p3-dev` 領取既有 Issue）時，**AI 必須立即停止，禁止修改任何檔案或撰寫程式碼**，先提供以下三個選項，**等待開發者選擇後才可開始實作**：
+當開發者在對話中**直接描述 Bug、功能需求、改善建議**（而非透過 `/vibe-sdlc-dev` 領取既有 Issue）時，**AI 必須立即停止，禁止修改任何檔案或撰寫程式碼**，先提供以下三個選項，**等待開發者選擇後才可開始實作**：
 
 ```
 📋 Issue 追蹤選項
@@ -69,7 +69,7 @@ user_invocable: true
 - 任何會導致新增或修改程式碼的請求（除非符合下方「不觸發」條件）
 
 以下情境**不觸發**（直接執行）：
-- 透過 `/vibe-sdlc-p3-dev` 領取既有 Issue 進行開發
+- 透過 `/vibe-sdlc-dev` 領取既有 Issue 進行開發
 - 開發者明確說「直接改」「快速修一下」等表達不需追蹤的意圖
 - 純粹的程式碼問答、架構討論（無實際修改需求）
 
@@ -77,11 +77,11 @@ user_invocable: true
 
 | Phase | 名稱 | Skill 指令 | 觸發時機 |
 |-------|------|-----------|----------|
-| 1 | 定義規格文件與計畫 | `/vibe-sdlc-p1-spec` | 專案啟動，需撰寫或審查規格 |
-| 2 | 任務掛載 (Plan → Issues) | `/vibe-sdlc-p2-issues` | 規格定稿，需建立 GitHub Issues |
-| 3 | 開發循環 (Execution Loop) | `/vibe-sdlc-p3-dev` | 日常開發，領取 Issue 進行實作，Vibe Check 通過後自動建 PR |
-| 4 | CI 監控與合併後作業 | `/vibe-sdlc-p4-pr` | PR 已建立，需監控 CI、處理失敗、或 Merge 後更新 Dev Plan |
-| 5 | 交付與迭代 (Release) | `/vibe-sdlc-p5-release` | 里程碑完成，需部署與收集回饋 |
+| 1 | 定義規格文件與計畫 | `/vibe-sdlc-spec` | 專案啟動，需撰寫或審查規格 |
+| 2 | 任務掛載 (Plan → Issues) | `/vibe-sdlc-issues` | 規格定稿，需建立 GitHub Issues |
+| 3 | 開發循環 (Execution Loop) | `/vibe-sdlc-dev` | 日常開發，領取 Issue 進行實作，Vibe Check 通過後自動建 PR |
+| 4 | CI 監控與合併後作業 | `/vibe-sdlc-pr` | PR 已建立，需監控 CI、處理失敗、或 Merge 後更新 Dev Plan |
+| 5 | 交付與迭代 (Release) | `/vibe-sdlc-release` | 里程碑完成，需部署與收集回饋 |
 
 ## 角色定義
 
@@ -360,11 +360,11 @@ Tunnel 狀態獨立判定：
 
 | 條件 | 判定 Phase | 建議 |
 |------|-----------|------|
-| `/docs` 下缺少規格文件 | Phase 1 | 呼叫 `/vibe-sdlc-p1-spec` |
-| 規格文件齊全但無 Issues | Phase 2 | 呼叫 `/vibe-sdlc-p2-issues` |
-| 有 open Issues 且無 open PR | Phase 3 | 呼叫 `/vibe-sdlc-p3-dev` 領取 Issue |
+| `/docs` 下缺少規格文件 | Phase 1 | 呼叫 `/vibe-sdlc-spec` |
+| 規格文件齊全但無 Issues | Phase 2 | 呼叫 `/vibe-sdlc-issues` |
+| 有 open Issues 且無 open PR | Phase 3 | 呼叫 `/vibe-sdlc-dev` 領取 Issue |
 | 有 open PR 待審 | Phase 4 | 審閱 PR，決定 Merge 或要求修改 |
-| 某 Milestone 所有 Issue closed | Phase 5 | 呼叫 `/vibe-sdlc-p5-release` 驗收 |
+| 某 Milestone 所有 Issue closed | Phase 5 | 呼叫 `/vibe-sdlc-release` 驗收 |
 | 有待驗證 Issue（`verification` 標籤） | Phase 5 | 提醒進行手動驗證 |
 
 

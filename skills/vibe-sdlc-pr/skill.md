@@ -1,5 +1,5 @@
 ---
-name: vibe-sdlc-p4-pr
+name: vibe-sdlc-pr
 description: >
   Vibe-SDLC Phase 4：CI 監控、失敗修正與合併後作業。處理 CI 結果、修正失敗、Merge 後更新 Dev Plan。
   使用時機：PR 已建立（由 Phase 3 自動建立），需要監控 CI、處理失敗、或執行合併後作業。
@@ -181,7 +181,7 @@ Sub Agent 的 PR **禁止** 修改其負責範圍以外的檔案：
 
 1. 先確認前置條件：
    - 是否有已建立的 open PR？（由 Phase 3 自動建立）
-   - 若無 open PR，提示使用者先完成 Phase 3（`/vibe-sdlc-p3-dev`）
+   - 若無 open PR，提示使用者先完成 Phase 3（`/vibe-sdlc-dev`）
 2. 列出所有 open PR，使用 `gh pr list` 查看
 3. 監控 CI 結果：
    - 使用 `gh pr checks <PR-number>` 查看 CI 狀態
@@ -203,6 +203,6 @@ Sub Agent 的 PR **禁止** 修改其負責範圍以外的檔案：
    - 若有：提醒開發者通知對應的審查角色（H-Reviewer / H-UxReviewer）開始驗證
    - 列出相關驗證 Issues 的編號與標題
 7. 提示開發者：
-   - 若還有待處理的開發 Issue → 回到 Phase 3（`/vibe-sdlc-p3-dev`）
+   - 若還有待處理的開發 Issue → 回到 Phase 3（`/vibe-sdlc-dev`）
    - 若當前里程碑的開發 Issues 已全部完成，但仍有未關閉的驗證 Issues → 提醒等待驗證完成
-   - 若當前里程碑所有 Issues（開發 + 驗證）皆已關閉 → 進入 Phase 5（`/vibe-sdlc-p5-release`）
+   - 若當前里程碑所有 Issues（開發 + 驗證）皆已關閉 → 進入 Phase 5（`/vibe-sdlc-release`）

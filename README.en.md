@@ -57,25 +57,25 @@ The AI will automatically detect project status, generate a progress dashboard, 
 ### 3. Start Building
 
 ```
-/vibe-sdlc-p1-spec       ← Write spec documents (PRD, SRD, API Spec, Dev Plan)
-/vibe-sdlc-p2-issues     ← Convert plan into GitHub Issues
-/vibe-sdlc-p3-dev        ← Pick up Issue → develop → test → auto-create PR
-/vibe-sdlc-p4-pr         ← Monitor CI → fix failures → merge → update progress
-/vibe-sdlc-p5-release    ← Milestone acceptance → collect feedback → next iteration
+/vibe-sdlc-spec       ← Write spec documents (PRD, SRD, API Spec, Dev Plan)
+/vibe-sdlc-issues     ← Convert plan into GitHub Issues
+/vibe-sdlc-dev        ← Pick up Issue → develop → test → auto-create PR
+/vibe-sdlc-pr         ← Monitor CI → fix failures → merge → update progress
+/vibe-sdlc-release    ← Milestone acceptance → collect feedback → next iteration
 ```
 
 <details>
 <summary><b>💡 From idea to first PR in just 3 prompts</b></summary>
 
 ```
-You: /vibe-sdlc-p1-spec
+You: /vibe-sdlc-spec
      I want to build a personal finance app. Let's discuss and write the PRD.
      ...(AI helps complete all spec documents)
 
-You: /vibe-sdlc-p2-issues
+You: /vibe-sdlc-issues
      Specs are finalized, please create GitHub Issues.
 
-You: /vibe-sdlc-p3-dev
+You: /vibe-sdlc-dev
      Please work on Issue #1.
      ...(AI auto-completes development, testing, and creates a PR)
 ```
@@ -107,11 +107,11 @@ Project Start
 | Phase | Name | Slash Command | Description |
 |:-----:|------|---------------|-------------|
 | — | Dashboard | `/vibe-sdlc` | Auto-detect project status, generate dashboard, navigate to relevant phase |
-| 1 | Define Specs & Plan | `/vibe-sdlc-p1-spec` | Write / review PRD, SRD, API Spec, UI/UX, Dev Plan, CI/CD Spec |
-| 2 | Mount Tasks | `/vibe-sdlc-p2-issues` | Create Labels / Milestones → dev Issues → verification Issues → Project board |
-| 3 | Development Loop | `/vibe-sdlc-p3-dev` | Pick Issue → implement → test → Vibe Check → auto-create PR |
-| 4 | CI Monitor & Post-Merge | `/vibe-sdlc-p4-pr` | Monitor CI → fix failures → merge → update Dev Plan → verification reminder |
-| 5 | Release & Iterate | `/vibe-sdlc-p5-release` | Deploy → acceptance → collect feedback → update specs → next iteration |
+| 1 | Define Specs & Plan | `/vibe-sdlc-spec` | Write / review PRD, SRD, API Spec, UI/UX, Dev Plan, CI/CD Spec |
+| 2 | Mount Tasks | `/vibe-sdlc-issues` | Create Labels / Milestones → dev Issues → verification Issues → Project board |
+| 3 | Development Loop | `/vibe-sdlc-dev` | Pick Issue → implement → test → Vibe Check → auto-create PR |
+| 4 | CI Monitor & Post-Merge | `/vibe-sdlc-pr` | Monitor CI → fix failures → merge → update Dev Plan → verification reminder |
+| 5 | Release & Iterate | `/vibe-sdlc-release` | Deploy → acceptance → collect feedback → update specs → next iteration |
 
 ---
 
@@ -131,7 +131,7 @@ All spec files are stored in `/docs` as the Single Source of Truth:
 | Review Report | `/docs/03-Docs_Review_Report.md` | AI cross-reference results with inconsistencies and gaps |
 | CI/CD Spec | `/docs/04-CI_CD_Spec.md` | CI Workflow, quality gates, Docker config (optional) |
 
-> 📁 Full examples at [`skills/vibe-sdlc-p1-spec/examples/docs/`](./skills/vibe-sdlc-p1-spec/examples/docs/)
+> 📁 Full examples at [`skills/vibe-sdlc-spec/examples/docs/`](./skills/vibe-sdlc-spec/examples/docs/)
 
 ### 💬 Issue Status Tracking
 
@@ -232,7 +232,7 @@ Great for daily stand-ups or when unsure what to do next.
 **Start writing a PRD from scratch:**
 
 ```
-> /vibe-sdlc-p1-spec
+> /vibe-sdlc-spec
 > I want to build a Todo List API with CRUD operations. Users need to log in to access their own todos.
 > Please help me write the PRD.
 ```
@@ -240,7 +240,7 @@ Great for daily stand-ups or when unsure what to do next.
 **Already have specs, request cross-review:**
 
 ```
-> /vibe-sdlc-p1-spec
+> /vibe-sdlc-spec
 > I've placed the PRD, SRD, API Spec, and Dev Plan in /docs. Please perform a cross-reference review.
 ```
 
@@ -258,14 +258,14 @@ Great for daily stand-ups or when unsure what to do next.
 **Review Dev Plan and create Issues (after review report passes):**
 
 ```
-> /vibe-sdlc-p2-issues
+> /vibe-sdlc-issues
 > Specs are finalized and the review report confirms no issues. Please create GitHub Issues.
 ```
 
 **Only create Issues for a specific milestone:**
 
 ```
-> /vibe-sdlc-p2-issues
+> /vibe-sdlc-issues
 > Just create Milestone 1 Issues for now. We'll handle M2+ after M1 is done.
 ```
 
@@ -276,7 +276,7 @@ Great for daily stand-ups or when unsure what to do next.
 **Assign an Issue to AI for development:**
 
 ```
-> /vibe-sdlc-p3-dev
+> /vibe-sdlc-dev
 > Please work on Issue #5 — implement the user registration API.
 ```
 
@@ -301,7 +301,7 @@ After completing development and testing, when Vibe Check passes, the AI will **
 **When CI fails (PR was auto-created by Phase 3):**
 
 ```
-> /vibe-sdlc-p4-pr
+> /vibe-sdlc-pr
 > CI failed. Here's the error report: [paste CI error message]
 > Please analyze and fix.
 ```
@@ -320,7 +320,7 @@ After completing development and testing, when Vibe Check passes, the AI will **
 **Confirm milestone completion status:**
 
 ```
-> /vibe-sdlc-p5-release
+> /vibe-sdlc-release
 > All M1 Issues should be merged. Please confirm and generate a completion report.
 ```
 
@@ -341,7 +341,7 @@ After completing development and testing, when Vibe Check passes, the AI will **
 **Have AI generate a Dev Plan with Git collaboration strategy:**
 
 ```
-> /vibe-sdlc-p1-spec
+> /vibe-sdlc-spec
 > Dev Plan should use Multi Sub Agent architecture with A-Backend, A-Frontend, A-QA, A-DevOps,
 > and include Worktree configuration and two-layer PR review workflow per the spec.
 ```
@@ -349,7 +349,7 @@ After completing development and testing, when Vibe Check passes, the AI will **
 **Sub Agent auto-creates PR after Vibe Check passes:**
 
 ```
-> /vibe-sdlc-p3-dev
+> /vibe-sdlc-dev
 > I'm A-Backend. Please work on Issue #12 — implement Auth API.
 (AI completes development → Vibe Check → auto-creates PR)
 ```
@@ -357,7 +357,7 @@ After completing development and testing, when Vibe Check passes, the AI will **
 **A-Main monitors CI and coordinates merging:**
 
 ```
-> /vibe-sdlc-p4-pr
+> /vibe-sdlc-pr
 > PR #34 CI has passed. A-Main confirms scope is correct (only modifies /backend/**).
 > Please have H-Director do the final review.
 ```
@@ -391,11 +391,11 @@ Vibe-SDLC/
     ├── DEPLOY.md                      ← Deployment instructions
     ├── local-tunnel/skill.md          ← Publish local services to public
     ├── vibe-sdlc/skill.md             ← Overview & navigation
-    ├── vibe-sdlc-p1-spec/             ← Phase 1 + examples/docs/
-    ├── vibe-sdlc-p2-issues/skill.md   ← Phase 2: Task mounting
-    ├── vibe-sdlc-p3-dev/skill.md      ← Phase 3: Development loop
-    ├── vibe-sdlc-p4-pr/skill.md       ← Phase 4: CI monitoring & post-merge
-    └── vibe-sdlc-p5-release/skill.md  ← Phase 5: Release & iterate
+    ├── vibe-sdlc-spec/             ← Phase 1 + examples/docs/
+    ├── vibe-sdlc-issues/skill.md   ← Phase 2: Task mounting
+    ├── vibe-sdlc-dev/skill.md      ← Phase 3: Development loop
+    ├── vibe-sdlc-pr/skill.md       ← Phase 4: CI monitoring & post-merge
+    └── vibe-sdlc-release/skill.md  ← Phase 5: Release & iterate
 ```
 
 ---
@@ -407,7 +407,7 @@ Vibe-SDLC/
 | [`Vibe-SDLC.md`](./Vibe-SDLC.md) | Full SOP specification (v8.1) with all workflow details |
 | [`skills/README.md`](./skills/README.md) | Skills detailed docs, phase responsibilities & usage examples |
 | [`skills/DEPLOY.md`](./skills/DEPLOY.md) | Deployment instructions |
-| [`skills/vibe-sdlc-p1-spec/examples/docs/`](./skills/vibe-sdlc-p1-spec/examples/docs/) | Complete spec document examples |
+| [`skills/vibe-sdlc-spec/examples/docs/`](./skills/vibe-sdlc-spec/examples/docs/) | Complete spec document examples |
 
 ---
 

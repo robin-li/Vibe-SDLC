@@ -10,7 +10,7 @@ skills/
 │   └── skill.md                     ← 發佈本地服務至公網
 ├── vibe-sdlc/
 │   └── skill.md                     ← 總覽與導航
-├── vibe-sdlc-p1-spec/
+├── vibe-sdlc-spec/
 │   ├── skill.md                     ← Phase 1：定義規格文件與計畫
 │   └── examples/docs/               ← 規格文件範例
 │       ├── 01-1-PRD.md              ← 產品需求文件範例
@@ -21,13 +21,13 @@ skills/
 │       ├── 03-Docs_Review_Report.md ← 規格審查報告範例
 │       ├── 04-CI_CD_Spec.md         ← CI/CD 規格文件範例
 │       └── API_Spec.yaml            ← OpenAPI 合約範例
-├── vibe-sdlc-p2-issues/
+├── vibe-sdlc-issues/
 │   └── skill.md                     ← Phase 2：任務掛載
-├── vibe-sdlc-p3-dev/
+├── vibe-sdlc-dev/
 │   └── skill.md                     ← Phase 3：開發循環
-├── vibe-sdlc-p4-pr/
+├── vibe-sdlc-pr/
 │   └── skill.md                     ← Phase 4：CI 監控與合併後作業
-└── vibe-sdlc-p5-release/
+└── vibe-sdlc-release/
     └── skill.md                     ← Phase 5：交付與迭代
 ```
 
@@ -118,24 +118,24 @@ git commit -m "Add Vibe-SDLC skills for AI-assisted development workflow"
 | 指令 | 用途 |
 |------|------|
 | `/vibe-sdlc` | 產出進度儀表板（里程碑進度、待審 PR、待驗證 Issue），自動判斷當前 Phase |
-| `/vibe-sdlc-p1-spec` | 撰寫或審查規格文件 |
-| `/vibe-sdlc-p2-issues` | 審核 Dev Plan → 建立 GitHub Issues |
-| `/vibe-sdlc-p3-dev` | 領取 Issue → 開發 → 測試 → Vibe Check → 自動建 PR |
-| `/vibe-sdlc-p4-pr` | 監控 CI → 修正失敗 → Merge 後更新 Dev Plan |
-| `/vibe-sdlc-p5-release` | 部署驗收 → 收集回饋 → 更新規格 |
+| `/vibe-sdlc-spec` | 撰寫或審查規格文件 |
+| `/vibe-sdlc-issues` | 審核 Dev Plan → 建立 GitHub Issues |
+| `/vibe-sdlc-dev` | 領取 Issue → 開發 → 測試 → Vibe Check → 自動建 PR |
+| `/vibe-sdlc-pr` | 監控 CI → 修正失敗 → Merge 後更新 Dev Plan |
+| `/vibe-sdlc-release` | 部署驗收 → 收集回饋 → 更新規格 |
 
 ## 典型工作流程
 
 ```
 專案啟動
-  └→ /vibe-sdlc-p1-spec     撰寫規格 → 審查 → 定稿
-      └→ /vibe-sdlc-p2-issues   審核計畫 → 建立 Issues
-          └→ /vibe-sdlc-p3-dev       領取 Issue #1 → 開發 → Vibe Check → 自動建 PR
-              └→ /vibe-sdlc-p4-pr        監控 CI → 修正失敗 → Merge → 更新 Dev Plan
-                  └→ /vibe-sdlc-p3-dev       領取 Issue #2 → ...（重複）
+  └→ /vibe-sdlc-spec     撰寫規格 → 審查 → 定稿
+      └→ /vibe-sdlc-issues   審核計畫 → 建立 Issues
+          └→ /vibe-sdlc-dev       領取 Issue #1 → 開發 → Vibe Check → 自動建 PR
+              └→ /vibe-sdlc-pr        監控 CI → 修正失敗 → Merge → 更新 Dev Plan
+                  └→ /vibe-sdlc-dev       領取 Issue #2 → ...（重複）
                       └→ ...
-                          └→ /vibe-sdlc-p5-release   里程碑完成 → 部署 → 回饋
-                              └→ /vibe-sdlc-p2-issues   下一輪迭代
+                          └→ /vibe-sdlc-release   里程碑完成 → 部署 → 回饋
+                              └→ /vibe-sdlc-issues   下一輪迭代
 ```
 
 ## 注意事項

@@ -1,5 +1,5 @@
 ---
-name: vibe-sdlc-p3-dev
+name: vibe-sdlc-dev
 description: >
   Vibe-SDLC Phase 3：開發循環 (Execution Loop)。領取 Issue 進行開發、測試、Vibe Check，通過後自動建立 PR。
   使用時機：日常開發，需要從看板領取 Issue 並實作功能。
@@ -363,7 +363,7 @@ gh pr view <PR-NUMBER> -R <OWNER>/<REPO> --json state -q '.state'
 
 ### PR Body 格式
 
-> **必須遵循 Phase 4 定義的「PR 格式規範」**（見 `/vibe-sdlc-p4-pr` skill）。
+> **必須遵循 Phase 4 定義的「PR 格式規範」**（見 `/vibe-sdlc-pr` skill）。
 
 ```markdown
 ## 變更摘要
@@ -501,7 +501,7 @@ Vibe Check 階段可能遇到「非本次變更造成的測試失敗」（既有
 10. Vibe Check 通過後，**立即自動推送分支 → 建立 PR → 回報 PR 連結**（無需等待人類核准）
     - 發佈「✅ Vibe Check 通過」Comment 至 Issue（含 PR 連結與測試結果）
     - 向開發者彙報 Vibe Check 結果 + PR 連結，提醒進行 Code Review
-    - 若 CI 失敗需修正，可呼叫 `/vibe-sdlc-p4-pr` 處理
+    - 若 CI 失敗需修正，可呼叫 `/vibe-sdlc-pr` 處理
 11. 若 Vibe Check 未通過，自行修正後重新執行測試，直到通過為止
 12. 若 Issue 屬於 Review 類任務（PR 策略為「無 PR」），參照上方「Review 類任務處理流程」：
     - 審查 → 發現確定性 bug → 直接修正 → 測試 → 建 PR → 一併報告 Review 結果與 PR 連結
