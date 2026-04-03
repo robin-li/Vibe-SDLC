@@ -122,6 +122,23 @@ Closes #N
 - 本地驗證：✅ Vibe Check 通過
 ```
 
+## 追加 Commit 至既有 PR 的安全檢查
+
+> **⚠️ 重要：向已有 PR 的分支推送新 commit 前，必須先確認 PR 仍為 OPEN。已合併的 PR 不會包含後續推送的 commit。**
+
+若需對已建立 PR 的分支追加 commit（例如修正 CI 失敗、回應 Code Review 意見），**必須**在推送前執行：
+
+```bash
+# 檢查 PR 狀態
+gh pr view <PR-NUMBER> -R <OWNER>/<REPO> --json state -q '.state'
+```
+
+| PR 狀態 | 處理方式 |
+|---------|---------|
+| `OPEN` | 正常推送至該分支，commit 會自動加入 PR |
+| `MERGED` | **禁止推送至該分支**。必須從最新 `main` 建立新分支、建立新 PR |
+| `CLOSED` | 確認是否需要重新開啟，或建立新分支與新 PR |
+
 ## Multi Sub Agent PR 流程
 
 當 Dev Plan 採用多 Sub Agent 並行開發時，PR 流程擴展為雙層審查：
