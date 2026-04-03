@@ -62,6 +62,7 @@ AI sẽ tự động phát hiện trạng thái dự án, tạo bảng tiến đ
 /vibe-sdlc-dev        ← Nhận Issue → phát triển → kiểm thử → tự động tạo PR
 /vibe-sdlc-pr         ← Giám sát CI → sửa lỗi → merge → cập nhật tiến độ
 /vibe-sdlc-release    ← Nghiệm thu milestone → thu thập phản hồi → vòng lặp tiếp theo
+/vibe-sdlc-status     ← Truy vấn trạng thái Agent → Tổng hợp STATUS.md
 ```
 
 <details>
@@ -113,6 +114,7 @@ Khởi động dự án
 | 3 | Vòng lặp phát triển | `/vibe-sdlc-dev` | Nhận Issue → triển khai → kiểm thử → Vibe Check → tự động tạo PR |
 | 4 | Giám sát CI & hậu merge | `/vibe-sdlc-pr` | Giám sát CI → sửa lỗi → merge → cập nhật Dev Plan → nhắc xác minh |
 | 5 | Bàn giao & lặp lại | `/vibe-sdlc-release` | Triển khai → nghiệm thu → thu thập phản hồi → cập nhật đặc tả → vòng lặp tiếp |
+| — | Truy vấn trạng thái Agent | `/vibe-sdlc-status` | Truy vấn trạng thái Agent → Tổng hợp STATUS.md → Cảnh báo bất thường |
 
 ---
 
@@ -397,7 +399,8 @@ Vibe-SDLC/
     ├── vibe-sdlc-issues/skill.md   ← Phase 2: Gắn kết task
     ├── vibe-sdlc-dev/skill.md      ← Phase 3: Vòng lặp phát triển
     ├── vibe-sdlc-pr/skill.md       ← Phase 4: Giám sát CI & hậu merge
-    └── vibe-sdlc-release/skill.md  ← Phase 5: Bàn giao & lặp lại
+    ├── vibe-sdlc-release/skill.md  ← Phase 5: Bàn giao & lặp lại
+    └── vibe-sdlc-status/skill.md  ← Truy vấn & tổng hợp trạng thái Agent
 ```
 
 ---

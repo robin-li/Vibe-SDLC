@@ -27,8 +27,10 @@ skills/
 │   └── skill.md                     ← Phase 3：開發循環
 ├── vibe-sdlc-pr/
 │   └── skill.md                     ← Phase 4：CI 監控與合併後作業
-└── vibe-sdlc-release/
-    └── skill.md                     ← Phase 5：交付與迭代
+├── vibe-sdlc-release/
+│   └── skill.md                     ← Phase 5：交付與迭代
+└── vibe-sdlc-status/
+    └── skill.md                     ← Agent 狀態查詢與彙整
 ```
 
 ## 目錄結構說明
@@ -123,6 +125,7 @@ git commit -m "Add Vibe-SDLC skills for AI-assisted development workflow"
 | `/vibe-sdlc-dev` | 領取 Issue → 開發 → 測試 → Vibe Check → 自動建 PR |
 | `/vibe-sdlc-pr` | 監控 CI → 修正失敗 → Merge 後更新 Dev Plan |
 | `/vibe-sdlc-release` | 部署驗收 → 收集回饋 → 更新規格 |
+| `/vibe-sdlc-status` | 查詢 Agent 狀態 → 彙整 STATUS.md |
 
 ## 典型工作流程
 

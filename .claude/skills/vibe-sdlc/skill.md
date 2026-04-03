@@ -82,6 +82,7 @@ user_invocable: true
 | 3 | 開發循環 (Execution Loop) | `/vibe-sdlc-dev` | 日常開發，領取 Issue 進行實作，Vibe Check 通過後自動建 PR |
 | 4 | CI 監控與合併後作業 | `/vibe-sdlc-pr` | PR 已建立，需監控 CI、處理失敗、或 Merge 後更新 Dev Plan |
 | 5 | 交付與迭代 (Release) | `/vibe-sdlc-release` | 里程碑完成，需部署與收集回饋 |
+| — | Agent 狀態查詢與彙整 | `/vibe-sdlc-status` | 查詢各 Agent 工作狀態、彙整 STATUS.md |
 
 ## 角色定義
 
@@ -225,6 +226,9 @@ gh pr checks {PR-number} -R {owner}/{repo}
 
 # 5. 部署現況偵測（若專案有部署腳本）
 #    見「步驟 1a：偵測部署現況」
+
+# 6. Agent 狀態（讀取 /docs/status/A-*.md）
+#    若無狀態檔，從 GitHub Issues 推斷（見 /vibe-sdlc-status）
 ```
 
 ### 步驟 1a：偵測部署現況
@@ -319,6 +323,13 @@ Tunnel 狀態獨立判定：
 │ 🔍 待驗證：{N} 個                            │
 │    - #{num} {title}                          │
 └──────────────────────────────────────────────┘
+
+┌─ Agent 活動 ──────────────────────────────────┐
+│ {🟢/🟡/🔴/⚪} {Agent}  #{N} {簡述} ({耗時})  │
+│ {🟢/🟡/🔴/⚪} {Agent}  #{N} {簡述} ({狀態})  │
+│                                               │
+│ 💡 詳細資訊：/vibe-sdlc-status                │
+└───────────────────────────────────────────────┘
 
 ┌─ 部署現況 ───────────────────────────────────┐
 │ 🐳 Docker：{🟢 運行中 / 🟡 部分運行 / 🔴 未運行 / ⚪ 未配置}  │

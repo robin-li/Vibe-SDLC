@@ -44,6 +44,7 @@ Vibe-SDLC 是一個定義 Vibe-Coding 軟體開發生命週期（Software Develo
 | 3 | 開發循環 | `/vibe-sdlc-dev` | 領取 Issue → 實作 → 測試 → Vibe Check → 自動建 PR |
 | 4 | CI 監控與合併後作業 | `/vibe-sdlc-pr` | 監控 CI → 修正失敗 → Merge 後更新 Dev Plan → 手動驗證提醒 |
 | 5 | 交付與迭代 | `/vibe-sdlc-release` | 部署驗收 → 收集回饋 → 更新規格 → 下一輪迭代 |
+| — | Agent 狀態查詢與彙整 | `/vibe-sdlc-status` | 查詢 Agent 工作狀態、彙整 STATUS.md |
 
 ### Skill 維護規則 
 
@@ -81,7 +82,8 @@ Vibe-SDLC/
 │   ├── vibe-sdlc-issues/skill.md   ← Phase 2 skill
 │   ├── vibe-sdlc-dev/skill.md      ← Phase 3 skill
 │   ├── vibe-sdlc-pr/skill.md       ← Phase 4 skill
-│   └── vibe-sdlc-release/skill.md  ← Phase 5 skill
+│   ├── vibe-sdlc-release/skill.md  ← Phase 5 skill
+│   └── vibe-sdlc-status/skill.md  ← Agent 狀態查詢與彙整
 └── .claude/skills/                     ← Skills 開發主目錄（本專案同時使用）
     ├── Vibe-SDLC-README.md             ← 與 skills/README.md 同步
     ├── vibe-sdlc/skill.md             ← 總覽與導航
@@ -89,7 +91,8 @@ Vibe-SDLC/
     ├── vibe-sdlc-issues/skill.md   ← Phase 2 skill
     ├── vibe-sdlc-dev/skill.md      ← Phase 3 skill
     ├── vibe-sdlc-pr/skill.md       ← Phase 4 skill
-    └── vibe-sdlc-release/skill.md  ← Phase 5 skill
+    ├── vibe-sdlc-release/skill.md  ← Phase 5 skill
+    └── vibe-sdlc-status/skill.md  ← Agent 狀態查詢與彙整
 ```
 
 ### 規格文件範例

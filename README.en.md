@@ -62,6 +62,7 @@ The AI will automatically detect project status, generate a progress dashboard, 
 /vibe-sdlc-dev        ← Pick up Issue → develop → test → auto-create PR
 /vibe-sdlc-pr         ← Monitor CI → fix failures → merge → update progress
 /vibe-sdlc-release    ← Milestone acceptance → collect feedback → next iteration
+/vibe-sdlc-status     ← Query Agent status → Consolidate STATUS.md
 ```
 
 <details>
@@ -112,6 +113,7 @@ Project Start
 | 3 | Development Loop | `/vibe-sdlc-dev` | Pick Issue → implement → test → Vibe Check → auto-create PR |
 | 4 | CI Monitor & Post-Merge | `/vibe-sdlc-pr` | Monitor CI → fix failures → merge → update Dev Plan → verification reminder |
 | 5 | Release & Iterate | `/vibe-sdlc-release` | Deploy → acceptance → collect feedback → update specs → next iteration |
+| — | Agent Status Query | `/vibe-sdlc-status` | Query Agent working status → Consolidate STATUS.md → Alert on anomalies |
 
 ---
 
@@ -395,7 +397,8 @@ Vibe-SDLC/
     ├── vibe-sdlc-issues/skill.md   ← Phase 2: Task mounting
     ├── vibe-sdlc-dev/skill.md      ← Phase 3: Development loop
     ├── vibe-sdlc-pr/skill.md       ← Phase 4: CI monitoring & post-merge
-    └── vibe-sdlc-release/skill.md  ← Phase 5: Release & iterate
+    ├── vibe-sdlc-release/skill.md  ← Phase 5: Release & iterate
+    └── vibe-sdlc-status/skill.md  ← Agent status query & consolidation
 ```
 
 ---

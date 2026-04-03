@@ -62,6 +62,7 @@ AI 會自動偵測專案狀態、產出進度儀表板，並建議下一步。
 /vibe-sdlc-dev        ← 領取 Issue → 開發 → 測試 → 自動建 PR
 /vibe-sdlc-pr         ← 監控 CI → 修正失敗 → Merge 後更新進度
 /vibe-sdlc-release    ← 里程碑驗收 → 收集回饋 → 啟動下一輪迭代
+/vibe-sdlc-status     ← 查詢 Agent 狀態 → 彙整 STATUS.md
 ```
 
 <details>
@@ -112,6 +113,7 @@ AI 會自動偵測專案狀態、產出進度儀表板，並建議下一步。
 | 3 | 開發循環 | `/vibe-sdlc-dev` | 領取 Issue → 實作 → 測試 → Vibe Check → 自動建 PR |
 | 4 | CI 監控與合併後作業 | `/vibe-sdlc-pr` | 監控 CI → 修正失敗 → Merge → 更新 Dev Plan → 驗證提醒 |
 | 5 | 交付與迭代 | `/vibe-sdlc-release` | 部署驗收 → 收集回饋 → 更新規格 → 啟動下一輪迭代 |
+| — | Agent 狀態查詢 | `/vibe-sdlc-status` | 查詢 Agent 工作狀態 → 彙整 STATUS.md → 異常提醒 |
 
 ---
 
@@ -394,7 +396,8 @@ Vibe-SDLC/
     ├── vibe-sdlc-issues/skill.md   ← Phase 2：任務掛載
     ├── vibe-sdlc-dev/skill.md      ← Phase 3：開發循環
     ├── vibe-sdlc-pr/skill.md       ← Phase 4：CI 監控與合併後作業
-    └── vibe-sdlc-release/skill.md  ← Phase 5：交付與迭代
+    ├── vibe-sdlc-release/skill.md  ← Phase 5：交付與迭代
+    └── vibe-sdlc-status/skill.md  ← Agent 狀態查詢與彙整
 ```
 
 ---

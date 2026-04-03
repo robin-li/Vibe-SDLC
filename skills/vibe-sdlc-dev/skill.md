@@ -141,6 +141,54 @@ git push origin --delete dev/main-agent 2>/dev/null
 
 > 詳見 `/vibe-sdlc-pr`「規格文件同步觸發條件」。PR 合併後，AI 應根據該規則提示開發者是否需要同步更新規格文件。
 
+## Agent 狀態檔維護規範
+
+> 詳細的狀態檔架構與格式定義見 `/vibe-sdlc-status`。以下為 P3 開發過程中的寫入規則。
+
+每個 Agent 在開發過程中**必須**維護自己的狀態檔（`/docs/status/{agent-id}.md`），確保其他人可隨時掌握該 Agent 的工作狀態。
+
+### 寫入時機
+
+| 事件 | 狀態檔操作 |
+|------|-----------|
+| 領取任務（步驟 3） | 「當前任務」新增 Issue，狀態 🟢 |
+| 完成重要階段 | 更新狀態說明 |
+| 遇到阻塞（自行排查中） | 狀態改 🟡，「注意事項」新增描述 |
+| 無法繼續（需人類介入） | 狀態改 🔴，「注意事項」新增原因 |
+| Vibe Check 通過 + PR 建立 | 狀態說明更新為「PR #N 已建立」 |
+| 任務完成（PR 合併後） | 從「當前任務」移除，更新「近期待辦」 |
+
+### 單 Agent 模式
+
+若專案僅有一個 Agent（A-Main），可省略狀態檔維護。狀態將由 `/vibe-sdlc-status` 從 GitHub Issues/PR 自動聚合。
+
+## Telegram 推播規範
+
+> 若 Dev Plan 協作策略中定義了 TG 推播設定（Bot Token + Chat ID），Agent 在關鍵事件發生時**必須**透過 TG sendMessage API 推送通知。
+
+### 推播事件
+
+| 事件 | 推播內容 | 推播條件 |
+|------|---------|---------|
+| 領取任務 | `🚀 {agent} 領取 #{N} {標題}` | 必須 |
+| 遇到阻塞 | `⚠️ {agent} #{N} 遇到阻塞：{簡述}` | 必須 |
+| 無法繼續 | `❌ {agent} #{N} 無法繼續：{原因}` | 必須 |
+| Vibe Check 通過 | `✅ {agent} #{N} 完成，PR #{M} 已建立` | 必須 |
+| 重要進度 | `📋 {agent} #{N} {進度描述}` | 建議 |
+
+### 推播方式
+
+使用 curl 呼叫 TG Bot API：
+
+```bash
+curl -s -X POST "https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage" \
+  -d chat_id="${TG_CHAT_ID}" \
+  -d text="${MESSAGE}" \
+  -d parse_mode="Markdown"
+```
+
+> **Bot Token 與 Chat ID** 定義於 Dev Plan 的「協作策略 — 通知設定」段落中，或透過環境變數 `TG_BOT_TOKEN` / `TG_CHAT_ID` 注入。Agent 應優先讀取 Dev Plan 設定，若無則 fallback 至環境變數。若兩者皆無，則跳過推播（不阻擋開發流程）。
+
 ## Issue 狀態追蹤規範
 
 > **Issue 是跨 session 的唯一溝通媒介。** 所有角色（AI 與人類）都應能透過 Issue Comments 了解任務的最新進展，而無需進入特定的 session 或 worktree。

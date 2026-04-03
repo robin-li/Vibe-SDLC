@@ -1088,6 +1088,39 @@ flowchart LR
 | **Bootstrap 階段** | Sub Agent 建立 PR 時直接指定 `gh pr create --reviewer <H-Director-username>` |
 | **Milestone 驗收** | A-Main 在 GitHub Issue 中 `@H-Director` 並附上驗收檢查清單 |
 
+#### Telegram 推播通知設定
+
+Agent 在關鍵事件發生時，透過 TG Bot API 推送通知至指定群組，讓 H-Director 即時掌握開發動態。
+
+**設定參數**（定義於專案環境變數或 `.env`）：
+
+| 參數 | 說明 | 範例 |
+|------|------|------|
+| `TG_BOT_TOKEN` | Telegram Bot Token | `123456:ABC-DEF...` |
+| `TG_CHAT_ID` | 目標群組或頻道的 Chat ID | `-1001234567890` |
+
+**推播事件與格式**：
+
+| 事件 | 訊息格式 | 推播條件 |
+|------|---------|---------|
+| 領取任務 | `🚀 {agent} 領取 #{N} {標題}` | 必須 |
+| 遇到阻塞 | `⚠️ {agent} #{N} 遇到阻塞：{簡述}` | 必須 |
+| 無法繼續 | `❌ {agent} #{N} 無法繼續：{原因}` | 必須 |
+| Vibe Check 通過 | `✅ {agent} #{N} 完成，PR #{M} 已建立` | 必須 |
+| PR 合併 | `✅ {agent} #{N} 完成，PR #{M} 已合併` | 必須 |
+| 重要進度 | `📋 {agent} #{N} {進度描述}` | 建議 |
+
+**呼叫方式**：
+
+```bash
+curl -s -X POST "https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage" \
+  -d chat_id="${TG_CHAT_ID}" \
+  -d text="${MESSAGE}" \
+  -d parse_mode="Markdown"
+```
+
+> **注意**：若 `TG_BOT_TOKEN` 或 `TG_CHAT_ID` 未設定，則跳過推播，不阻擋開發流程。Bot Token 屬敏感資訊，嚴禁 commit 至版本控制。
+
 #### PR 範圍限制
 
 | Agent 角色 | 允許修改路徑 |
