@@ -85,7 +85,7 @@ user_invocable: true
 | 2 | 任務掛載 (Plan → Issues) | `/vibe-sdlc-issues` | 規格定稿，需建立 GitHub Issues |
 | 3 | 開發循環 (Execution Loop) | `/vibe-sdlc-dev` | 日常開發，領取 Issue 進行實作，Vibe Check 通過後自動建 PR |
 | 4 | CI 監控與合併後作業 | `/vibe-sdlc-pr` | PR 已建立，需監控 CI、處理失敗、或 Merge 後更新 Dev Plan |
-| 5 | 交付與迭代 (Release) | `/vibe-sdlc-release` | 里程碑完成，需部署與收集回饋 |
+| 5 | 回饋收集、Release 與迭代 | `/vibe-sdlc-release` | 里程碑收尾完成（由 P4 觸發），需收集回饋、發佈 Release |
 | — | Agent 狀態查詢與彙整 | `/vibe-sdlc-status` | 查詢各 Agent 工作狀態、彙整 STATUS.md |
 
 ## 角色定義
@@ -379,8 +379,8 @@ Tunnel 狀態獨立判定：
 | 規格文件齊全但無 Issues | Phase 2 | 呼叫 `/vibe-sdlc-issues` |
 | 有 open Issues 且無 open PR | Phase 3 | 呼叫 `/vibe-sdlc-dev` 領取 Issue |
 | 有 open PR 待審 | Phase 4 | 審閱 PR，決定 Merge 或要求修改 |
-| 某 Milestone 所有 Issue closed | Phase 5 | 呼叫 `/vibe-sdlc-release` 驗收 |
-| 有待驗證 Issue（`verification` 標籤） | Phase 5 | 提醒進行手動驗證 |
+| 某 Milestone 所有 Issue closed | Phase 4 收尾 → Phase 5 | 若尚未產出里程碑完成報告，先執行 P4 收尾；否則呼叫 `/vibe-sdlc-release` |
+| 有待驗證 Issue（`verification` 標籤） | Phase 4 | 提醒進行手動驗證 |
 
 
 ### 步驟 5：Context 管理建議

@@ -43,7 +43,7 @@ Vibe-SDLC 是一個定義 Vibe-Coding 軟體開發生命週期（Software Develo
 | 2 | 任務掛載 | `/vibe-sdlc-issues` | 建立 Labels/Milestones → 開發 Issues → 驗證 Issues → Project 看板 |
 | 3 | 開發循環 | `/vibe-sdlc-dev` | 領取 Issue → 實作 → 測試 → Vibe Check → 自動建 PR |
 | 4 | CI 監控與合併後作業 | `/vibe-sdlc-pr` | 監控 CI → 修正失敗 → Merge 後更新 Dev Plan → 手動驗證提醒 |
-| 5 | 交付與迭代 | `/vibe-sdlc-release` | 部署驗收 → 收集回饋 → 更新規格 → 下一輪迭代 |
+| 5 | 回饋收集、Release 與迭代 | `/vibe-sdlc-release` | 收集回饋 → Release 發佈 → 啟動下一輪迭代 |
 | — | Agent 狀態查詢與彙整 | `/vibe-sdlc-status` | 查詢 Agent 工作狀態、彙整 STATUS.md |
 
 ### Skill 維護規則 

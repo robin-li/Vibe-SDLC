@@ -30,7 +30,7 @@ skills/
 ├── vibe-sdlc-pr/
 │   └── skill.md                     ← Phase 4：CI 監控與合併後作業
 ├── vibe-sdlc-release/
-│   └── skill.md                     ← Phase 5：交付與迭代
+│   └── skill.md                     ← Phase 5：回饋收集、Release 與迭代
 └── vibe-sdlc-status/
     └── skill.md                     ← Agent 狀態查詢與彙整
 ```
