@@ -74,6 +74,8 @@ Vibe-SDLC/
 ├── README.md                           ← 專案門面說明（含 Quick Start）
 ├── Vibe-SDLC.md                        ← 完整 SOP 規範文件
 ├── install.sh                          ← 一鍵安裝腳本
+├── references/                         ← 參考文件（帳號配置指南等）
+│   └── multi-account-setup.md          ← 多帳號協作配置指南
 ├── skills/                             ← Skills 發佈資源（由 .claude/skills/ 同步而來）
 │   ├── README.md                       ← 完整使用說明與範例
 │   ├── DEPLOY.md                       ← 部署方式說明

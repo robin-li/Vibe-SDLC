@@ -114,7 +114,7 @@ user_invocable: true
 
 ### 文件結構 (必須包含以下章節)
 
-1. **角色定義 (Role Registry)**：全文唯一角色定義來源
+1. **角色定義 (Role Registry)**：全文唯一角色定義來源（含 GitHub 帳號與認證配置）
 2. **項目概況與時間表**：里程碑 Gantt 圖 (Mermaid)、工作量估算
 3. **里程碑定義**：每個 Milestone 的目標、AI 執行策略、交付物、人類決策點
 4. **任務清單**：任務總覽表格 + 任務詳細描述 + 並行群組視覺化 (Mermaid)
@@ -125,20 +125,22 @@ user_invocable: true
 
 ### 角色定義格式
 
-必須在文件最開頭以表格定義所有角色，包含：角色代號、角色名稱、類別 (🧑 人類 / 🤖 AI)、說明。後續全文引用角色時必須使用此處定義的代號，**禁止前後不一致**。
+必須在文件最開頭以表格定義所有角色，包含：角色代號、角色名稱、類別 (🧑 人類 / 🤖 AI)、**GitHub 帳號**、**Git Author**、說明。後續全文引用角色時必須使用此處定義的代號，**禁止前後不一致**。
 
 建議角色配置：
 
-| 類別 | 建議角色 | 說明 |
-|------|---------|------|
-| 🧑 人類 | H-Director (導演) | 最高決策、規格審查、Milestone 驗收、PR 合併 |
-| 🧑 人類 | H-Reviewer (審查員) | 特定領域審查（安全/合規性），可由 Director 兼任 |
-| 🧑 人類 | H-UxReviewer (UX 審查員) | UX 相關審查（視覺效果、互動體驗、裝置相容性），可由 Director 兼任或由具備 UX 能力的 AI Agent 代理執行 |
-| 🤖 AI | A-Main (主代理) | 統籌拆解 Issue、協調 Sub Agents、整合驗證 |
-| 🤖 AI | A-Backend (後端子代理) | 專注後端 API、DB、ORM |
-| 🤖 AI | A-Frontend (前端子代理) | 專注 UI 組件、頁面、狀態管理 |
-| 🤖 AI | A-QA (測試子代理) | E2E 測試、覆蓋率 |
-| 🤖 AI | A-DevOps (部署子代理) | CI/CD、Docker、監控 |
+| 類別 | 建議角色 | GitHub 帳號 | 說明 |
+|------|---------|------------|------|
+| 🧑 人類 | H-Director (導演) | `@owner` | 最高決策、規格審查、Milestone 驗收、PR 合併 |
+| 🧑 人類 | H-Reviewer (審查員) | *(同 Director 或獨立帳號)* | 特定領域審查（安全/合規性），可由 Director 兼任 |
+| 🧑 人類 | H-UxReviewer (UX 審查員) | *(同 Director 或獨立帳號)* | UX 相關審查，可由 Director 兼任或由 AI Agent 代理 |
+| 🤖 AI | A-Main (主代理) | *(同 Director 或獨立帳號)* | 統籌拆解 Issue、協調 Sub Agents、整合驗證 |
+| 🤖 AI | A-Backend (後端子代理) | `@ext-dev 或 @owner` | 專注後端 API、DB、ORM |
+| 🤖 AI | A-Frontend (前端子代理) | `@ext-dev 或 @owner` | 專注 UI 組件、頁面、狀態管理 |
+| 🤖 AI | A-QA (測試子代理) | *(同 Director 或獨立帳號)* | E2E 測試、覆蓋率 |
+| 🤖 AI | A-DevOps (部署子代理) | *(同 Director 或獨立帳號)* | CI/CD、Docker、監控 |
+
+> **多帳號協作**：多個角色可共用同一 GitHub 帳號（單人專案），也可每個角色使用獨立帳號（多人或外部成員協作）。角色表中需填寫 `GitHub 帳號` 與 `Git Author`，並在 §1.5 中配置認證方式與 Repo 權限。詳細配置步驟請參考 [帳號配置指南](../../../references/multi-account-setup.md)。
 
 ### 任務總覽表格格式
 
