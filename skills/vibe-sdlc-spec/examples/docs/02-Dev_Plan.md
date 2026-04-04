@@ -115,7 +115,7 @@ git config --local user.name "Alice"
 git config --local user.email "alice@example.com"
 ```
 
-> **安全提醒**：PAT (Personal Access Token) 與 `GH_TOKEN` 等敏感資訊**嚴禁寫入 Dev Plan 或任何版控檔案**，應放在 `.env` 檔案中（已加入 `.gitignore`）。詳細配置步驟請參考 [帳號配置指南](../../../references/multi-account-setup.md)。
+> **安全提醒**：PAT (Personal Access Token) 與 `GH_TOKEN` 等敏感資訊**嚴禁寫入 Dev Plan 或任何版控檔案**，應放在 `.env` 檔案中（已加入 `.gitignore`）。詳細配置步驟請參考 [帳號配置指南](../../references/multi-account-setup.md)。
 
 ---
 

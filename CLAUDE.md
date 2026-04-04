@@ -74,13 +74,11 @@ Vibe-SDLC/
 ├── README.md                           ← 專案門面說明（含 Quick Start）
 ├── Vibe-SDLC.md                        ← 完整 SOP 規範文件
 ├── install.sh                          ← 一鍵安裝腳本
-├── references/                         ← 參考文件（帳號配置指南等）
-│   └── multi-account-setup.md          ← 多帳號協作配置指南
 ├── skills/                             ← Skills 發佈資源（由 .claude/skills/ 同步而來）
 │   ├── README.md                       ← 完整使用說明與範例
 │   ├── DEPLOY.md                       ← 部署方式說明
 │   ├── vibe-sdlc/skill.md             ← 總覽與導航
-│   ├── vibe-sdlc-spec/             ← Phase 1 skill + examples/docs/
+│   ├── vibe-sdlc-spec/             ← Phase 1 skill + examples/docs/ + references/
 │   ├── vibe-sdlc-issues/skill.md   ← Phase 2 skill
 │   ├── vibe-sdlc-dev/skill.md      ← Phase 3 skill
 │   ├── vibe-sdlc-pr/skill.md       ← Phase 4 skill
@@ -89,7 +87,7 @@ Vibe-SDLC/
 └── .claude/skills/                     ← Skills 開發主目錄（本專案同時使用）
     ├── Vibe-SDLC-README.md             ← 與 skills/README.md 同步
     ├── vibe-sdlc/skill.md             ← 總覽與導航
-    ├── vibe-sdlc-spec/             ← Phase 1 skill + examples/docs/
+    ├── vibe-sdlc-spec/             ← Phase 1 skill + examples/docs/ + references/
     ├── vibe-sdlc-issues/skill.md   ← Phase 2 skill
     ├── vibe-sdlc-dev/skill.md      ← Phase 3 skill
     ├── vibe-sdlc-pr/skill.md       ← Phase 4 skill

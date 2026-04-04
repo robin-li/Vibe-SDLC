@@ -140,7 +140,7 @@ user_invocable: true
 | 🤖 AI | A-QA (測試子代理) | *(同 Director 或獨立帳號)* | E2E 測試、覆蓋率 |
 | 🤖 AI | A-DevOps (部署子代理) | *(同 Director 或獨立帳號)* | CI/CD、Docker、監控 |
 
-> **多帳號協作**：多個角色可共用同一 GitHub 帳號（單人專案），也可每個角色使用獨立帳號（多人或外部成員協作）。角色表中需填寫 `GitHub 帳號` 與 `Git Author`，並在 §1.5 中配置認證方式與 Repo 權限。詳細配置步驟請參考 [帳號配置指南](../../../references/multi-account-setup.md)。
+> **多帳號協作**：多個角色可共用同一 GitHub 帳號（單人專案），也可每個角色使用獨立帳號（多人或外部成員協作）。角色表中需填寫 `GitHub 帳號` 與 `Git Author`，並在 §1.5 中配置認證方式與 Repo 權限。詳細配置步驟請參考 [帳號配置指南](./references/multi-account-setup.md)。
 
 ### 任務總覽表格格式
 
