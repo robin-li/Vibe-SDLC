@@ -12,15 +12,17 @@ skills/
 │   └── skill.md                     ← 總覽與導航
 ├── vibe-sdlc-spec/
 │   ├── skill.md                     ← Phase 1：定義規格文件與計畫
-│   └── examples/docs/               ← 規格文件範例
-│       ├── 01-1-PRD.md              ← 產品需求文件範例
-│       ├── 01-2-SRD.md              ← 系統需求文件範例
-│       ├── 01-3-API_Spec.md         ← API 介面規格範例
-│       ├── 01-4-UI_UX_Design.md     ← UI/UX 設計文件範例
-│       ├── 02-Dev_Plan.md           ← 開發計畫範例
-│       ├── 03-Docs_Review_Report.md ← 規格審查報告範例
-│       ├── 04-CI_CD_Spec.md         ← CI/CD 規格文件範例
-│       └── API_Spec.yaml            ← OpenAPI 合約範例
+│   ├── examples/docs/               ← 規格文件範例
+│   │   ├── 01-1-PRD.md              ← 產品需求文件範例
+│   │   ├── 01-2-SRD.md              ← 系統需求文件範例
+│   │   ├── 01-3-API_Spec.md         ← API 介面規格範例
+│   │   ├── 01-4-UI_UX_Design.md     ← UI/UX 設計文件範例
+│   │   ├── 02-Dev_Plan.md           ← 開發計畫範例
+│   │   ├── 03-Docs_Review_Report.md ← 規格審查報告範例
+│   │   ├── 04-CI_CD_Spec.md         ← CI/CD 規格文件範例
+│   │   └── API_Spec.yaml            ← OpenAPI 合約範例
+│   └── references/
+│       └── multi-account-setup.md   ← 多帳號協作配置指南
 ├── vibe-sdlc-issues/
 │   └── skill.md                     ← Phase 2：任務掛載
 ├── vibe-sdlc-dev/
