@@ -36,6 +36,7 @@ user_invocable: true
 | API 介面合約 | `API_Spec.yaml` | `/docs/API_Spec.yaml` | OpenAPI 規格 |
 | 開發執行計畫 | `02-Dev_Plan.md` | `/docs/02-Dev_Plan.md` | 里程碑、任務拆解、依賴關係 |
 | 規格審查報告 | `03-Docs_Review_Report.md` | `/docs/03-Docs_Review_Report.md` | 交叉比對結果、不一致與遺漏項目 |
+| UI/UX 設計文件（選用） | `01-4-UI_UX_Design.md` | `/docs/01-4-UI_UX_Design.md` | UI/UX 設計規格（視覺風格、互動流程、Design Tokens），若 PRD 衍生 UI/UX 需求時建立 |
 | CI/CD 規格文件（選用） | `04-CI_CD_Spec.md` | `/docs/04-CI_CD_Spec.md` | CI Workflow 定義、品質閘門、Docker 部署配置（複雜專案建議獨立，Dev Plan 以連結引用） |
 
 **重要**：
@@ -376,8 +377,8 @@ flowchart LR
 3. 若規格文件已存在：詢問開發者是要修改規格還是進行交叉比對審查
 4. **修改既有規格文件時**，必須同步更新該文件的版本號、最後更新日期與版本修訂說明表格（詳見「版本修訂記錄格式規範」）
 5. 執行審查時，逐一讀取所有規格文件，系統性比對後產出報告
-5. 檢查規格文件間的交互參考是否完整：
+6. 檢查規格文件間的交互參考是否完整：
    - PRD 各功能需求是否標注對應的 UI/UX 設計章節參考（如有 UI/UX 設計文件）
    - SRD 前端技術棧是否參考 UI/UX 的 Design Tokens
    - UI/UX 設計文件是否反向參考 PRD、SRD、API Spec
-6. 審查完成且無遺漏後，提示開發者可進入 Phase 2（`/vibe-sdlc-issues`）
+7. 審查完成且無遺漏後，提示開發者可進入 Phase 2（`/vibe-sdlc-issues`）

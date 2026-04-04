@@ -378,7 +378,8 @@ Tunnel 狀態獨立判定：
 | `/docs` 下缺少規格文件 | Phase 1 | 呼叫 `/vibe-sdlc-spec` |
 | 規格文件齊全但無 Issues | Phase 2 | 呼叫 `/vibe-sdlc-issues` |
 | 有 open Issues 且無 open PR | Phase 3 | 呼叫 `/vibe-sdlc-dev` 領取 Issue |
-| 有 open PR 待審 | Phase 4 | 審閱 PR，決定 Merge 或要求修改 |
+| 有 open Issues 且有 open PR | Phase 3 + 4 並行 | 先處理 Phase 4（監控 PR CI / Code Review），同時可領取下一個 Issue 進入 Phase 3 |
+| 有 open PR 待審（無 open Issues） | Phase 4 | 審閱 PR，決定 Merge 或要求修改 |
 | 某 Milestone 所有 Issue closed | Phase 4 收尾 → Phase 5 | 若尚未產出里程碑完成報告，先執行 P4 收尾；否則呼叫 `/vibe-sdlc-release` |
 | 有待驗證 Issue（`verification` 標籤） | Phase 4 | 提醒進行手動驗證 |
 

@@ -149,7 +149,7 @@ gh pr view <PR-NUMBER> -R <OWNER>/<REPO> --json state -q '.state'
 
 ### 分支命名規範
 
-Sub Agent 建立的分支必須遵循：`feat/<agent>/<issue-N>-<簡述>`
+Sub Agent 建立的分支必須遵循：`feat/<agent>/issue-N-簡述`
 
 例如：`feat/backend/issue-12-auth-api`、`feat/frontend/issue-15-login-ui`
 
@@ -180,7 +180,7 @@ Sub Agent 的 PR **禁止** 修改其負責範圍以外的檔案：
 | A-Backend | `/backend/**` |
 | A-Frontend | `/frontend/**` |
 | A-QA | `/tests/**` |
-| A-DevOps | `.github/**`, `docker/**` |
+| A-DevOps | `.github/**`, `docker/**`, `Dockerfile`, `docker-compose.yml` |
 | A-Main | 全專案 (整合用) |
 
 ### 合併衝突處理
