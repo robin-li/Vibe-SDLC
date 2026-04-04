@@ -27,16 +27,18 @@
 
 ### 1.1 角色一覽
 
-| 角色代號 | 角色名稱 | 類別 | 說明 |
-|---------|---------|------|------|
-| **H-Director** | 導演 (Director) | 🧑 人類 | 專案最高決策者。負責規格審查、PR 合併、Milestone 驗收、方向調整。 |
-| **H-Reviewer** | 審查員 (Reviewer) | 🧑 人類 | 特定領域審查（安全/合規性），可由 Director 兼任。 |
-| **H-UxReviewer** | UX 審查員 (UX Reviewer) | 🧑 人類 | UX 相關審查（視覺效果、互動體驗、裝置相容性），可由 Director 兼任或由具備 UX 能力的 AI Agent 代理執行。 |
-| **A-Main** | 主代理 (Main Agent) | 🤖 AI | 統籌全局。負責拆解 Issue、協調 Sub Agents、整合驗證。 |
-| **A-Backend** | 後端子代理 | 🤖 AI | 專注 `/backend/**`。負責 API、DB、LLM 整合、後端單元測試。 |
-| **A-Frontend** | 前端子代理 | 🤖 AI | 專注 `/frontend/**`。負責 UI 組件、頁面、語音輸入、圖表、狀態管理。 |
-| **A-QA** | 測試子代理 | 🤖 AI | 專注 `/tests/**`。負責 E2E 測試腳本。 |
-| **A-DevOps** | 部署子代理 | 🤖 AI | 專注 `.github/**`、`docker/**`。負責 CI/CD、容器化。 |
+| 角色代號 | 角色名稱 | 類別 | GitHub 帳號 | Git Author | 說明 |
+|---------|---------|------|------------|------------|------|
+| **H-Director** | 導演 (Director) | 🧑 人類 | `@robin-li` | `Robin Li <robin@example.com>` | 專案最高決策者。負責規格審查、PR 合併、Milestone 驗收、方向調整。 |
+| **H-Reviewer** | 審查員 (Reviewer) | 🧑 人類 | *(同 H-Director)* | *(同 H-Director)* | 特定領域審查（安全/合規性），可由 Director 兼任。 |
+| **H-UxReviewer** | UX 審查員 (UX Reviewer) | 🧑 人類 | *(同 H-Director)* | *(同 H-Director)* | UX 相關審查，可由 Director 兼任或由具備 UX 能力的 AI Agent 代理執行。 |
+| **A-Main** | 主代理 (Main Agent) | 🤖 AI | *(同 H-Director)* | *(同 H-Director)* | 統籌全局。負責拆解 Issue、協調 Sub Agents、整合驗證。 |
+| **A-Backend** | 後端子代理 | 🤖 AI | `@alice-dev` | `Alice <alice@example.com>` | 專注 `/backend/**`。負責 API、DB、LLM 整合、後端單元測試。 |
+| **A-Frontend** | 前端子代理 | 🤖 AI | `@bob-dev` | `Bob <bob@example.com>` | 專注 `/frontend/**`。負責 UI 組件、頁面、語音輸入、圖表、狀態管理。 |
+| **A-QA** | 測試子代理 | 🤖 AI | *(同 H-Director)* | *(同 H-Director)* | 專注 `/tests/**`。負責 E2E 測試腳本。 |
+| **A-DevOps** | 部署子代理 | 🤖 AI | *(同 H-Director)* | *(同 H-Director)* | 專注 `.github/**`、`docker/**`。負責 CI/CD、容器化。 |
+
+> **帳號說明**：`GitHub 帳號` 為該角色操作 `gh` CLI 時使用的身份；`Git Author` 為 commit 署名。多個角色可共用同一帳號。外部成員使用自己的帳號參與時，需具備 Repo 的對應權限（詳見 §1.5）。
 
 ### 1.2 人類角色職責詳述
 
@@ -73,6 +75,47 @@ flowchart LR
     DO -->|PR| M2
     M2 -->|通過| D2["🧑 H-Director<br/>終審 & Merge"]
 ```
+
+### 1.5 帳號與認證配置
+
+#### 認證方式
+
+| 模式 | 適用場景 | 配置方式 |
+|------|---------|---------|
+| **各自登入** | 多人多機協作 | 每位成員在自己的機器上執行 `gh auth login`，Claude Code 自動使用當前登入帳號 |
+| **環境變數** | 單機多 Agent | 每個 Agent 的 session 或 worktree 設定獨立的 `GH_TOKEN` 環境變數 |
+| **GitHub App** | CI/自動化場景 | 建立專用 GitHub App，使用 Installation Token 操作 |
+
+#### Repo 權限配置
+
+| 角色類型 | 建議權限 | 設定方式 |
+|---------|---------|---------|
+| **Owner** (H-Director) | Admin | Repo Settings → Collaborators |
+| **內部成員** (同組織) | Write | 透過 GitHub Team 授予 |
+| **外部成員** | Write (Collaborator) 或 Fork + PR | Repo Settings → Collaborators → Invite |
+
+#### Branch Protection Rules 建議
+
+為配合多帳號協作，建議在 Repo Settings → Branches 設定：
+
+| 規則 | 建議值 | 說明 |
+|------|--------|------|
+| Require pull request before merging | ✅ 啟用 | 所有變更必須透過 PR |
+| Required approvals | 1 | 至少 H-Director 核准 |
+| Require status checks to pass | ✅ 啟用 | CI 通過才可合併 |
+| Restrict who can push | H-Director | 僅 Owner 可直接操作 main |
+
+#### Git Identity 配置
+
+外部成員或多帳號環境下，每個 worktree 應設定獨立的 Git 身份：
+
+```bash
+# 在 worktree 內設定（不影響全域）
+git config --local user.name "Alice"
+git config --local user.email "alice@example.com"
+```
+
+> **安全提醒**：PAT (Personal Access Token) 與 `GH_TOKEN` 等敏感資訊**嚴禁寫入 Dev Plan 或任何版控檔案**，應放在 `.env` 檔案中（已加入 `.gitignore`）。詳細配置步驟請參考 [帳號配置指南](../../references/multi-account-setup.md)。
 
 ---
 
