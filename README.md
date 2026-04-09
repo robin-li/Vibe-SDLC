@@ -453,7 +453,7 @@ AI 會逐一確認每筆 Issue 的標題、Labels、Milestone，批量執行 `gh
 Vibe-SDLC/
 ├── README.md                          ← 本說明文件
 ├── CLAUDE.md                          ← Claude Code 專案指引
-├── Vibe-SDLC.md                       ← 完整 SOP 規範文件（v8.2）
+├── Vibe-SDLC.md                       ← 完整 SOP 規範文件（v8.8）
 ├── install.sh                         ← 一鍵安裝腳本
 └── skills/                            ← Skills 發佈資源
     ├── README.md                      ← Skills 詳細說明與使用範例
@@ -474,7 +474,7 @@ Vibe-SDLC/
 
 | 文件 | 說明 |
 |------|------|
-| [`Vibe-SDLC.md`](./Vibe-SDLC.md) | 完整 SOP 規範文件（v8.2），包含所有流程細節 |
+| [`Vibe-SDLC.md`](./Vibe-SDLC.md) | 完整 SOP 規範文件（v8.8），包含所有流程細節 |
 | [`skills/README.md`](./skills/README.md) | Skills 詳細說明、各 Phase 職責與使用範例 |
 | [`skills/DEPLOY.md`](./skills/DEPLOY.md) | 部署方式詳細說明 |
 | [`skills/vibe-sdlc-spec/examples/docs/`](./skills/vibe-sdlc-spec/examples/docs/) | 規格文件完整範例 |

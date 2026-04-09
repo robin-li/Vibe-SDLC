@@ -54,6 +54,8 @@ Open [Claude Code](https://docs.anthropic.com/en/docs/claude-code) in your proje
 
 The AI will automatically detect project status, generate a progress dashboard, and suggest the next step.
 
+> **💡 Empty folders work out of the box**: If the working directory is a brand-new empty folder, `/vibe-sdlc-spec` enters an interactive Bootstrap flow that helps you set up `git init`, `CLAUDE.md`, `.gitignore`, `README.md`, `/docs` scaffolding, and the persistent `dev/main-agent` branch in one go — no manual pre-initialization required.
+
 ### 3. Start Building
 
 ```
@@ -452,7 +454,7 @@ Vibe-SDLC/
 ├── README.md                          ← This file (Traditional Chinese)
 ├── README.en.md                       ← English version
 ├── CLAUDE.md                          ← Claude Code project guide
-├── Vibe-SDLC.md                       ← Full SOP specification (v8.1)
+├── Vibe-SDLC.md                       ← Full SOP specification (v8.8)
 ├── install.sh                         ← One-click install script
 └── skills/                            ← Skills release resources
     ├── README.md                      ← Skills detailed docs & examples
@@ -473,7 +475,7 @@ Vibe-SDLC/
 
 | Document | Description |
 |----------|-------------|
-| [`Vibe-SDLC.md`](./Vibe-SDLC.md) | Full SOP specification (v8.1) with all workflow details |
+| [`Vibe-SDLC.md`](./Vibe-SDLC.md) | Full SOP specification (v8.8) with all workflow details |
 | [`skills/README.md`](./skills/README.md) | Skills detailed docs, phase responsibilities & usage examples |
 | [`skills/DEPLOY.md`](./skills/DEPLOY.md) | Deployment instructions |
 | [`skills/vibe-sdlc-spec/examples/docs/`](./skills/vibe-sdlc-spec/examples/docs/) | Complete spec document examples |

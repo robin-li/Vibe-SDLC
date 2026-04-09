@@ -54,6 +54,8 @@ cd vibe-sdlc
 
 AI 会自动检测项目状态、生成进度仪表盘，并建议下一步操作。
 
+> **💡 空文件夹也能直接用**：若工作目录是全新的空文件夹，`/vibe-sdlc-spec` 会进入互动式 Bootstrap 流程，协助你一次建立 `git init`、`CLAUDE.md`、`.gitignore`、`README.md`、`/docs` 骨架与常驻分支 `dev/main-agent`，无需事先手动初始化任何文件。
+
 ### 3. 开始开发
 
 ```
@@ -453,7 +455,7 @@ Vibe-SDLC/
 ├── README.zh-CN.md                    ← 简体中文版
 ├── README.en.md                       ← English version
 ├── CLAUDE.md                          ← Claude Code 项目指引
-├── Vibe-SDLC.md                       ← 完整 SOP 规范文件（v8.1）
+├── Vibe-SDLC.md                       ← 完整 SOP 规范文件（v8.8）
 ├── install.sh                         ← 一键安装脚本
 └── skills/                            ← Skills 发布资源
     ├── README.md                      ← Skills 详细说明与使用示例
@@ -474,7 +476,7 @@ Vibe-SDLC/
 
 | 文件 | 说明 |
 |------|------|
-| [`Vibe-SDLC.md`](./Vibe-SDLC.md) | 完整 SOP 规范文件（v8.1），包含所有流程细节 |
+| [`Vibe-SDLC.md`](./Vibe-SDLC.md) | 完整 SOP 规范文件（v8.8），包含所有流程细节 |
 | [`skills/README.md`](./skills/README.md) | Skills 详细说明、各 Phase 职责与使用示例 |
 | [`skills/DEPLOY.md`](./skills/DEPLOY.md) | 部署方式详细说明 |
 | [`skills/vibe-sdlc-spec/examples/docs/`](./skills/vibe-sdlc-spec/examples/docs/) | 规格文件完整示例 |
