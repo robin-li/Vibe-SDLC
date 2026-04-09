@@ -285,17 +285,48 @@ gh project item-edit --project-id <PROJECT_ID> --id "$ITEM_ID" --field-id <STATU
 # 1. 同步遠端資訊
 git fetch origin
 
-# 2. 檢查本地是否有未提交的變更
-git status
+# 2. 偵測主線分支名稱（main 或 master，以下統稱 {main}）
 
-# 3. 若有未提交變更：
-#    - 與開發者確認是否需要先 commit 或 stash
-#    - commit 後再繼續同步流程
+# 3. 檢查本地是否有未提交的變更
+git status --short
+```
 
-# 4. 將本地 main rebase 至 origin/main（保持線性歷史）
-git rebase origin/main
+#### 情境 A：當前在 `{main}` 分支且有未提交變更
 
-# 5. 若 rebase 產生衝突：立即停止並通知開發者
+**禁止直接 commit 至 `{main}`**。以下列格式警告，暫停等待開發者指示：
+
+```
+⚠️ 主線分支有未提交變更（禁止直接 commit 至 {main}）
+├─ 當前分支：{main}
+├─ 未提交變更：
+│  {git status --short 輸出}
+└─ 建議操作：
+   1. 搬移至新分支繼續開發（git checkout -b dev/main-agent）→ 提交 PR
+   2. 暫存變更（git stash）→ 拉取最新 {main}
+   3. 捨棄全部變更（⚠️ 不可逆，慎用）
+```
+
+- 選擇 **1**：`git checkout -b dev/main-agent`，變更自動帶至新分支，繼續正常開發流程
+- 選擇 **2**：`git stash` → `git pull origin {main}`
+- 選擇 **3**：再次確認後 `git checkout -- . && git clean -fd` → `git pull origin {main}`
+
+#### 情境 B：當前在 `{main}` 分支且工作目錄乾淨
+
+```bash
+git pull origin {main}
+```
+
+#### 情境 C：當前在非 `{main}` 分支且有未提交變更
+
+與開發者確認是否需要先 commit 或 stash，處理完畢後再繼續同步流程。
+
+#### 情境 D：工作目錄乾淨，繼續同步
+
+```bash
+# 4. 切回 {main} 並更新（若當前在 feature 分支）
+git checkout {main} && git pull origin {main}
+
+# 5. 若 rebase/pull 產生衝突：立即停止並通知開發者
 #    - 不可自行解決衝突
 #    - 報告衝突的檔案清單，等待開發者指示
 

@@ -131,7 +131,33 @@ user_invocable: true
 
 1. 執行 `git fetch origin` 取得遠端最新狀態
 2. 偵測主線分支名稱（`main` 或 `master`，以下統稱 `{main}`）
-3. **若當前分支為 `{main}`**：執行 `git pull origin {main}` 拉取最新變更
+3. **若當前分支為 `{main}`**：
+   - 執行 `git status --short` 檢查工作目錄狀態
+   - **工作目錄乾淨**（無修改）：執行 `git pull origin {main}` 拉取最新變更
+   - **工作目錄有未提交變更**（unstaged/staged/untracked）：以下列格式警告，並**暫停等待使用者指示**，不繼續後續步驟：
+
+     ```
+     ⚠️ 主線分支有未提交變更（禁止直接 commit 至 {main}）
+     ├─ 當前分支：{main}
+     ├─ 未提交變更：
+     │  {git status --short 輸出，逐行列出}
+     └─ 建議操作：
+        1. 搬移至新分支繼續開發（git checkout -b dev/main-agent）→ 提交 PR
+        2. 暫存變更（git stash）→ 拉取最新 {main}
+        3. 捨棄全部變更（⚠️ 不可逆，慎用）
+
+     請選擇操作（1/2/3），或輸入其他指示：
+     ```
+
+     若使用者選擇 **1**，依序執行：
+     1. `git checkout -b dev/main-agent`（將未提交變更帶至新分支）
+     2. 提示使用者變更已搬移至 `dev/main-agent` 分支，可繼續開發
+     3. 開發完成後按正常流程提交 PR
+
+     若使用者選擇 **2**，執行 `git stash` → `git pull origin {main}`（stash 內容可稍後 `git stash pop` 取回）
+
+     若使用者選擇 **3**，執行前**再次確認**使用者意圖後：`git checkout -- .` + `git clean -fd`（移除所有未提交變更與新增檔案），然後 `git pull origin {main}`
+
 4. **若當前分支非 `{main}`**（人類正在操作 feature 分支）：
    - 執行 `git status --short` 檢查工作目錄狀態
    - **工作目錄乾淨**（無修改）：提示使用者目前所在分支，建議切回 `{main}`，但**不強制**。詢問是否切換，若使用者不想切換則直接在當前分支繼續（儀表板數據可能與 `{main}` 略有差異）
