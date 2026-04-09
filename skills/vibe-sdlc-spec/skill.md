@@ -37,7 +37,8 @@ user_invocable: true
 | 遊戲設計文件 (GDD) | `01-4-GDD.md` | `/docs/01-4-GDD.md` | 領域選用 | 遊戲專案專用：核心機制、數值設計、關卡設計。僅遊戲類專案需要 |
 | API 介面規格 | `01-5-API_Spec.md` | `/docs/01-5-API_Spec.md` | 必要 | API 規格說明 |
 | API 介面合約 | `API_Spec.yaml` | `/docs/API_Spec.yaml` | 必要 | OpenAPI 規格 |
-| UI/UX 設計文件 | `01-6-UI_UX_Design.md` | `/docs/01-6-UI_UX_Design.md` | 選用 | UI/UX 設計規格（視覺風格、互動流程、Design Tokens），若 PRD 衍生 UI/UX 需求時建立 |
+| UI/UX 設計文件 | `01-6-UI_UX_Design.md` | `/docs/01-6-UI_UX_Design.md` | 選用 | UI/UX 設計規格（視覺風格、互動流程、Design Tokens），若 PRD 衍生 UI/UX 需求時建立。撰寫前 **必須** 先讀 [`references/UI_UX_Writing_Guidelines.md`](./references/UI_UX_Writing_Guidelines.md) |
+| UI Wireframe | `ui/{page}.html` | `/docs/ui/*.html` | 選用 | 每個頁面一檔的 HTML + Tailwind CDN 視覺參考，由 `01-6-UI_UX_Design.md` 以 link 引用（規則詳見 UI_UX_Writing_Guidelines.md §9） |
 | 開發執行計畫 | `02-Dev_Plan.md` | `/docs/02-Dev_Plan.md` | 必要 | 里程碑、任務拆解、依賴關係 |
 | 規格審查報告 | `03-Docs_Review_Report.md` | `/docs/03-Docs_Review_Report.md` | 必要 | 交叉比對結果、不一致與遺漏項目 |
 | CI/CD 規格文件 | `04-CI_CD_Spec.md` | `/docs/04-CI_CD_Spec.md` | 選用 | CI Workflow 定義、品質閘門、Docker 部署配置（複雜專案建議獨立，Dev Plan 以連結引用） |
@@ -45,6 +46,21 @@ user_invocable: true
 **重要**：
 - 每項規格都應賦予**規格編號**以利後續追蹤與討論。
 - 每個任務都應賦予**任務編號**以利後續追蹤與討論。
+
+### UI/UX 設計文件撰寫準則
+
+若需建立 `01-6-UI_UX_Design.md`，AI 助手**必須**先讀取 [`references/UI_UX_Writing_Guidelines.md`](./references/UI_UX_Writing_Guidelines.md) 並遵循該指引的 9 條準則撰寫。指引重點：
+
+1. **結構、狀態、欄位、呈現邏輯、元件庫指名**：以 markdown 表格結構化描述（準則 1–8）
+2. **流程圖**：頁面跳轉、對話流、狀態機一律使用 Mermaid flowchart，**不使用** ASCII 箭頭或圖片（準則 2）
+3. **視覺空間感**：使用 **HTML + Tailwind CDN** 獨立檔案，放置於 `/docs/ui/`，由 markdown 規格書以 relative link 引用（準則 9）
+4. 每條準則均附自檢方法，AI 產出後必須對照指引末段 checklist 自檢
+
+**UI/UX 產出物結構**：
+- `/docs/01-6-UI_UX_Design.md` — 規格權威（markdown，AI 實作時以此為準）
+- `/docs/ui/{page}.html` — 視覺參考（每個 §3.x 頁面對應一檔，低保真 wireframe 使用灰階 palette）
+
+**核心原則**：markdown 規格書是實作權威，HTML wireframe 是視覺輔助。兩者衝突時以 markdown 為準。
 
 ### 版本修訂記錄格式規範
 
@@ -400,5 +416,18 @@ flowchart LR
    - SRD 與 SDD 是否職責分離（SRD 僅含需求，SDD 含設計）
    - SDD 的架構設計是否與 API Spec 的端點定義一致
    - UI/UX 設計文件是否反向參考 PRD、SRD、API Spec
+   - UI/UX 設計文件是否遵循 [`references/UI_UX_Writing_Guidelines.md`](./references/UI_UX_Writing_Guidelines.md) 的 9 條準則（逐條列出符合/違反，違反項必須寫入審查報告）：
+     - [ ] §1 結構分層正確（設計原則 → 頁面清單 → 單頁佈局）
+     - [ ] §2 頁面跳轉／對話流／狀態機使用 Mermaid flowchart（無 ASCII 箭頭藝術或圖片）
+     - [ ] §3 元件描述使用語意，無純方位詞（左上角／右側／下方等）
+     - [ ] §4 互動元件列出完整狀態（default / hover / disabled / loading / error 等）
+     - [ ] §5 表單欄位使用結構化表格（名稱 / 類型 / 必填 / 驗證規則 / 錯誤訊息 / 說明）
+     - [ ] §6 呈現（樣式）與顯示邏輯（條件渲染）分開描述
+     - [ ] §7 文件自足，無「如圖所示」類外部依賴描述
+     - [ ] §8 已指名使用的 UI 元件庫與元件名稱（若專案使用元件庫）
+     - [ ] §9 每個 §3.x 頁面有對應 `/docs/ui/*.html` wireframe 且 markdown 已 link 引用
+     - [ ] §9.6 每個視覺型 §3.x.y 子元件章節有對應 `ui/{page}.html#{anchor}` link；HTML 對應 `<section>` 有 `id` 屬性
+   - `/docs/ui/*.html` wireframe 是否包含 `<meta name="fidelity">` 與 `<meta name="spec-ref">` 標籤
+   - UI/UX 規格書與 HTML wireframe 是否保持一致（Design Tokens、欄位、狀態描述無衝突）
 8. 若為遊戲類專案，提醒開發者是否需要建立 GDD（`01-4-GDD.md`）
 9. 審查完成且無遺漏後，提示開發者可進入 Phase 2（`/vibe-sdlc-issues`）
