@@ -305,30 +305,37 @@ Sau khi hoàn thành phát triển và kiểm thử, khi Vibe Check đạt, AI s
 
 ```
 > /vibe-sdlc-pr
-> PR #34 bị lỗi CI, giúp tôi xem và sửa.
+> CI bị lỗi rồi, đây là báo cáo lỗi: [dán thông báo lỗi CI]
+> Hãy phân tích nguyên nhân và sửa.
 ```
-
-AI sẽ tự động lấy lỗi CI (`gh run view`), phân loại nguyên nhân (flaky / bug cũ / do PR này gây ra) rồi quyết định cách xử lý — không cần dán log thủ công.
 
 **Cập nhật tiến độ sau merge:**
 
 ```
-> PR đã merge rồi, hãy cập nhật trạng thái task trong Dev Plan,
-> và liệt kê các Issue cần xác minh thủ công.
+> PR đã merge rồi, hãy cập nhật trạng thái task trong Dev Plan.
+> Trên board còn Issue nào không? Nếu còn thì tiếp tục xử lý cái tiếp theo.
 ```
 
 ---
 
 ### Tình huống 6: Phase 5 — Bàn giao milestone
 
-**Thu thập phản hồi và phát hành Release:**
+**Xác nhận trạng thái hoàn thành milestone:**
 
 ```
 > /vibe-sdlc-release
-> M1 đã nghiệm thu xong, có một số phản hồi cần tổng hợp rồi phát hành Release.
+> Tất cả Issue của M1 lẽ ra đã merge xong, hãy xác nhận và tạo báo cáo hoàn thành.
 ```
 
-AI sẽ hướng dẫn bạn báo cáo từng mục, tổng hợp thành báo cáo phản hồi có cấu trúc (thay đổi yêu cầu / nhiệm vụ mới / tạm hoãn), xác nhận xong sẽ đồng bộ cập nhật PRD, Dev Plan và bản ghi phiên bản, cuối cùng phát hành Release Notes.
+**Đưa ra phản hồi và khởi động vòng lặp tiếp theo:**
+
+```
+> Môi trường test đã chạy xong, có vài phản hồi:
+> 1. Trang danh sách cần chức năng phân trang (yêu cầu mới)
+> 2. Thao tác xóa nên đổi thành soft delete (thay đổi yêu cầu)
+> 3. Nội dung trang đăng nhập trông không ổn (tạm hoãn)
+> Hãy giúp tôi tổng hợp và cập nhật PRD và Dev Plan.
+```
 
 ---
 
@@ -405,8 +412,8 @@ AI sẽ lần lượt xác nhận tiêu đề, Labels, Milestone của từng Is
 
 ```
 > /vibe-sdlc-pr
-> PR #34 CI đã pass, nhờ A-Main làm sơ duyệt: xác nhận phạm vi chỉ đụng /backend/**,
-> nếu ổn thì liệt kê checklist để tôi review cuối cùng.
+> PR #34 CI đã pass, A-Main đã sơ duyệt xác nhận phạm vi đúng (chỉ sửa /backend/**).
+> Xin mời H-Director thực hiện duyệt cuối.
 ```
 
 ---

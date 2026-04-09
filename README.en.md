@@ -304,30 +304,37 @@ After completing development and testing, when Vibe Check passes, the AI will **
 
 ```
 > /vibe-sdlc-pr
-> PR #34's CI failed. Please take a look and fix it.
+> CI failed. Here's the error report: [paste CI error message]
+> Please analyze the cause and fix it.
 ```
-
-AI will automatically fetch the CI error (`gh run view`), classify the cause (flaky / pre-existing bug / caused by this PR), and decide how to handle it — no need to paste logs manually.
 
 **Update progress after merge:**
 
 ```
-> PR has been merged. Please update the Dev Plan task status,
-> and list any Issues that need manual verification.
+> PR has been merged. Please update the Dev Plan task status.
+> Any more Issues on the board? If so, continue with the next one.
 ```
 
 ---
 
 ### Scenario 6: Phase 5 — Milestone Delivery
 
-**Collect feedback and publish Release:**
+**Confirm milestone completion status:**
 
 ```
 > /vibe-sdlc-release
-> M1 acceptance is done. I have some feedback to organize, then publish the Release.
+> All Issues for M1 should be merged. Please verify and produce a completion report.
 ```
 
-AI will guide you through each item, organize them into a structured feedback report (requirement changes / new tasks / deferred), then sync updates to the PRD, Dev Plan, and version records before publishing the Release Notes.
+**Provide feedback and kick off the next iteration:**
+
+```
+> Staging tests are done. A few pieces of feedback:
+> 1. List page needs pagination (new requirement)
+> 2. Delete operation should be switched to soft delete (requirement change)
+> 3. Login page copy needs improvement (defer for now)
+> Please organize these and update the PRD and Dev Plan.
+```
 
 ---
 
@@ -404,8 +411,8 @@ AI will confirm each Issue's title, labels, and milestone one by one, batch-exec
 
 ```
 > /vibe-sdlc-pr
-> PR #34's CI has passed. Have A-Main do the initial review: confirm the scope
-> only touches /backend/**, then list a checklist for my final review.
+> PR #34's CI has passed. A-Main's initial review confirms the scope is correct (only /backend/** modified).
+> Please have H-Director perform the final review.
 ```
 
 ---
