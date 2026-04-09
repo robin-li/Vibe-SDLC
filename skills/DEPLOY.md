@@ -12,6 +12,8 @@ skills/
 │   └── skill.md                     ← 總覽與導航
 ├── vibe-sdlc-spec/
 │   ├── skill.md                     ← Phase 1：定義規格文件與計畫
+│   ├── templates/
+│   │   └── CLAUDE.md.template       ← 新專案 CLAUDE.md 骨架（空專案初始化用）
 │   ├── references/
 │   │   ├── multi-account-setup.md   ← 多帳號協作配置指南
 │   │   └── UI_UX_Writing_Guidelines.md ← UI/UX 規格撰寫 9 條準則（含 HTML wireframe）

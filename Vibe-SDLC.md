@@ -1,6 +1,6 @@
 # Vibe-SDLC：AI 輔助軟體開發生命週期標準作業程序
 
-> **版本**：v8.7 ｜ **最後更新**：2026-04-10
+> **版本**：v8.8 ｜ **最後更新**：2026-04-10
 
 ---
 
@@ -218,8 +218,14 @@ sequenceDiagram
 
 ### 4.2 前置條件
 
-- GitHub 倉庫已建立
-- 專案目錄結構已初始化（含 `/docs` 目錄）
+- 工作目錄已確立（可為空目錄）
+- 若本地 git 倉庫、`CLAUDE.md`、`/docs` 目錄皆缺失，`/vibe-sdlc-spec` 會自動進入**空專案初始化 (Bootstrap)** 流程，互動式引導使用者建立最小骨架：
+  - L1 `git init`、L3 `.gitignore` / `README.md`
+  - L3.5 `CLAUDE.md`（由 `templates/CLAUDE.md.template` 填入專案名稱與一句話描述；既有 CLAUDE.md 則提議 append `## Vibe-SDLC 流程`區塊，不覆寫）
+  - L4 `/docs/` 目錄、L5 `/docs/00-Docs_Index.md` 骨架
+  - 常駐分支 `dev/main-agent`
+  - GitHub remote 提供 A/B/C 三選項：A 由 AI 代為執行 `gh repo create`（需互動確認 repo 名稱、owner、可見性與最終指令）、B 輸出完整手動指令由使用者自行執行、C 先跳過留到後續處理
+- `/vibe-sdlc` 偵測到 git / docs / CLAUDE.md 三者全缺時，會直接引導使用者改呼叫 `/vibe-sdlc-spec`，避免兩個 skill 重複處理
 
 ### 4.3 交付物
 
@@ -912,6 +918,7 @@ STATUS.md 版控模式：C（混合）— STATUS.md 進版控、A-*.md 忽略
 
 | 版本 | 日期 | 修訂內容 |
 |------|------|---------|
+| v8.8 | 2026-04-10 | §4.2 前置條件改為支援空專案：新增「空專案初始化 (Bootstrap)」說明，`/vibe-sdlc-spec` 偵測 L1–L5 缺失後互動式建立 git repo / CLAUDE.md（由 `templates/CLAUDE.md.template` 填入）/ .gitignore / README.md / docs 骨架 / 常駐分支 `dev/main-agent`；`/vibe-sdlc` 在 git+docs+CLAUDE.md 三者全缺時直接引導改呼叫 `/vibe-sdlc-spec`；GitHub remote 提供 A（AI 代建）/B（輸出手動指令）/C（跳過）三選項，A 在 `gh repo create` 執行前需互動確認 repo 名稱、owner、可見性與最終指令 |
 | v8.7 | 2026-04-10 | §4.3 交付物表格補 SDD/GDD/UI Wireframe 與類型欄；新增 §4.5「UI/UX 設計文件撰寫準則」小節引用 `UI_UX_Writing_Guidelines.md` 9 條準則；§4.4 操作步驟加入 UI/UX 撰寫步驟；§3 sequenceDiagram Phase 1 段加入 UI/UX 規格撰寫步驟；§6.2 前置條件補 `/docs/ui/*.html`；附錄 B 補 SDD/GDD/UI Wireframe/STATUS.md；修正多處 UTF-8 亂碼、§6.5 步驟編號、附錄 A 過時 LGTM 提示詞 |
 | v8.6 | 2026-04-09 | §9.4 新增「STATUS.md 版控策略」小節，定義 A/B/C 三種模式；§2.1 補開發者「機制選型」職責；§4.6 Dev Plan 階段加 STATUS.md 版控模式選型提醒 |
 | v8.5 | 2026-04-05 | 議題收集與處置流程機制、聯調模式、里程碑收尾作業等既有內容 |

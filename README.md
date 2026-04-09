@@ -54,6 +54,8 @@ cd vibe-sdlc
 
 AI 會自動偵測專案狀態、產出進度儀表板，並建議下一步。
 
+> **💡 空資料夾也能直接用**：若工作目錄是全新的空資料夾，`/vibe-sdlc-spec` 會進入互動式 Bootstrap 流程，協助你一次建立 `git init`、`CLAUDE.md`、`.gitignore`、`README.md`、`/docs` 骨架與常駐分支 `dev/main-agent`，不需要事先手動初始化任何檔案。
+
 ### 3. 開始開發
 
 ```
