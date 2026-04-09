@@ -72,49 +72,66 @@ user_invocable: true
 
 **⛔ 嚴格禁止直接 push 至 main**，無論改動大小，一律透過分支 + PR 流程。
 
+### 分支類型總覽
+
+| 類型 | 分支名稱 | 生命週期 | 用途 |
+|------|---------|---------|------|
+| **主線**（唯讀） | `main` / `master` | 永久 | 唯讀基準分支，只接受 PR 合併，禁止任何直接修改 |
+| **常駐工作**（停車場） | `dev/main-agent` | **永久** | 任務間 home base、小修累積處、main 誤改的收容所 |
+| **功能分支** | `feat/<agent>/issue-N-簡述` | 短期 | Issue-based 開發，PR 合併後刪除 |
+
 ### 分支判斷規則
 
 | 條件 | 分支類型 | 分支命名 | 說明 |
 |------|---------|---------|------|
 | **有 Issue**（領取 Issue 開發） | Per-issue 分支 | `feat/<agent>/issue-N-簡述` | 所有 Issue-based 開發，無論改動大小 |
-| **無 Issue**（分流選項 1 小修、聯調小修正） | 固定名稱短期分支 | `dev/main-agent` | 適合 typo、文案、簡單 config、聯調連續小修 |
+| **無 Issue**（分流選項 1 小修、聯調小修正） | 常駐分支 | `dev/main-agent` | 適合 typo、文案、簡單 config、聯調連續小修 |
+| **任務之間**（無進行中工作） | 常駐分支 | `dev/main-agent` | 任務結束後預設停留位置 |
 
-> **簡單規則**：有 Issue → per-issue 分支；無 Issue（小修）→ `dev/main-agent`。
+> **簡單規則**：有 Issue → per-issue 分支；其他所有情境（小修、停車、main 誤改）→ `dev/main-agent`。
 
-### `dev/main-agent` 分支生命週期
+### `dev/main-agent` 常駐分支生命週期
 
-`dev/main-agent` 是一個**固定名稱的短期分支**（fixed-name short-lived branch），不是長期存活的分支。
+`dev/main-agent` 是 Vibe-SDLC 的**常駐分支**（permanent branch），永遠存在，不會被刪除。
 
-**建立時機**：需要進行無 Issue 小修時，從最新 main 建立：
+**首次建立**（若倉庫尚未存在此分支，由 skill 自動建立）：
 ```bash
-git checkout main && git pull origin main
-git checkout -b dev/main-agent
+git fetch origin
+git checkout -b dev/main-agent origin/main
+git push -u origin dev/main-agent
 ```
 
+**日常使用**：
+- 任務結束後預設停留在此分支
+- 累積無 Issue 的小修（typo、文案、config 調整等）
+- main 上不慎修改的內容會被搬移至此
+
 **提交 PR 時機**（滿足任一即提交）：
-- 小修已達到一個自然停止點（如一組相關修正完成）
+- 小修已達到一個自然停止點
 - 聯調測試結束
 - 開發者明確說「push」或「推送」
 
-**合併後處理**：PR 合併後**立即刪除** `dev/main-agent` 分支（本地 + 遠端），下次需要時重新從最新 main 建立。
-
+**PR 合併後處理**（與 feature 分支不同，**不刪除分支**）：
 ```bash
-# PR 合併後
-git checkout main && git pull origin main
-git branch -d dev/main-agent
-git push origin --delete dev/main-agent 2>/dev/null
+# dev/main-agent 的 PR 合併後
+git fetch origin
+git checkout dev/main-agent
+git rebase origin/main           # rebase 到最新 main，保持線性
+git push --force-with-lease origin dev/main-agent  # 同步遠端
 ```
+
+> **與 feature 分支的差異**：feature 分支 PR 合併後**刪除**；`dev/main-agent` PR 合併後**保留並 rebase**，繼續作為常駐工作分支。
 
 ### 提交與合併規則
 
-| 情境 | 分支 | 提交方式 |
-|------|------|---------|
-| **功能開發**（領取 Issue） | `feat/<agent>/issue-N-簡述` | feature branch → PR |
-| **分流選項 1（直接修，無 Issue）** | `dev/main-agent` | dev/main-agent → PR |
-| **聯調模式連續修正（無 Issue）** | `dev/main-agent` | 累積修正後 dev/main-agent → PR |
-| **聯調模式修正（有 Issue）** | `feat/<agent>/issue-N-簡述` | feature branch → PR |
+| 情境 | 分支 | 提交方式 | PR 合併後 |
+|------|------|---------|----------|
+| **功能開發**（領取 Issue） | `feat/<agent>/issue-N-簡述` | feature branch → PR | 刪除分支 |
+| **分流選項 1（直接修，無 Issue）** | `dev/main-agent` | dev/main-agent → PR | rebase，保留分支 |
+| **聯調模式連續修正（無 Issue）** | `dev/main-agent` | 累積修正後 dev/main-agent → PR | rebase，保留分支 |
+| **聯調模式修正（有 Issue）** | `feat/<agent>/issue-N-簡述` | feature branch → PR | 刪除分支 |
 
-> **原則**：所有變更一律走 PR，嚴禁直接 push main。
+> **原則**：所有變更一律走 PR，嚴禁直接 push main。`dev/main-agent` 為常駐分支不刪除，feature 分支用後即刪。
 
 ## 議題收集與處置流程補充
 
@@ -278,6 +295,8 @@ gh project item-edit --project-id <PROJECT_ID> --id "$ITEM_ID" --field-id <STATU
 ## 工作目錄同步規範
 
 > **每次領取新 Issue 前，必須先同步工作目錄。** 這是為了確保 feature 分支基於最新的 `main`，避免因本地落後遠端而產生不必要的衝突或遺漏已合併的程式碼。
+>
+> **預設停留分支為 `dev/main-agent`**：Vibe-SDLC 使用常駐分支 `dev/main-agent` 作為任務間的「停車場」，所有同步流程結束後若沒有進行中的 feature 任務，應停留在 `dev/main-agent` 上。
 
 ### 同步步驟（步驟 3 詳細流程）
 
@@ -287,46 +306,55 @@ git fetch origin
 
 # 2. 偵測主線分支名稱（main 或 master，以下統稱 {main}）
 
-# 3. 檢查本地是否有未提交的變更
+# 3. 確保常駐分支 dev/main-agent 存在，若不存在則建立
+git show-ref --verify --quiet refs/heads/dev/main-agent || \
+  git checkout -b dev/main-agent origin/{main} && \
+  git push -u origin dev/main-agent
+
+# 4. 檢查本地是否有未提交的變更
 git status --short
 ```
 
-#### 情境 A：當前在 `{main}` 分支且有未提交變更
+#### 情境 A：當前在 `dev/main-agent`（常駐分支，預期狀態）
 
-**禁止直接 commit 至 `{main}`**。以下列格式警告，暫停等待開發者指示：
-
-```
-⚠️ 主線分支有未提交變更（禁止直接 commit 至 {main}）
-├─ 當前分支：{main}
-├─ 未提交變更：
-│  {git status --short 輸出}
-└─ 建議操作：
-   1. 搬移至新分支繼續開發（git checkout -b dev/main-agent）→ 提交 PR
-   2. 暫存變更（git stash）→ 拉取最新 {main}
-   3. 捨棄全部變更（⚠️ 不可逆，慎用）
-```
-
-- 選擇 **1**：`git checkout -b dev/main-agent`，變更自動帶至新分支，繼續正常開發流程
-- 選擇 **2**：`git stash` → `git pull origin {main}`
-- 選擇 **3**：再次確認後 `git checkout -- . && git clean -fd` → `git pull origin {main}`
-
-#### 情境 B：當前在 `{main}` 分支且工作目錄乾淨
+- **工作目錄乾淨**：執行 `git rebase origin/{main}` 將 `dev/main-agent` 同步至最新 `{main}`
+- **工作目錄有未提交變更**（小修累積中）：與開發者確認 — 是否要先 commit 累積的小修？或是 stash 後 rebase？
 
 ```bash
-git pull origin {main}
+# 工作目錄乾淨時的同步
+git rebase origin/{main}
+git push --force-with-lease origin dev/main-agent  # 同步遠端 dev/main-agent
 ```
 
-#### 情境 C：當前在非 `{main}` 分支且有未提交變更
+#### 情境 B：當前在 `{main}` 分支（應避免，需切換至 dev/main-agent）
 
-與開發者確認是否需要先 commit 或 stash，處理完畢後再繼續同步流程。
+- **工作目錄乾淨**：`git pull origin {main}` 後切換至常駐分支 `git checkout dev/main-agent && git rebase origin/{main}`
+- **工作目錄有未提交變更**（⚠️ 異常狀態）：以下列格式警告，暫停等待開發者指示：
 
-#### 情境 D：工作目錄乾淨，繼續同步
+  ```
+  ⚠️ 主線分支有未提交變更（{main} 應為唯讀，禁止 commit）
+  ├─ 當前分支：{main}
+  ├─ 未提交變更：
+  │  {git status --short 輸出}
+  └─ 建議操作：
+     1. 搬移至常駐分支 dev/main-agent（推薦）
+     2. 暫存變更（git stash）→ 切到 dev/main-agent → stash pop
+     3. 捨棄全部變更（⚠️ 不可逆，慎用）
+  ```
+
+  - 選擇 **1**：`git checkout dev/main-agent`（變更自動帶過去）→ 後續正常開發
+  - 選擇 **2**：`git stash` → `git pull origin {main}` → `git checkout dev/main-agent && git rebase origin/{main}` → `git stash pop`
+  - 選擇 **3**：再次確認後 `git checkout -- . && git clean -fd` → `git pull origin {main}` → `git checkout dev/main-agent && git rebase origin/{main}`
+
+#### 情境 C：當前在 feature 分支（`feat/<agent>/issue-N-簡述`）
+
+- **工作目錄乾淨**：若是繼續開發同一 Issue，停留在當前 feature 分支即可；若任務已完成或要切換任務，`git checkout dev/main-agent && git rebase origin/{main}`
+- **工作目錄有未提交變更**：與開發者確認是否需要先 commit 或 stash，處理完畢後再繼續同步流程
+
+#### 收尾步驟（所有情境共通）
 
 ```bash
-# 4. 切回 {main} 並更新（若當前在 feature 分支）
-git checkout {main} && git pull origin {main}
-
-# 5. 若 rebase/pull 產生衝突：立即停止並通知開發者
+# 5. 若 rebase 產生衝突：立即停止並通知開發者
 #    - 不可自行解決衝突
 #    - 報告衝突的檔案清單，等待開發者指示
 
@@ -340,18 +368,23 @@ git checkout {main} && git pull origin {main}
 #### 檢查指令
 
 ```bash
+# 受保護分支的 grep 排除模式（含常駐分支 dev/main-agent）
+PROTECTED='main$\|master$\|dev/main-agent$\|develop$\|dev$\|testing$\|test$\|staging$\|uat$\|release/'
+
 # 1. 同步遠端已刪除的分支引用（清除本地殘留的 remote tracking ref）
 git fetch --prune
 
-# 2. 列出已合併至 main 的本地分支（排除 main 本身）
-git branch --merged main | grep -v '^\*\|main'
+# 2. 列出已合併至 main 的本地分支（排除受保護分支）
+git branch --merged main | grep -v "^\*\|$PROTECTED"
 
-# 3. 列出對應的遠端已合併分支（排除 main 與 HEAD）
-git branch -r --merged origin/main | grep -v 'main\|HEAD' | grep 'origin/'
+# 3. 列出對應的遠端已合併分支（排除受保護分支與 HEAD）
+git branch -r --merged origin/main | grep -v "origin/HEAD\|$PROTECTED"
 
 # 4. 列出所有 worktree
 git worktree list
 ```
+
+> **常駐分支保護**：`dev/main-agent` 即使「已合併至 main」也**不可刪除**，它需要在 PR 合併後 rebase 到最新 main 繼續使用。
 
 #### 清理流程
 

@@ -127,65 +127,72 @@ user_invocable: true
 
 ### 步驟 0：同步工作目錄
 
-在收集任何數據之前，若工作目錄已經建立本地git倉庫及遠端 Github (或 Gitlab) 倉庫，則應先確保本地工作目錄與遠端同步：
+在收集任何數據之前，若工作目錄已經建立本地 git 倉庫及遠端 Github (或 Gitlab) 倉庫，則應先確保本地工作目錄與遠端同步：
+
+> **核心原則**：`{main}` 為唯讀基準分支，**任何修改都不應出現在 `{main}` 上**。Vibe-SDLC 使用常駐分支 `dev/main-agent` 作為任務間的「停車場」與小修累積處，所有未在 feature 分支上的工作都應在 `dev/main-agent` 上進行。
 
 1. 執行 `git fetch origin` 取得遠端最新狀態
 2. 偵測主線分支名稱（`main` 或 `master`，以下統稱 `{main}`）
-3. **若當前分支為 `{main}`**：
-   - 執行 `git status --short` 檢查工作目錄狀態
-   - **工作目錄乾淨**（無修改）：執行 `git pull origin {main}` 拉取最新變更
-   - **工作目錄有未提交變更**（unstaged/staged/untracked）：以下列格式警告，並**暫停等待使用者指示**，不繼續後續步驟：
+3. **確保常駐分支 `dev/main-agent` 存在**：
+   ```bash
+   # 檢查本地是否存在 dev/main-agent
+   git show-ref --verify --quiet refs/heads/dev/main-agent
+   # 若不存在，從 origin/{main} 建立
+   git checkout -b dev/main-agent origin/{main}
+   git push -u origin dev/main-agent
+   ```
+   若遠端已存在但本地不存在，則 `git checkout -b dev/main-agent origin/dev/main-agent`。
 
-     ```
-     ⚠️ 主線分支有未提交變更（禁止直接 commit 至 {main}）
-     ├─ 當前分支：{main}
-     ├─ 未提交變更：
-     │  {git status --short 輸出，逐行列出}
-     └─ 建議操作：
-        1. 搬移至新分支繼續開發（git checkout -b dev/main-agent）→ 提交 PR
-        2. 暫存變更（git stash）→ 拉取最新 {main}
-        3. 捨棄全部變更（⚠️ 不可逆，慎用）
+4. 執行 `git status --short` 檢查工作目錄狀態，根據當前分支與工作目錄狀態，採取對應流程：
 
-     請選擇操作（1/2/3），或輸入其他指示：
-     ```
+#### 情境 A：當前在 `dev/main-agent`（常駐分支，正常狀態）
 
-     若使用者選擇 **1**，依序執行：
-     1. `git checkout -b dev/main-agent`（將未提交變更帶至新分支）
-     2. 提示使用者變更已搬移至 `dev/main-agent` 分支，可繼續開發
-     3. 開發完成後按正常流程提交 PR
+- **工作目錄乾淨**：執行 `git fetch origin && git rebase origin/{main}` 將 `dev/main-agent` 同步至最新 `{main}`
+- **工作目錄有未提交變更**（小修累積中，正常）：跳過 rebase，提示使用者當前有未提交變更，繼續後續儀表板流程
 
-     若使用者選擇 **2**，執行 `git stash` → `git pull origin {main}`（stash 內容可稍後 `git stash pop` 取回）
+#### 情境 B：當前在 `{main}` 分支（應避免）
 
-     若使用者選擇 **3**，執行前**再次確認**使用者意圖後：`git checkout -- .` + `git clean -fd`（移除所有未提交變更與新增檔案），然後 `git pull origin {main}`
+- **工作目錄乾淨**：執行 `git pull origin {main}` 後切換至 `dev/main-agent`：`git checkout dev/main-agent && git rebase origin/{main}`
+- **工作目錄有未提交變更**（⚠️ 異常狀態）：以下列格式警告，並**暫停等待使用者指示**：
 
-4. **若當前分支非 `{main}`**（人類正在操作 feature 分支）：
-   - 執行 `git status --short` 檢查工作目錄狀態
-   - **工作目錄乾淨**（無修改）：提示使用者目前所在分支，建議切回 `{main}`，但**不強制**。詢問是否切換，若使用者不想切換則直接在當前分支繼續（儀表板數據可能與 `{main}` 略有差異）
-   - **工作目錄有未提交變更**（unstaged/staged/untracked）：以下列格式警告，並**暫停等待使用者指示**，不繼續後續步驟：
+  ```
+  ⚠️ 主線分支有未提交變更（{main} 應為唯讀，禁止 commit）
+  ├─ 當前分支：{main}
+  ├─ 未提交變更：
+  │  {git status --short 輸出，逐行列出}
+  └─ 建議操作：
+     1. 搬移至常駐分支 dev/main-agent（推薦，自動接管未提交變更）
+     2. 暫存變更（git stash）→ 拉取最新 {main} → 切到 dev/main-agent → stash pop
+     3. 捨棄全部變更（⚠️ 不可逆，慎用）
 
-     ```
-     ⚠️ 非主線分支且有未提交變更
-     ├─ 當前分支：{branch-name}
-     ├─ 未提交變更：
-     │  {git status --short 輸出，逐行列出}
-     └─ 建議操作：
-        1. 提交變更 → 推送分支 → 建立 PR → 切回 {main}
-        2. 暫存變更（git stash）→ 切回 {main}
-        3. 忽略，直接在當前分支查看儀表板（數據可能與 {main} 不同步）
+  請選擇操作（1/2/3），或輸入其他指示：
+  ```
 
-     請選擇操作（1/2/3），或輸入其他指示：
-     ```
+  - 選擇 **1**：`git checkout dev/main-agent`（未提交變更會自動帶至 `dev/main-agent`，因為兩分支共享 working tree）
+  - 選擇 **2**：`git stash` → `git pull origin {main}` → `git checkout dev/main-agent` → `git rebase origin/{main}` → `git stash pop`
+  - 選擇 **3**：再次確認後 `git checkout -- . && git clean -fd` → `git pull origin {main}` → `git checkout dev/main-agent && git rebase origin/{main}`
 
-     若使用者選擇 **1**，依序執行：
-     1. `git add` 相關檔案（排除 `.env` 等敏感檔案）
-     2. 引導使用者確認 commit message 後執行 `git commit`
-     3. `git push origin {branch-name}`
-     4. 檢查該分支是否已有 open PR，若無則提示是否建立 PR
-     5. `git checkout {main} && git pull origin {main}`
+#### 情境 C：當前在 feature 分支（`feat/<agent>/issue-N-簡述`）
 
-     若使用者選擇 **2**，執行 `git stash` → `git checkout {main}` → `git pull origin {main}`
+- **工作目錄乾淨**：提示使用者目前所在 feature 分支，詢問是否切回 `dev/main-agent`，若使用者不想切換則直接在當前分支繼續（儀表板數據以當前分支為準）
+- **工作目錄有未提交變更**：以下列格式警告，並**暫停等待使用者指示**：
 
-     若使用者選擇 **3**，繼續後續步驟（不切換分支）
+  ```
+  ⚠️ 非主線分支且有未提交變更
+  ├─ 當前分支：{branch-name}
+  ├─ 未提交變更：
+  │  {git status --short 輸出，逐行列出}
+  └─ 建議操作：
+     1. 提交變更 → 推送分支 → 建立/更新 PR → 切回 dev/main-agent
+     2. 暫存變更（git stash）→ 切回 dev/main-agent
+     3. 忽略，直接在當前分支查看儀表板
+
+  請選擇操作（1/2/3），或輸入其他指示：
+  ```
+
+  - 選擇 **1**：`git add` 相關檔案（排除 `.env`）→ 引導 commit → `git push` → 檢查 PR → `git checkout dev/main-agent && git rebase origin/{main}`
+  - 選擇 **2**：`git stash` → `git checkout dev/main-agent && git rebase origin/{main}`
+  - 選擇 **3**：繼續後續步驟（不切換分支）
 
 5. 檢查是否有已合併的本地分支、遠端已合併分支或無用的 worktree，若有則列出清單提醒開發者可清理（詳細清理流程見 P3 skill「清理已合併分支與 Worktree」章節）
 
@@ -194,6 +201,7 @@ user_invocable: true
 | 類型 | 分支名稱 |
 |------|---------|
 | 主線 | `main`, `master` |
+| 常駐工作 | `dev/main-agent`（Vibe-SDLC 任務間停車場與小修累積處） |
 | 開發 | `develop`, `dev` |
 | 測試 | `testing`, `test` |
 | 預發 | `staging`, `uat` |
@@ -203,7 +211,7 @@ user_invocable: true
 
 ```bash
 # 受保護分支的 grep 排除模式（本地與遠端共用）
-PROTECTED='main$\|master$\|develop$\|dev$\|testing$\|test$\|staging$\|uat$\|release/'
+PROTECTED='main$\|master$\|dev/main-agent$\|develop$\|dev$\|testing$\|test$\|staging$\|uat$\|release/'
 
 # 5a. 已合併至 main 的本地分支（排除受保護分支）
 git branch --merged main | grep -v "^\*\|$PROTECTED"

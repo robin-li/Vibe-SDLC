@@ -278,19 +278,24 @@ user_invocable: true
 
 #### 分支命名規範
 
-**⛔ 嚴格禁止直接 push 至 main**，所有變更一律透過分支 + PR 流程。
+**⛔ 嚴格禁止直接 push 至 main**，所有變更一律透過分支 + PR 流程。`main` 為唯讀基準分支，`dev/main-agent` 為常駐工作分支。
 
-| 條件 | 分支命名 | 說明 |
-|------|---------|------|
-| **有 Issue** | `feat/<agent>/issue-N-簡述` | 所有 Issue-based 開發 |
-| **無 Issue（小修）** | `dev/main-agent` | 固定名稱短期分支，PR 合併後刪除，下次重建 |
+| 條件 | 分支命名 | 生命週期 | 說明 |
+|------|---------|---------|------|
+| **有 Issue** | `feat/<agent>/issue-N-簡述` | 短期 | 所有 Issue-based 開發，PR 合併後刪除 |
+| **無 Issue（小修）** | `dev/main-agent` | **常駐** | 固定名稱常駐分支，PR 合併後 rebase 到最新 main，不刪除 |
+| **任務間停車** | `dev/main-agent` | **常駐** | 任務結束後預設停留位置，main 誤改的收容所 |
 
 Per-issue 分支範例：
 - `feat/backend/issue-12-auth-api`
 - `feat/frontend/issue-15-login-ui`
 - `feat/devops/issue-20-docker-setup`
 
-`dev/main-agent` 生命週期：從 main 建立 → 累積小修 → 提交 PR → 合併後刪除 → 下次需要時重新建立。
+**`dev/main-agent` 常駐分支生命週期**：
+- 首次建立：`git checkout -b dev/main-agent origin/main && git push -u origin dev/main-agent`
+- 累積小修 → 達自然停止點 → 提交 PR
+- PR 合併後：`git checkout dev/main-agent && git rebase origin/main && git push --force-with-lease`（**不刪除分支**）
+- 持續作為任務間停車場與小修累積處
 
 #### Bootstrap 階段（CI 建立前的 PR 處理）
 

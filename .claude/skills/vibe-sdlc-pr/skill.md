@@ -60,8 +60,20 @@ PR 合併後，**AI 助手必須**在對應 Issue 發佈完成 Comment：
 
 PR 合併後，**AI 助手必須依序執行**：
 
-1. **切回 main + pull**：`git checkout main && git pull origin main`
-2. **清理已合併分支**：`git branch -d <branch>` + `git push origin --delete <branch>`（包含 `dev/main-agent` 和 per-issue 分支，確保本地與遠端皆刪除）
+1. **同步 main 並切換至常駐分支**：
+   ```bash
+   git fetch origin
+   git checkout main && git pull origin main
+   git checkout dev/main-agent && git rebase origin/main
+   git push --force-with-lease origin dev/main-agent
+   ```
+2. **清理已合併分支**（依分支類型不同處理）：
+   - **若合併的是 feature 分支** (`feat/<agent>/issue-N-簡述`)：刪除本地與遠端分支
+     ```bash
+     git branch -d feat/<agent>/issue-N-簡述
+     git push origin --delete feat/<agent>/issue-N-簡述
+     ```
+   - **若合併的是 `dev/main-agent`**：⛔ **不刪除**（常駐分支），上一步的 rebase 已完成更新
 3. **更新 Dev Plan**：將對應任務標記為 `[x] Completed`
 4. **更新看板狀態**：標記 Issue 為 `Done`
 5. **發佈完成 Comment**：含 PR 連結與 Dev Plan 更新
@@ -262,8 +274,9 @@ Sub Agent 的 PR **禁止** 修改其負責範圍以外的檔案：
      - `MERGED` → 禁止推送，從最新 main 建新分支與新 PR
      - `CLOSED` → 確認是否需重新開啟或建新 PR
 4. 開發者 Merge 後：
-   - **先同步工作目錄**：`git fetch origin && git rebase origin/main`（確保包含剛合併的變更）
-   - **若合併的是 `dev/main-agent` 分支**：確保同時刪除本地與遠端的 `dev/main-agent` 分支（`git branch -d dev/main-agent` + `git push origin --delete dev/main-agent`）
+   - **先同步 main 與常駐分支**：`git fetch origin && git checkout main && git pull origin main && git checkout dev/main-agent && git rebase origin/main && git push --force-with-lease origin dev/main-agent`
+   - **若合併的是 feature 分支**：刪除本地與遠端的 feature 分支
+   - **若合併的是 `dev/main-agent`**：⛔ **不刪除**（常駐分支），上一步的 rebase 已完成更新
    - 讀取 `/docs/02-Dev_Plan.md`
    - 找到對應任務，將 `- [ ]` 改為 `- [x]`
    - 提交更新並推送
