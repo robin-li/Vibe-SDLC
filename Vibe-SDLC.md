@@ -1,6 +1,6 @@
 # Vibe-SDLC：AI 輔助軟體開發生命週期標準作業程序
 
-> **版本**：v8.5 ｜ **最後更新**：2026-04-05
+> **版本**：v8.7 ｜ **最後更新**：2026-04-10
 
 ---
 
@@ -77,6 +77,7 @@
 | 計畫規劃 | 編寫 Dev Plan，拆解里程碑與任務 |
 | 品質審核 | 審閱 AI 產出的規格審查報告、Code Review、PR 核准 |
 | 方向決策 | 處理 CI 失敗的判斷（修正 or 調整規格）、回饋優先級排序 |
+| 機制選型 | 決定 STATUS.md 版控模式（A 全版控 / B 全忽略 / C 混合，詳見 §9.4） |
 
 ### 2.2 AI 助手（執行者）
 
@@ -132,12 +133,16 @@ sequenceDiagram
     Note over Dev, GH: 【Phase 1：定義規格文件與計畫】
 
     Dev->>AI: 討論並撰寫 PRD，優化後確認
-    Dev->>AI: 依據 PRD 撰寫 SRD，討論並優化
+    Dev->>AI: 依據 PRD 撰寫 SRD、SDD，討論並優化
     Dev->>AI: 定義 API Spec（OpenAPI 格式）
+    opt PRD 衍生 UI/UX 需求
+        AI->>AI: 讀取 UI_UX_Writing_Guidelines.md（9 條準則）
+        Dev->>AI: 依準則撰寫 01-6-UI_UX_Design.md 與 /docs/ui/*.html wireframe
+    end
     Dev->>AI: 依規格生成 Dev Plan，討論並優化
     Dev->>GH: 提交規格文件至 /docs
     Dev->>AI: 指示交叉比對所有規格文件
-    AI->>AI: 比對 PRD / SRD / SDD / API Spec / Dev Plan 等文件
+    AI->>AI: 比對 PRD / SRD / SDD / API Spec / UI_UX / Dev Plan 等文件
     AI-->>Dev: 產出完整性審查報告（03-Docs_Review_Report.md）
     Dev->>Dev: 審閱報告，修正規格缺漏
     Dev->>GH: 提交最終版規格
@@ -188,7 +193,8 @@ sequenceDiagram
     end
 
     AI->>GH: 同步工作目錄 + 更新 02-Dev_Plan.md 標記任務完成並推送
-    AI-->>Dev: 提醒手動驗證 Issues（如有）
+    AI->>GH: 彙整 STATUS.md（/vibe-sdlc-status）
+    AI-->>Dev: TG 推播完成通知（若有設定）+ 提醒手動驗證 Issues（如有）
 
     Note over Dev, GH: 【Phase 5：回饋收集、Release 與迭代規劃】
 
@@ -197,7 +203,7 @@ sequenceDiagram
     AI-->>Dev: 整理回饋、更新規格文件
     AI->>GH: 發佈 GitHub Release（若開發者選擇）
 
-    Note over Dev, GH: ↩ ���到 Phase 2 啟動��一輪迭代
+    Note over Dev, GH: ↩ 回到 Phase 2 啟動下一輪迭代
 ```
 
 > 已渲染至：images/full-sequence.png
@@ -217,16 +223,20 @@ sequenceDiagram
 
 ### 4.3 交付物
 
-| 文件 | 檔名 | 存放路徑 | 說明 |
-|------|------|----------|------|
-| 產品需求文件 (PRD) | `01-1-PRD.md` | `/docs/01-1-PRD.md` | 偏重產品面或客戶需求，可能衍生 UI/UX 需求 |
-| 系統需求文件 (SRD) | `01-2-SRD.md` | `/docs/01-2-SRD.md` | 偏重技術棧、框架以及系統安全性與效能要求 |
-| API 介面規格 | `01-5-API_Spec.md` | `/docs/01-5-API_Spec.md` | API 規格說明 |
-| API 介面合約 | `API_Spec.yaml` | `/docs/API_Spec.yaml` | OpenAPI 規格 |
-| UI/UX 設計文件 | `01-6-UI_UX_Design.md` | `/docs/01-6-UI_UX_Design.md` | 視覺與互動設計規格（如適用） |
-| 開發執行計畫 | `02-Dev_Plan.md` | `/docs/02-Dev_Plan.md` | 里程碑、任務拆解、角色定義、依賴關係 |
-| 規格審查報告 | `03-Docs_Review_Report.md` | `/docs/03-Docs_Review_Report.md` | 交叉比對結果、不一致與遺漏項目 |
-| CI/CD 規格文件（選用） | `04-CI_CD_Spec.md` | `/docs/04-CI_CD_Spec.md` | CI Workflow 定義、品質閘門、Docker 部署配置（複雜專案建議獨立） |
+| 文件 | 檔名 | 存放路徑 | 類型 | 說明 |
+|------|------|----------|------|------|
+| 文件入口與導航 | `00-Docs_Index.md` | `/docs/00-Docs_Index.md` | 必要 | 規格文件導航索引 |
+| 產品需求文件 (PRD) | `01-1-PRD.md` | `/docs/01-1-PRD.md` | 必要 | 偏重產品面或客戶需求，可能衍生 UI/UX 需求 |
+| 系統需求文件 (SRD) | `01-2-SRD.md` | `/docs/01-2-SRD.md` | 必要 | 非功能性需求（NFR）、部署要求、約束與安全合規 |
+| 系統設計文件 (SDD) | `01-3-SDD.md` | `/docs/01-3-SDD.md` | 必要 | 系統架構、元件設計、數據模型、技術決策記錄（ADR） |
+| 遊戲設計文件 (GDD) | `01-4-GDD.md` | `/docs/01-4-GDD.md` | 領域選用 | 遊戲專案專用：核心機制、數值設計、關卡設計 |
+| API 介面規格 | `01-5-API_Spec.md` | `/docs/01-5-API_Spec.md` | 必要 | API 規格說明 |
+| API 介面合約 | `API_Spec.yaml` | `/docs/API_Spec.yaml` | 必要 | OpenAPI 規格 |
+| UI/UX 設計文件 | `01-6-UI_UX_Design.md` | `/docs/01-6-UI_UX_Design.md` | 選用 | UI/UX 設計規格（視覺風格、互動流程、Design Tokens）。若 PRD 衍生 UI/UX 需求時建立。撰寫前必須先讀 [`references/UI_UX_Writing_Guidelines.md`](./skills/vibe-sdlc-spec/references/UI_UX_Writing_Guidelines.md) |
+| UI Wireframe | `ui/{page}.html` | `/docs/ui/*.html` | 選用 | 每個頁面一檔的 HTML + Tailwind CDN 視覺參考，由 `01-6-UI_UX_Design.md` 以 link 引用（規則詳見 UI_UX_Writing_Guidelines.md §9） |
+| 開發執行計畫 | `02-Dev_Plan.md` | `/docs/02-Dev_Plan.md` | 必要 | 里程碑、任務拆解、角色定義、依賴關係 |
+| 規格審查報告 | `03-Docs_Review_Report.md` | `/docs/03-Docs_Review_Report.md` | 必要 | 交叉比對結果、不一致與遺漏項目 |
+| CI/CD 規格文件 | `04-CI_CD_Spec.md` | `/docs/04-CI_CD_Spec.md` | 選用 | CI Workflow 定義、品質閘門、Docker 部署配置（複雜專案建議獨立） |
 
 **重要**：
 - 每項規格都應賦予**規格編號**以利後續追蹤與討論。
@@ -249,17 +259,40 @@ sequenceDiagram
 |------|--------|------|------|
 | 1 | **開發者** | 撰寫 PRD：定義功能清單、使用者故事、資料欄位，與 AI 討論並優化 | `01-1-PRD.md` |
 | 2 | **開發者** | 撰寫 SRD：PRD 定義完成後，定義系統架構、技術棧、安全性要求、效能指標，與 AI 討論並優化 | `01-2-SRD.md` |
-| 3 | **開發者** | 定義 API Spec：以 OpenAPI 格式定義所有端點、請求/回應結構 | `01-5-API_Spec.md`, `API_Spec.yaml` |
-| 4 | **開發者** | 撰寫 Dev Plan：PRD、SRD、SDD、API Spec 定義完成後，拆解里程碑、任務清單、任務間依賴關係，與 AI 討論並優化 | `02-Dev_Plan.md` |
-| 5 | **開發者** | 確認以上文件均已提交至 `/docs` 目錄並推送至倉庫 | Git commit & push |
-| 6 | **AI 助手** | 交叉比對 `/docs` 下所有規格文件，產出完整性審查報告 | `03-Docs_Review_Report.md` |
-| 7 | **開發者** | 審閱報告，修正規格缺漏後重新提交 | 最終版規格 |
+| 3 | **開發者** | 撰寫 SDD：定義系統架構、元件設計、數據模型、技術決策記錄（ADR） | `01-3-SDD.md` |
+| 4 | **開發者** | 定義 API Spec：以 OpenAPI 格式定義所有端點、請求/回應結構 | `01-5-API_Spec.md`, `API_Spec.yaml` |
+| 5 | **開發者 + AI 助手** | 若 PRD 衍生 UI/UX 需求：依 [UI/UX 撰寫準則](#45-uiux-設計文件撰寫準則) 撰寫 `01-6-UI_UX_Design.md` 與對應 `/docs/ui/*.html` wireframe | `01-6-UI_UX_Design.md`, `ui/*.html` |
+| 6 | **開發者** | 撰寫 Dev Plan：PRD、SRD、SDD、API Spec 定義完成後，拆解里程碑、任務清單、任務間依賴關係，與 AI 討論並優化 | `02-Dev_Plan.md` |
+| 7 | **開發者** | 確認以上文件均已提交至 `/docs` 目錄並推送至倉庫 | Git commit & push |
+| 8 | **AI 助手** | 交叉比對 `/docs` 下所有規格文件，產出完整性審查報告 | `03-Docs_Review_Report.md` |
+| 9 | **開發者** | 審閱報告，修正規格缺漏後重新提交 | 最終版規格 |
 
-### 4.5 Dev Plan 格式規範
+### 4.5 UI/UX 設計文件撰寫準則
+
+若需建立 `01-6-UI_UX_Design.md`，AI 助手**必須**先讀取 [`skills/vibe-sdlc-spec/references/UI_UX_Writing_Guidelines.md`](./skills/vibe-sdlc-spec/references/UI_UX_Writing_Guidelines.md) 並遵循該指引的 9 條準則撰寫。指引重點：
+
+1. **結構、狀態、欄位、呈現邏輯、元件庫指名**：以 markdown 表格結構化描述（準則 1–8）
+2. **流程圖**：頁面跳轉、對話流、狀態機一律使用 Mermaid flowchart，**不使用** ASCII 箭頭或圖片（準則 2）
+3. **視覺空間感**：使用 **HTML + Tailwind CDN** 獨立檔案，放置於 `/docs/ui/`，由 markdown 規格書以 relative link 引用（準則 9）
+4. **元件層級 anchor**：每個結構性 `<section>` 必須有 `id` 屬性，markdown 子元件章節以 `ui/{page}.html#{anchor}` 引用（準則 §9.6）
+5. 每條準則均附自檢方法，AI 產出後必須對照指引末段 checklist 自檢
+
+**UI/UX 產出物結構**：
+
+| 產出物 | 路徑 | 角色 |
+|--------|------|------|
+| UI/UX 規格書 | `/docs/01-6-UI_UX_Design.md` | 實作權威（markdown，AI 實作時以此為準） |
+| HTML Wireframe | `/docs/ui/{page}.html` | 視覺參考（每個 §3.x 頁面對應一檔，低保真 wireframe 使用灰階 palette） |
+
+> **核心原則**：markdown 規格書是實作權威，HTML wireframe 是視覺輔助。兩者衝突時以 markdown 為準。
+
+### 4.6 Dev Plan 格式規範
 
 可依需求規格相關文件（PRD、SRD、SDD、API Spec 等）生成 Dev Plan，然後與 AI 討論並優化。
 
 > 參考範例：`skills/vibe-sdlc-spec/examples/docs/02-Dev_Plan.md`
+
+> **機制選型提醒**：在此階段應一併決定 **STATUS.md 版控模式**（A / B / C，詳見 §9.4），並將選定模式寫入專案 `CLAUDE.md`。若未宣告，A-Main 首次執行 `/vibe-sdlc-status` 時會主動詢問。
 
 #### 核心設計原則
 
@@ -346,7 +379,7 @@ sequenceDiagram
 - 任務分發流程：`flowchart LR`
 - 並行群組視覺化：`flowchart TB`（fork/join 模式）
 
-### 4.6 審查報告格式
+### 4.7 審查報告格式
 
 當執行步驟 6（交叉比對規格文件）時，按以下格式產出報告至 `/docs/03-Docs_Review_Report.md`：
 
@@ -370,7 +403,7 @@ sequenceDiagram
 - 建議：[通過 / 需修正後重新審查]
 ```
 
-### 4.7 完成條件
+### 4.8 完成條件
 
 - [ ] 規格文件皆已提交至 `/docs`
 - [ ] 所有規格文件皆包含版本修訂記錄（版本號 + 最後更新日期 + 修訂說明表格）
@@ -498,9 +531,11 @@ sequenceDiagram
 - 以下規格文件可供參考：
   - `/docs/01-1-PRD.md`（產品需求，前端頁面與流程參考）
   - `/docs/01-2-SRD.md`（技術規範）
+  - `/docs/01-3-SDD.md`（系統設計）
   - `/docs/01-5-API_Spec.md`（API 規格）
   - `/docs/API_Spec.yaml`（OpenAPI 合約）
-  - `/docs/01-6-UI_UX_Design.md`（UI/UX 規格）
+  - `/docs/01-6-UI_UX_Design.md`（UI/UX 規格，實作權威）
+  - `/docs/ui/*.html`（HTML wireframe 視覺參考，由 markdown 規格以 link 引用）
 
 ### 6.3 Sub Agent 情境
 
@@ -543,7 +578,7 @@ sequenceDiagram
 | 領取任務（步驟 3） | 🚀 **任務領取**（含角色、分支、worktree） | **必須** |
 | 完成重要階段 | 📋 **進度更新**（已完成 / 進行中 / 阻塞） | 建議 |
 | 遇到阻塞或規格疑問 | 📋 **進度更新**（含阻塞原因或問題描述） | **必須** |
-| Vibe Check 通過（步驟 11） | ✅ **Vibe Check 通過**（含 PR 連結與測試結果） | **必須** |
+| Vibe Check 通過（步驟 9） | ✅ **Vibe Check 通過**（含 PR 連結與測試結果） | **必須** |
 
 **原則**：簡潔為主，避免噪音。Sub Agent 之間不直接溝通，但可透過 Issue Comment 讓 A-Main 了解進度與阻塞。
 
@@ -604,10 +639,15 @@ Vibe Check 階段可能遇到「非本次變更造成的測試失敗」。處理
 
 **聯調流程**：
 
-```
-部署 → 開發者測試 ��� 發現問�� → 回報分流（1/2/3/4/5）→ 修正 → 重新���署 → 繼續測試
-                                    ↑                              ↓
-                                    └──────────────────────────────┘
+```mermaid
+flowchart LR
+    Deploy[部署] --> Test[開發者測試]
+    Test --> Issue{發現問題?}
+    Issue -->|是| Triage[議題收集分流<br/>選項 1~5]
+    Triage --> Fix[修正]
+    Fix --> Redeploy[重新部署]
+    Redeploy --> Test
+    Issue -->|否| Done([聯調結束])
 ```
 
 **分流選項行為**：
@@ -838,8 +878,8 @@ STATUS.md 版控模式：C（混合）— STATUS.md 進版控、A-*.md 忽略
 | Phase 1 | 規格審查 | `"交叉比對 /docs 下的所有規格文件，產出完整性審查報告至 03-Docs_Review_Report.md。"` |
 | Phase 2 | 建立 Issues | `"P1 審查報告已通過，請根據 02-Dev_Plan.md 的 M1 里程碑建立 GitHub Issues，包含任務編號、驗收標準、優先級與標籤。"` |
 | Phase 2 | 指定里程碑 | `"先只建 Milestone 1 的 Issues，M2 之後等 M1 完成再說。"` |
-| Phase 3 | 功能開發 | `"請處理 Issue #N，實作使用者註冊 API。"` |
-| Phase 3 | 核准建 PR | `"LGTM，核准。"`（AI 自動推送分支並建立 PR） |
+| Phase 3 | 功能開發 | `"請處理 Issue #N，實作使用者註冊 API。"`（Vibe Check 通過後 AI 自動推送分支並建立 PR） |
+| Phase 3 | 追加需求 | `"追加一個測試案例：當 email 格式不正確時應回傳 400 Bad Request。"` |
 | Phase 4 | CI 修正 | `"CI 掛了，這是錯誤報告：[貼上 CI 錯誤訊息]，請分析原因並修正。"` |
 | Phase 4 | 合併後更新 | `"PR 已 merge，請更新 Dev Plan 的任務狀態。"` |
 | Phase 5 | 回饋處理 | `"根據以下回饋更新 01-1-PRD，並在 02-Dev_Plan 中新增對應任務。"` |
@@ -851,11 +891,27 @@ STATUS.md 版控模式：C（混合）— STATUS.md 進版控、A-*.md 忽略
 
 | 文件 | 路徑 | 維護者 | 更新時機 |
 |------|------|--------|----------|
+| 文件入口 | `/docs/00-Docs_Index.md` | 開發者 | Phase 1 建立、文件新增時更新 |
 | PRD | `/docs/01-1-PRD.md` | 開發者 | Phase 1 建立、Phase 5 迭代更新 |
 | SRD | `/docs/01-2-SRD.md` | 開發者 | Phase 1 建立、需求變更時更新 |
+| SDD | `/docs/01-3-SDD.md` | 開發者 | Phase 1 建立、架構變更時更新 |
+| GDD（遊戲類專案） | `/docs/01-4-GDD.md` | 開發者 | Phase 1 建立（領域選用）、機制變更時更新 |
 | API Spec (說明) | `/docs/01-5-API_Spec.md` | 開發者 | Phase 1 建立、介面變更時更新 |
 | API Spec (合約) | `/docs/API_Spec.yaml` | 開發者 | Phase 1 建立、介面變更時更新 |
-| UI/UX 設計 | `/docs/01-6-UI_UX_Design.md` | 開發者 | Phase 1 建立（如適用）、UI 變更時更新 |
+| UI/UX 設計 | `/docs/01-6-UI_UX_Design.md` | 開發者 | Phase 1 建立（選用）、UI 變更時更新；撰寫前必須先讀 UI_UX_Writing_Guidelines.md |
+| UI Wireframe | `/docs/ui/*.html` | 開發者 + AI | Phase 1 建立（選用）、與 `01-6-UI_UX_Design.md` 同步更新；低保真灰階、Tailwind CDN |
 | Dev Plan | `/docs/02-Dev_Plan.md` | 開發者建立、AI 更新狀態 | Phase 1 建立、Phase 4 標記完成、Phase 5 新增任務 |
 | 規格審查報告 | `/docs/03-Docs_Review_Report.md` | AI 產出、開發者審閱 | Phase 1 交叉比對後產出、規格修正後重新審查 |
 | CI/CD 規格 | `/docs/04-CI_CD_Spec.md` | 開發者 | Phase 1 建立（選用，複雜專案建議獨立） |
+| Agent 狀態 | `/docs/status/A-*.md` | 各 Agent 自行更新 | 領取任務、遇阻塞、完成 PR 時；版控模式依專案 CLAUDE.md 宣告（A/B/C） |
+| 全局狀態 | `/docs/status/STATUS.md` | A-Main 彙整 | 透過 `/vibe-sdlc-status` 產出；Phase 4 Merge 後自動彙整 |
+
+---
+
+## 版本修訂說明
+
+| 版本 | 日期 | 修訂內容 |
+|------|------|---------|
+| v8.7 | 2026-04-10 | §4.3 交付物表格補 SDD/GDD/UI Wireframe 與類型欄；新增 §4.5「UI/UX 設計文件撰寫準則」小節引用 `UI_UX_Writing_Guidelines.md` 9 條準則；§4.4 操作步驟加入 UI/UX 撰寫步驟；§3 sequenceDiagram Phase 1 段加入 UI/UX 規格撰寫步驟；§6.2 前置條件補 `/docs/ui/*.html`；附錄 B 補 SDD/GDD/UI Wireframe/STATUS.md；修正多處 UTF-8 亂碼、§6.5 步驟編號、附錄 A 過時 LGTM 提示詞 |
+| v8.6 | 2026-04-09 | §9.4 新增「STATUS.md 版控策略」小節，定義 A/B/C 三種模式；§2.1 補開發者「機制選型」職責；§4.6 Dev Plan 階段加 STATUS.md 版控模式選型提醒 |
+| v8.5 | 2026-04-05 | 議題收集與處置流程機制、聯調模式、里程碑收尾作業等既有內容 |
