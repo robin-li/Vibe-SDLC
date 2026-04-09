@@ -12,20 +12,28 @@ skills/
 │   └── skill.md                     ← 總覽與導航
 ├── vibe-sdlc-spec/
 │   ├── skill.md                     ← Phase 1：定義規格文件與計畫
-│   ├── examples/docs/               ← 規格文件範例
-│   │   ├── 00-Docs_Index.md         ← 文件入口與導航
-│   │   ├── 01-1-PRD.md              ← 產品需求文件範例
-│   │   ├── 01-2-SRD.md              ← 系統需求文件範例（v2.0，設計內容移至 SDD）
-│   │   ├── 01-5-API_Spec.md         ← API 介面規格範例
-│   │   ├── 01-6-UI_UX_Design.md     ← UI/UX 設計文件範例
-│   │   ├── 01-3-SDD.md              ← 系統設計文件範例
-│   │   ├── 01-4-GDD.md              ← 遊戲設計文件範例（領域選用）
-│   │   ├── 02-Dev_Plan.md           ← 開發計畫範例
-│   │   ├── 03-Docs_Review_Report.md ← 規格審查報告範例
-│   │   ├── 04-CI_CD_Spec.md         ← CI/CD 規格文件範例
-│   │   └── API_Spec.yaml            ← OpenAPI 合約範例
-│   └── references/
-│       └── multi-account-setup.md   ← 多帳號協作配置指南
+│   ├── references/
+│   │   ├── multi-account-setup.md   ← 多帳號協作配置指南
+│   │   └── UI_UX_Writing_Guidelines.md ← UI/UX 規格撰寫 9 條準則（含 HTML wireframe）
+│   └── examples/docs/               ← 規格文件範例
+│       ├── 00-Docs_Index.md         ← 文件入口與導航
+│       ├── 01-1-PRD.md              ← 產品需求文件範例
+│       ├── 01-2-SRD.md              ← 系統需求文件範例（v2.0，設計內容移至 SDD）
+│       ├── 01-3-SDD.md              ← 系統設計文件範例
+│       ├── 01-4-GDD.md              ← 遊戲設計文件範例（領域選用）
+│       ├── 01-5-API_Spec.md         ← API 介面規格範例
+│       ├── 01-6-UI_UX_Design.md     ← UI/UX 設計文件範例
+│       ├── ui/                      ← HTML wireframe 視覺參考範例（6 份）
+│       │   ├── home.html            ← 首頁 wireframe
+│       │   ├── stats.html           ← 統計頁 wireframe
+│       │   ├── history.html         ← 記錄頁 wireframe
+│       │   ├── settings.html        ← 設定頁 wireframe
+│       │   ├── login.html           ← 登入頁 wireframe
+│       │   └── register.html        ← 註冊頁 wireframe
+│       ├── 02-Dev_Plan.md           ← 開發計畫範例
+│       ├── 03-Docs_Review_Report.md ← 規格審查報告範例
+│       ├── 04-CI_CD_Spec.md         ← CI/CD 規格文件範例
+│       └── API_Spec.yaml            ← OpenAPI 合約範例
 ├── vibe-sdlc-issues/
 │   └── skill.md                     ← Phase 2：任務掛載
 ├── vibe-sdlc-dev/

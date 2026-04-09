@@ -128,7 +128,7 @@ AI 會自動偵測專案狀態、產出進度儀表板，並建議下一步。
 | PRD | `/docs/01-1-PRD.md` | 產品需求、使用者故事、功能清單 |
 | SRD | `/docs/01-2-SRD.md` | 技術棧、系統架構、安全與性能要求 |
 | API Spec | `/docs/01-5-API_Spec.md` + `API_Spec.yaml` | API 端點說明 + OpenAPI 合約 |
-| UI/UX 設計 | `/docs/01-6-UI_UX_Design.md` | 視覺與互動設計規格（如適用） |
+| UI/UX 設計 | `/docs/01-6-UI_UX_Design.md` + `/docs/ui/*.html` | 視覺與互動設計規格（選用）+ HTML + Tailwind wireframe 視覺參考；遵循 [UI_UX_Writing_Guidelines](./skills/vibe-sdlc-spec/references/UI_UX_Writing_Guidelines.md) 9 條準則 |
 | Dev Plan | `/docs/02-Dev_Plan.md` | 里程碑、任務清單、角色分工、Git 協作策略 |
 | 審查報告 | `/docs/03-Docs_Review_Report.md` | AI 交叉比對結果，含不一致與遺漏項目 |
 | CI/CD 規格 | `/docs/04-CI_CD_Spec.md` | CI Workflow、品質閘門、Docker 配置（選用） |
