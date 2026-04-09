@@ -304,41 +304,85 @@ After completing development and testing, when Vibe Check passes, the AI will **
 
 ```
 > /vibe-sdlc-pr
-> CI failed. Here's the error report: [paste CI error message]
-> Please analyze and fix.
+> PR #34's CI failed. Please take a look and fix it.
 ```
+
+AI will automatically fetch the CI error (`gh run view`), classify the cause (flaky / pre-existing bug / caused by this PR), and decide how to handle it — no need to paste logs manually.
 
 **Update progress after merge:**
 
 ```
-> PR has been merged. Please update the Dev Plan task status.
-> Are there more Issues on the board? If so, continue with the next one.
+> PR has been merged. Please update the Dev Plan task status,
+> and list any Issues that need manual verification.
 ```
 
 ---
 
 ### Scenario 6: Phase 5 — Milestone Delivery
 
-**Confirm milestone completion status:**
+**Collect feedback and publish Release:**
 
 ```
 > /vibe-sdlc-release
-> All M1 Issues should be merged. Please confirm and generate a completion report.
+> M1 acceptance is done. I have some feedback to organize, then publish the Release.
 ```
 
-**Provide feedback and start next iteration:**
-
-```
-> Tested in staging, here's the feedback:
-> 1. List page needs pagination (new requirement)
-> 2. Delete should be soft-delete (requirement change)
-> 3. Login page copy needs work (defer for now)
-> Please organize and update the PRD and Dev Plan.
-```
+AI will guide you through each item, organize them into a structured feedback report (requirement changes / new tasks / deferred), then sync updates to the PRD, Dev Plan, and version records before publishing the Release Notes.
 
 ---
 
-### Scenario 7: Multi Sub Agent Parallel Development
+### Scenario 7: Reporting Bugs or New Requirements During Testing/Acceptance — Issue Collection & Triage Flow
+
+When you **directly describe a Bug, new requirement, or improvement** during development, testing, or acceptance (e.g., "X is broken", "I want X"), AI will immediately stop, not touch any files, and present 5 handling options. This is a core Vibe-SDLC mechanism (Core Principle #6), triggered in any of Phase 3, 4, or 5.
+
+**Scenario: Issues and new requirements found during M1 acceptance**
+
+```
+> I just tried the registration flow in staging — the password length check only enforces 6 characters, it should be at least 8.
+> Also, the list page is slow to load, I want to add pagination.
+```
+
+```
+📋 Issue Tracking Options
+─────────────────
+You reported:
+  - [Bug] Password length check should be raised from 6 to 8 characters
+  - [Feature] Add pagination to list page
+
+Please choose how to handle:
+  1️⃣  Small issue, fix directly (no Issue)
+  2️⃣  Create Issue then fix immediately
+  3️⃣  Record for now, batch-create Issues later
+  4️⃣  Finish collecting, batch-create Issues, and start development
+  5️⃣  Finish collecting, batch-create Issues, and wait for instructions
+
+Select (1/2/3/4/5):
+```
+
+**Option guide**:
+
+| Your report | Suggested option | AI behavior |
+|---|:---:|---|
+| Typo, copy tweak, simple config | **1** | Fix directly on `dev/main-agent` branch and create PR |
+| Single Bug or single need to handle immediately | **2** | Create Issue → enter P3 → auto-create PR |
+| A batch of feedback to collect first | **3** | Stash in list; batch-create when you say "organize reports" |
+| Confirmed list, start working immediately | **4** | Batch-create Issues → enter P3 in priority order |
+| Confirmed list, review priority first | **5** | Batch-create Issues → stop and wait |
+
+**Option 4 example dialog (handling multiple feedback items after acceptance):**
+
+```
+> 4
+> Item 1 is a P0 Bug for M1, item 2 is a new requirement for M2 backlog.
+```
+
+AI will confirm each Issue's title, labels, and milestone one by one, batch-execute `gh issue create`, then directly pick up the P0 Issue and enter the Phase 3 development loop. If reports involve PRD / API Spec changes, AI will **immediately update** the corresponding spec files and bump versions after handling (Core Principles #4, #5).
+
+> 💡 **When it does NOT trigger**: Picking up an existing Issue via `/vibe-sdlc-dev`, pure code questions, or when you explicitly say "just fix it" / "quick fix" — AI will execute directly without asking.
+
+---
+
+### Scenario 8: Multi Sub Agent Parallel Development
 
 **Have AI generate a Dev Plan with Git collaboration strategy:**
 
@@ -360,8 +404,8 @@ After completing development and testing, when Vibe Check passes, the AI will **
 
 ```
 > /vibe-sdlc-pr
-> PR #34 CI has passed. A-Main confirms scope is correct (only modifies /backend/**).
-> Please have H-Director do the final review.
+> PR #34's CI has passed. Have A-Main do the initial review: confirm the scope
+> only touches /backend/**, then list a checklist for my final review.
 ```
 
 ---

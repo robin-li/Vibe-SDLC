@@ -305,41 +305,85 @@ Sau khi hoàn thành phát triển và kiểm thử, khi Vibe Check đạt, AI s
 
 ```
 > /vibe-sdlc-pr
-> CI lỗi rồi. Đây là báo cáo lỗi: [dán thông báo lỗi CI]
-> Hãy phân tích nguyên nhân và sửa.
+> PR #34 bị lỗi CI, giúp tôi xem và sửa.
 ```
+
+AI sẽ tự động lấy lỗi CI (`gh run view`), phân loại nguyên nhân (flaky / bug cũ / do PR này gây ra) rồi quyết định cách xử lý — không cần dán log thủ công.
 
 **Cập nhật tiến độ sau merge:**
 
 ```
-> PR đã merge rồi. Hãy cập nhật trạng thái task trong Dev Plan.
-> Còn Issue nào trên bảng không? Nếu có thì tiếp tục xử lý cái tiếp theo.
+> PR đã merge rồi, hãy cập nhật trạng thái task trong Dev Plan,
+> và liệt kê các Issue cần xác minh thủ công.
 ```
 
 ---
 
 ### Tình huống 6: Phase 5 — Bàn giao milestone
 
-**Xác nhận trạng thái hoàn thành milestone:**
+**Thu thập phản hồi và phát hành Release:**
 
 ```
 > /vibe-sdlc-release
-> Tất cả Issue của M1 đáng lẽ đều đã merge. Hãy xác nhận và tạo báo cáo hoàn thành.
+> M1 đã nghiệm thu xong, có một số phản hồi cần tổng hợp rồi phát hành Release.
 ```
 
-**Đưa phản hồi và bắt đầu vòng lặp tiếp theo:**
-
-```
-> Đã chạy qua môi trường test, có vài phản hồi:
-> 1. Trang danh sách cần chức năng phân trang (yêu cầu mới)
-> 2. Thao tác xóa nên đổi thành soft-delete (thay đổi yêu cầu)
-> 3. Nội dung trang đăng nhập chưa đẹp (tạm hoãn)
-> Hãy tổng hợp và cập nhật PRD cùng Dev Plan.
-```
+AI sẽ hướng dẫn bạn báo cáo từng mục, tổng hợp thành báo cáo phản hồi có cấu trúc (thay đổi yêu cầu / nhiệm vụ mới / tạm hoãn), xác nhận xong sẽ đồng bộ cập nhật PRD, Dev Plan và bản ghi phiên bản, cuối cùng phát hành Release Notes.
 
 ---
 
-### Tình huống 7: Phát triển song song Multi Sub Agent
+### Tình huống 7: Báo cáo Bug hoặc yêu cầu mới khi kiểm thử/nghiệm thu — Quy trình Thu thập & Phân luồng Issue
+
+Khi bạn **mô tả trực tiếp Bug, yêu cầu mới hoặc góp ý cải thiện** trong quá trình phát triển, kiểm thử hoặc nghiệm thu (ví dụ "XX hỏng rồi", "tôi muốn XX"), AI sẽ lập tức dừng lại, không đụng vào bất kỳ file nào, rồi đưa ra 5 lựa chọn xử lý. Đây là cơ chế cốt lõi của Vibe-SDLC (Nguyên tắc cốt lõi #6), có thể được kích hoạt ở bất kỳ Phase 3, 4 hoặc 5 nào.
+
+**Tình huống: Phát hiện vấn đề và yêu cầu mới trong lúc nghiệm thu M1**
+
+```
+> Tôi vừa thử luồng đăng ký trên môi trường test, phát hiện kiểm tra độ dài mật khẩu chỉ ở 6 ký tự, lẽ ra phải ít nhất 8.
+> Ngoài ra trang danh sách tải hơi chậm, muốn thêm chức năng phân trang.
+```
+
+```
+📋 Tùy chọn theo dõi Issue
+─────────────────
+Bạn đã báo cáo:
+  - [Bug] Kiểm tra độ dài mật khẩu nên tăng từ 6 lên 8 ký tự
+  - [Feature] Thêm phân trang cho trang danh sách
+
+Vui lòng chọn cách xử lý:
+  1️⃣  Vấn đề nhỏ, sửa trực tiếp (không tạo Issue)
+  2️⃣  Tạo Issue rồi sửa ngay
+  3️⃣  Ghi lại trước, lát nữa tạo Issues theo lô
+  4️⃣  Kết thúc thu thập, tạo Issues theo lô và bắt đầu phát triển
+  5️⃣  Kết thúc thu thập, tạo Issues theo lô và đợi chỉ thị
+
+Chọn (1/2/3/4/5):
+```
+
+**Hướng dẫn tùy chọn**:
+
+| Nội dung báo cáo | Tùy chọn gợi ý | Hành vi của AI |
+|---|:---:|---|
+| Typo, chỉnh copy, config đơn giản | **1** | Sửa trực tiếp trên nhánh `dev/main-agent` và tạo PR |
+| Một Bug hoặc một yêu cầu cần xử lý ngay | **2** | Tạo Issue → vào P3 → tự động tạo PR |
+| Nhiều phản hồi cần thu thập trước | **3** | Lưu danh sách; khi bạn nói "tổng hợp báo cáo" thì tạo theo lô |
+| Danh sách đã xác nhận, làm ngay toàn bộ | **4** | Tạo Issues theo lô → vào P3 theo thứ tự ưu tiên |
+| Danh sách đã xác nhận, review ưu tiên trước | **5** | Tạo Issues theo lô → dừng và chờ |
+
+**Ví dụ hội thoại tùy chọn 4 (xử lý nhiều phản hồi sau nghiệm thu):**
+
+```
+> 4
+> Mục 1 là Bug P0 cho M1, mục 2 là yêu cầu mới vào backlog M2.
+```
+
+AI sẽ lần lượt xác nhận tiêu đề, Labels, Milestone của từng Issue, thực thi `gh issue create` theo lô, sau đó trực tiếp nhận Issue P0 để vào vòng lặp phát triển Phase 3. Nếu nội dung báo cáo liên quan đến thay đổi PRD / API Spec, AI sẽ **cập nhật truy ngược ngay lập tức** các file đặc tả tương ứng và tăng phiên bản sau khi xử lý (Nguyên tắc cốt lõi #4, #5).
+
+> 💡 **Khi nào KHÔNG kích hoạt**: Nhận Issue có sẵn qua `/vibe-sdlc-dev`, câu hỏi thuần túy về code, hoặc khi bạn nói rõ "sửa luôn đi" / "sửa nhanh" — AI sẽ thực thi ngay không hỏi lại.
+
+---
+
+### Tình huống 8: Phát triển song song Multi Sub Agent
 
 **Để AI tạo Dev Plan có chiến lược Git:**
 
@@ -361,8 +405,8 @@ Sau khi hoàn thành phát triển và kiểm thử, khi Vibe Check đạt, AI s
 
 ```
 > /vibe-sdlc-pr
-> PR #34 CI đã pass. A-Main xác nhận phạm vi đúng (chỉ sửa /backend/**).
-> Mời H-Director duyệt cuối.
+> PR #34 CI đã pass, nhờ A-Main làm sơ duyệt: xác nhận phạm vi chỉ đụng /backend/**,
+> nếu ổn thì liệt kê checklist để tôi review cuối cùng.
 ```
 
 ---
