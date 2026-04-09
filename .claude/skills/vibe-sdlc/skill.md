@@ -116,7 +116,7 @@ user_invocable: true
 |------|------|--------|
 | PRD | `/docs/01-1-PRD.md` | 開發者 |
 | SRD | `/docs/01-2-SRD.md` | 開發者 |
-| API Spec (說明) | `/docs/01-3-API_Spec.md` | 開發者 |
+| API Spec (說明) | `/docs/01-5-API_Spec.md` | 開發者 |
 | API Spec (合約) | `/docs/API_Spec.yaml` | 開發者 |
 | Dev Plan | `/docs/02-Dev_Plan.md` | 開發者建立、AI 更新狀態 |
 | 審查報告 | `/docs/03-Docs_Review_Report.md` | AI 產出、開發者審閱 |

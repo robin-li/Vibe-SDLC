@@ -127,8 +127,8 @@ All spec files are stored in `/docs` as the Single Source of Truth:
 |----------|------|-------------|
 | PRD | `/docs/01-1-PRD.md` | Product requirements, user stories, feature list |
 | SRD | `/docs/01-2-SRD.md` | Tech stack, architecture, security & performance |
-| API Spec | `/docs/01-3-API_Spec.md` + `API_Spec.yaml` | API endpoint docs + OpenAPI contract |
-| UI/UX Design | `/docs/01-4-UI_UX_Design.md` | Visual and interaction design specs (if applicable) |
+| API Spec | `/docs/01-5-API_Spec.md` + `API_Spec.yaml` | API endpoint docs + OpenAPI contract |
+| UI/UX Design | `/docs/01-6-UI_UX_Design.md` | Visual and interaction design specs (if applicable) |
 | Dev Plan | `/docs/02-Dev_Plan.md` | Milestones, task breakdown, roles, Git collaboration strategy |
 | Review Report | `/docs/03-Docs_Review_Report.md` | AI cross-reference results with inconsistencies and gaps |
 | CI/CD Spec | `/docs/04-CI_CD_Spec.md` | CI Workflow, quality gates, Docker config (optional) |

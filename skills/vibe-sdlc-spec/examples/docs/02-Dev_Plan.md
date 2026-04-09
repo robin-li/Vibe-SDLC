@@ -56,7 +56,7 @@
 |---------|---------|---------|--------|
 | **A-Main** | 全專案讀寫 | `/docs` 規格文件全集 | GitHub Issues、PR 初審結果、整合報告、Vibe Check |
 | **A-Backend** | `/backend/**` | `01-2-SRD.md` + `API_Spec.yaml` | API 端點、DB Migrations、Seed Data、LLM 整合、單元測試 |
-| **A-Frontend** | `/frontend/**` | `01-1-PRD.md` + `01-4-UI_UX_Design.md` + `API_Spec.yaml` | UI 頁面、組件、狀態管理、語音輸入、圖表 |
+| **A-Frontend** | `/frontend/**` | `01-1-PRD.md` + `01-6-UI_UX_Design.md` + `API_Spec.yaml` | UI 頁面、組件、狀態管理、語音輸入、圖表 |
 | **A-QA** | `/tests/**` | 全部規格 + 已完成程式碼 | E2E 測試腳本、測試報告 |
 | **A-DevOps** | `.github/**`, `docker/**` | `04-CI_CD_Spec.md` + 專案結構 | CI/CD Workflows、Dockerfile、docker-compose |
 
@@ -385,7 +385,7 @@ gantt
   7. 實作基礎 Layout 組件（底部導航列 Tab Bar）
   8. 配置 `npm run dev`、`npm run build`、`npm run lint`、`npm test` scripts
 - **前置任務**：（無）
-- **輸入**：`01-1-PRD.md` (§5 頁面結構)、`01-4-UI_UX_Design.md` (§2 Design Tokens、§3.5 底部 Tab Bar、§6 響應式設計)
+- **輸入**：`01-1-PRD.md` (§5 頁面結構)、`01-6-UI_UX_Design.md` (§2 Design Tokens、§3.5 底部 Tab Bar、§6 響應式設計)
 - **產出**：`/frontend` 完整目錄結構、Layout 組件、路由配置
 - **驗證**：
   - ✅ 自動：`npm run dev` 啟動成功
@@ -439,7 +439,7 @@ gantt
   6. 實作 Token 持久化：存儲至 localStorage、頁面重整後自動恢復登入狀態
   7. 撰寫單元測試：Auth Store 狀態管理、Protected Route 重導向邏輯
 - **前置任務**：T-103（前端骨架）、T-104（CI 就緒，PR 需通過 CI）
-- **輸入**：`01-1-PRD.md`、`01-4-UI_UX_Design.md` (§3.6 登入/註冊頁)、`API_Spec.yaml` (Auth API)
+- **輸入**：`01-1-PRD.md`、`01-6-UI_UX_Design.md` (§3.6 登入/註冊頁)、`API_Spec.yaml` (Auth API)
 - **產出**：`LoginPage.tsx`、`RegisterPage.tsx`、`authStore.ts`、`ProtectedRoute.tsx`、`apiClient.ts`、單元測試
 - **驗證**：
   - ✅ 自動：單元測試通過（Auth Store、Protected Route）
@@ -503,7 +503,7 @@ gantt
   4. 處理語音辨識結果：中間結果顯示、最終結果回傳給父組件
   5. 撰寫單元測試：組件渲染、Feature Detection 邏輯、fallback 行為
 - **前置任務**：T-106（前端登入頁，需 Auth 與 API Client 就緒）
-- **輸入**：`01-1-PRD.md` (PRD-F-001)、`01-4-UI_UX_Design.md` (§4.1 語音錄音中)
+- **輸入**：`01-1-PRD.md` (PRD-F-001)、`01-6-UI_UX_Design.md` (§4.1 語音錄音中)
 - **產出**：`VoiceInput.tsx`、`useVoiceRecognition.ts`、單元測試
 - **驗證**：
   - ✅ 自動：組件渲染測試通過、Feature Detection 邏輯測試通過
@@ -526,7 +526,7 @@ gantt
   10. 實作 Dashboard Store (Zustand)：管理解析狀態、確認流程、最近帳目快取
   11. 實作 RecentTransactions 組件：顯示最近 5 筆交易
 - **前置任務**：T-203（VoiceInput 組件）；T-201、T-202（API 串接測試時需要）
-- **輸入**：`01-1-PRD.md` (PRD-F-002~004, PRD-F-012)、`01-4-UI_UX_Design.md` (§3.1、§4.2、§4.3、§5)、`API_Spec.yaml`
+- **輸入**：`01-1-PRD.md` (PRD-F-002~004, PRD-F-012)、`01-6-UI_UX_Design.md` (§3.1、§4.2、§4.3、§5)、`API_Spec.yaml`
 - **產出**：`DashboardPage.tsx`、`BudgetCard.tsx`、`AIFeedbackCard.tsx`、`ParsedResultCard.tsx`、`RecentTransactions.tsx`、`NewCategoryDialog.tsx`、`dashboardStore.ts`
 - **驗證**：
   - ✅ 自動：組件渲染測試通過、Store 狀態管理測試通過
@@ -583,7 +583,7 @@ gantt
   5. 串接 `GET /budget/summary` 與 `GET /stats/distribution` API
   6. 撰寫單元測試：組件在不同百分比下渲染正確 CSS class
 - **前置任務**：T-204（儀表板頁面基礎）
-- **輸入**：`01-1-PRD.md` (PRD-F-007, PRD-F-008)、`01-4-UI_UX_Design.md` (§3.1.2、§3.2、§4.4)
+- **輸入**：`01-1-PRD.md` (PRD-F-007, PRD-F-008)、`01-6-UI_UX_Design.md` (§3.1.2、§3.2、§4.4)
 - **產出**：`BudgetBar.tsx`、`DistributionChart.tsx`、`StatsPage.tsx`、單元測試
 - **驗證**：
   - ✅ 自動：組件在 80%/50%/20%/10% 情境下渲染正確 CSS class（對應綠/黃/紅/閃爍）
@@ -601,7 +601,7 @@ gantt
   5. 實作 TransactionDetail 組件：點擊展開詳情（含 AI 評論回顯）
   6. 串接 `GET /transactions`（分頁）、`DELETE /transactions/:id`
 - **前置任務**：T-204（儀表板頁面基礎）
-- **輸入**：`01-1-PRD.md` (PRD-F-009)、`01-4-UI_UX_Design.md` (§3.3、§4.5)
+- **輸入**：`01-1-PRD.md` (PRD-F-009)、`01-6-UI_UX_Design.md` (§3.3、§4.5)
 - **產出**：`HistoryPage.tsx`、`TransactionItem.tsx`、`TransactionDetail.tsx`、單元測試
 - **驗證**：
   - ✅ 自動：組件渲染測試通過、篩選邏輯測試通過
@@ -620,7 +620,7 @@ gantt
   6. 實作 APIKeyInput 組件：密碼型態輸入框（附顯示/隱藏切換）、Key 儲存至 localStorage（不上傳伺服器）
   7. 串接 `PUT /users/profile`、`POST /ai/validate-key`、`PUT /budget/categories`、`POST /budget/categories`、`DELETE /budget/categories/:category`
 - **前置任務**：T-204（儀表板頁面基礎）
-- **輸入**：`01-1-PRD.md` (PRD-F-005, 010, 011, 012, 013)、`01-4-UI_UX_Design.md` (§3.4、§6)
+- **輸入**：`01-1-PRD.md` (PRD-F-005, 010, 011, 012, 013)、`01-6-UI_UX_Design.md` (§3.4、§6)
 - **產出**：`SettingsPage.tsx`、`PersonaSelector.tsx`、`BudgetEditor.tsx`、`CategoryManager.tsx`、`AIEngineSelector.tsx`、`APIKeyInput.tsx`、單元測試
 - **驗證**：
   - ✅ 自動：組件渲染測試通過、Store 狀態測試通過
@@ -1071,7 +1071,7 @@ flowchart TB
 |------|-----------|------|
 | `01-1-PRD.md` | A-Frontend | 產品行為、UI 互動 |
 | `01-2-SRD.md` | A-Backend | 系統架構、LLM 整合、DB Schema |
-| `01-4-UI_UX_Design.md` | A-Frontend | UI 元件規格、Design Tokens、互動動畫、響應式設計 |
+| `01-6-UI_UX_Design.md` | A-Frontend | UI 元件規格、Design Tokens、互動動畫、響應式設計 |
 | `API_Spec.yaml` | A-Backend, A-Frontend | API 契約（不可擅自修改） |
 | `02-Dev_Plan.md` | A-Main | 任務拆解與進度追蹤 |
 | `04-CI_CD_Spec.md` | A-DevOps | CI/CD Workflow 詳細規格 |
@@ -1219,7 +1219,7 @@ curl -s -X POST "https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage" \
 | Agent 角色 | 必讀規格文件 | 不需讀取 |
 |-----------|------------|---------|
 | **A-Backend** | `01-2-SRD.md`、`API_Spec.yaml` | `/frontend/**` 程式碼 |
-| **A-Frontend** | `01-1-PRD.md`、`01-4-UI_UX_Design.md`、`API_Spec.yaml` | `/backend/**` 程式碼 |
+| **A-Frontend** | `01-1-PRD.md`、`01-6-UI_UX_Design.md`、`API_Spec.yaml` | `/backend/**` 程式碼 |
 | **A-QA** | 全部規格文件 + 已完成程式碼 | — |
 | **A-DevOps** | `04-CI_CD_Spec.md`、`01-2-SRD.md`（部署需求章節） | `/frontend/**`、`/backend/**` 程式碼 |
 | **A-Main** | 全部規格文件 + `02-Dev_Plan.md` | — |

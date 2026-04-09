@@ -26,8 +26,8 @@ user_invocable: true
 - 以下文件存在且已定稿：
   - `/docs/01-1-PRD.md`
   - `/docs/01-2-SRD.md`
-  - `/docs/01-3-API_Spec.md`
-  - `/docs` 目錄下其它所有規格文件，例如 `API_Spec.yaml`、`01-4-UI_UX_Design.md` 等
+  - `/docs/01-5-API_Spec.md`
+  - `/docs` 目錄下其它所有規格文件，例如 `API_Spec.yaml`、`01-6-UI_UX_Design.md` 等
   - `/docs/02-Dev_Plan.md`
 
 ## 操作步驟

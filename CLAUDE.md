@@ -39,7 +39,7 @@ Vibe-SDLC 是一個定義 Vibe-Coding 軟體開發生命週期（Software Develo
 | Phase | 名稱 | Skill 指令 | 說明 |
 |-------|------|-----------|------|
 | — | 進度儀表板 | `/vibe-sdlc` | 產出里程碑進度、待審 PR、待驗證 Issue 儀表板，自動判斷當前 Phase |
-| 1 | 定義規格文件與計畫 | `/vibe-sdlc-spec` | 撰寫 PRD、SRD、API Spec、UI/UX、Dev Plan、審查報告、CI/CD Spec |
+| 1 | 定義規格文件與計畫 | `/vibe-sdlc-spec` | 撰寫 PRD、SRD、SDD、API Spec、UI/UX、Dev Plan、審查報告、CI/CD Spec |
 | 2 | 任務掛載 | `/vibe-sdlc-issues` | 建立 Labels/Milestones → 開發 Issues → 驗證 Issues → Project 看板 |
 | 3 | 開發循環 | `/vibe-sdlc-dev` | 領取 Issue → 實作 → 測試 → Vibe Check → 自動建 PR |
 | 4 | CI 監控與合併後作業 | `/vibe-sdlc-pr` | 監控 CI → 修正失敗 → Merge 後更新 Dev Plan → 手動驗證提醒 |
@@ -101,10 +101,13 @@ Phase 1 skill 包含完整的規格文件範例（`skills/vibe-sdlc-spec/example
 
 | 文件 | 說明 |
 |------|------|
+| `00-Docs_Index.md` | 文件入口與導航 |
 | `01-1-PRD.md` | 產品需求文件 |
 | `01-2-SRD.md` | 系統需求文件 |
-| `01-3-API_Spec.md` + `API_Spec.yaml` | API 介面規格 + OpenAPI 合約 |
-| `01-4-UI_UX_Design.md` | UI/UX 設計文件 |
+| `01-3-SDD.md` | 系統設計文件 |
+| `01-4-GDD.md` | 遊戲設計文件（領域選用範例） |
+| `01-5-API_Spec.md` + `API_Spec.yaml` | API 介面規格 + OpenAPI 合約 |
+| `01-6-UI_UX_Design.md` | UI/UX 設計文件 |
 | `02-Dev_Plan.md` | 開發計畫（含角色定義、任務拆解、Git 協作策略） |
 | `03-Docs_Review_Report.md` | 規格審查報告 |
 | `04-CI_CD_Spec.md` | CI/CD 規格文件 |

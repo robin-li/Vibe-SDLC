@@ -47,9 +47,9 @@ user_invocable: true
 - 以下規格文件可供參考：
   - `/docs/01-1-PRD.md`（產品需求，前端頁面與流程參考）
   - `/docs/01-2-SRD.md`（技術規範）
-  - `/docs/01-3-API_Spec.md`（API 規格）
+  - `/docs/01-5-API_Spec.md`（API 規格）
   - `/docs/API_Spec.yaml`（OpenAPI 合約）
-  - `/docs/01-4-UI_UX_Design.md` (UI/UX規格)
+  - `/docs/01-6-UI_UX_Design.md` (UI/UX規格)
 
 ## 操作步驟
 
@@ -531,9 +531,9 @@ Vibe Check 階段可能遇到「非本次變更造成的測試失敗」（既有
 7. 實作過程中，以下規格文件可供參考：
    - `/docs/01-1-PRD.md`（產品需求，前端頁面與流程參考）
    - `/docs/01-2-SRD.md`（技術規範）
-   - `/docs/01-3-API_Spec.md`（API 規格）
+   - `/docs/01-5-API_Spec.md`（API 規格）
    - `/docs/API_Spec.yaml`（OpenAPI 合約）
-   - `/docs/01-4-UI_UX_Design.md` (UI/UX規格)
+   - `/docs/01-6-UI_UX_Design.md` (UI/UX規格)
 8. 完成後撰寫測試並執行
 9. 若遇到阻塞或重要進度節點，發佈「📋 進度更新」Comment 至 Issue
 10. Vibe Check 通過後，**立即自動推送分支 → 建立 PR → 回報 PR 連結**（無需等待人類核准）

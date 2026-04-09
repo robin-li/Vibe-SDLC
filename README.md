@@ -57,7 +57,7 @@ AI 會自動偵測專案狀態、產出進度儀表板，並建議下一步。
 ### 3. 開始開發
 
 ```
-/vibe-sdlc-spec       ← 撰寫規格文件（PRD、SRD、API Spec、Dev Plan）
+/vibe-sdlc-spec       ← 撰寫規格文件（PRD、SRD、SDD、API Spec、Dev Plan）
 /vibe-sdlc-issues     ← 將計畫轉為 GitHub Issues
 /vibe-sdlc-dev        ← 領取 Issue → 開發 → 測試 → 自動建 PR
 /vibe-sdlc-pr         ← 監控 CI → 修正失敗 → Merge 後更新進度
@@ -97,7 +97,7 @@ AI 會自動偵測專案狀態、產出進度儀表板，並建議下一步。
 
 ```
 專案啟動
-  └→ P1: 定義規格         撰寫 PRD / SRD / API Spec / Dev Plan → 交叉審查 → 定稿
+  └→ P1: 定義規格         撰寫 PRD / SRD / SDD / API Spec / Dev Plan → 交叉審查 → 定稿
       └→ P2: 任務掛載       將 Dev Plan 轉為 GitHub Issues + Project 看板
           └→ P3: 開發循環       領取 Issue → 實作 → 測試 → Vibe Check → 自動建 PR
               └→ P4: CI 與合併     監控 CI → 修正失敗 → Merge → 更新 Dev Plan
@@ -108,7 +108,7 @@ AI 會自動偵測專案狀態、產出進度儀表板，並建議下一步。
 | Phase | 名稱 | Slash Command | 說明 |
 |:-----:|------|---------------|------|
 | — | 進度儀表板 | `/vibe-sdlc` | 自動偵測專案狀態、產出儀表板、導航至對應 Phase |
-| 1 | 定義規格文件與計畫 | `/vibe-sdlc-spec` | 撰寫 / 審查 PRD、SRD、API Spec、UI/UX、Dev Plan、CI/CD Spec |
+| 1 | 定義規格文件與計畫 | `/vibe-sdlc-spec` | 撰寫 / 審查 PRD、SRD、SDD、API Spec、UI/UX、Dev Plan、CI/CD Spec |
 | 2 | 任務掛載 | `/vibe-sdlc-issues` | 建立 Labels / Milestones → 開發 Issues → 驗證 Issues → Project 看板 |
 | 3 | 開發循環 | `/vibe-sdlc-dev` | 領取 Issue → 實作 → 測試 → Vibe Check → 自動建 PR |
 | 4 | CI 監控與合併後作業 | `/vibe-sdlc-pr` | 監控 CI → 修正失敗 → Merge → 更新 Dev Plan → 驗證提醒 |
@@ -127,8 +127,8 @@ AI 會自動偵測專案狀態、產出進度儀表板，並建議下一步。
 |------|------|------|
 | PRD | `/docs/01-1-PRD.md` | 產品需求、使用者故事、功能清單 |
 | SRD | `/docs/01-2-SRD.md` | 技術棧、系統架構、安全與性能要求 |
-| API Spec | `/docs/01-3-API_Spec.md` + `API_Spec.yaml` | API 端點說明 + OpenAPI 合約 |
-| UI/UX 設計 | `/docs/01-4-UI_UX_Design.md` | 視覺與互動設計規格（如適用） |
+| API Spec | `/docs/01-5-API_Spec.md` + `API_Spec.yaml` | API 端點說明 + OpenAPI 合約 |
+| UI/UX 設計 | `/docs/01-6-UI_UX_Design.md` | 視覺與互動設計規格（如適用） |
 | Dev Plan | `/docs/02-Dev_Plan.md` | 里程碑、任務清單、角色分工、Git 協作策略 |
 | 審查報告 | `/docs/03-Docs_Review_Report.md` | AI 交叉比對結果，含不一致與遺漏項目 |
 | CI/CD 規格 | `/docs/04-CI_CD_Spec.md` | CI Workflow、品質閘門、Docker 配置（選用） |
