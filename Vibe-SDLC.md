@@ -874,15 +874,15 @@ STATUS.md 版控模式：C（混合）— STATUS.md 進版控、A-*.md 忽略
 
 | 階段 | 場景 | 執行者 → AI 的提示詞 |
 |------|------|----------------------|
-| Phase 1 | 撰寫規格 | `"我要開發 [專案簡述]，請幫我撰寫 PRD。"` |
+| Phase 1 | 撰寫規格 | `"我要開發 [專案簡述]，請幫我撰寫 PRD。"` 或 `/vibe-sdlc-spec` |
 | Phase 1 | 規格審查 | `"交叉比對 /docs 下的所有規格文件，產出完整性審查報告至 03-Docs_Review_Report.md。"` |
-| Phase 2 | 建立 Issues | `"P1 審查報告已通過，請根據 02-Dev_Plan.md 的 M1 里程碑建立 GitHub Issues，包含任務編號、驗收標準、優先級與標籤。"` |
+| Phase 2 | 建立 Issues | `"P1 審查報告已通過，請根據 02-Dev_Plan.md 的 M1 里程碑建立 GitHub Issues，包含任務編號、驗收標準、優先級與標籤。"` 或 `/vibe-sdlc-issues` |
 | Phase 2 | 指定里程碑 | `"先只建 Milestone 1 的 Issues，M2 之後等 M1 完成再說。"` |
-| Phase 3 | 功能開發 | `"請處理 Issue #N，實作使用者註冊 API。"`（Vibe Check 通過後 AI 自動推送分支並建立 PR） |
+| Phase 3 | 功能開發 | `"請處理 Issue #N，實作使用者註冊 API。"`（Vibe Check 通過後 AI 自動推送分支並建立 PR）或 `/vibe-sdlc-dev` |
 | Phase 3 | 追加需求 | `"追加一個測試案例：當 email 格式不正確時應回傳 400 Bad Request。"` |
-| Phase 4 | CI 修正 | `"CI 掛了，這是錯誤報告：[貼上 CI 錯誤訊息]，請分析原因並修正。"` |
+| Phase 4 | CI 修正 | `"CI 掛了，這是錯誤報告：[貼上 CI 錯誤訊息]，請分析原因並修正。"` 或 `/vibe-sdlc-pr` |
 | Phase 4 | 合併後更新 | `"PR 已 merge，請更新 Dev Plan 的任務狀態。"` |
-| Phase 5 | 回饋處理 | `"根據以下回饋更新 01-1-PRD，並在 02-Dev_Plan 中新增對應任務。"` |
+| Phase 5 | 回饋處理 | `"根據以下回饋更新 01-1-PRD，並在 02-Dev_Plan 中新增對應任務。"` 或 `/vibe-sdlc-release` |
 | 狀態查詢 | Agent 狀態 | `"查詢目前各 Agent 的工作狀態。"` 或 `/vibe-sdlc-status` |
 
 ---

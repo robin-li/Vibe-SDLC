@@ -125,8 +125,11 @@ AI 會自動偵測專案狀態、產出進度儀表板，並建議下一步。
 
 | 文件 | 路徑 | 說明 |
 |------|------|------|
+| Docs Index | `/docs/00-Docs_Index.md` | 文件入口與導航：列出所有規格文件清單、建立時機、依賴關係 |
 | PRD | `/docs/01-1-PRD.md` | 產品需求、使用者故事、功能清單 |
-| SRD | `/docs/01-2-SRD.md` | 技術棧、系統架構、安全與性能要求 |
+| SRD | `/docs/01-2-SRD.md` | 非功能性需求、部署要求、安全與效能約束 |
+| SDD | `/docs/01-3-SDD.md` | 系統架構、元件設計、資料模型、技術決策記錄（ADR） |
+| GDD | `/docs/01-4-GDD.md` | 遊戲設計文件：核心機制、數值設計、關卡設計（領域選用） |
 | API Spec | `/docs/01-5-API_Spec.md` + `API_Spec.yaml` | API 端點說明 + OpenAPI 合約 |
 | UI/UX 設計 | `/docs/01-6-UI_UX_Design.md` + `/docs/ui/*.html` | 視覺與互動設計規格（選用）+ HTML + Tailwind wireframe 視覺參考；遵循 [UI_UX_Writing_Guidelines](./skills/vibe-sdlc-spec/references/UI_UX_Writing_Guidelines.md) 9 條準則 |
 | Dev Plan | `/docs/02-Dev_Plan.md` | 里程碑、任務清單、角色分工、Git 協作策略 |
@@ -145,6 +148,18 @@ Issue 是跨 session 的唯一溝通媒介，AI 在關鍵時刻自動發佈 Comm
 | 遇到阻塞 | 📋 **進度更新** — 阻塞原因 |
 | Vibe Check 通過 | ✅ **Vibe Check 通過** — 自動建 PR 並回報連結 |
 | PR 合併後 | 🎉 **任務完成** — 更新 Dev Plan、列出待驗證 Issues |
+
+### 📊 STATUS.md 彙整與版控
+
+各 Agent 維護自己的狀態檔（`/docs/status/A-*.md`），A-Main 彙整為全局 `STATUS.md`。每個專案**必須**從三種版控模式中選定一種並寫入 `CLAUDE.md`：
+
+| 模式 | 適用情境 |
+|------|---------|
+| **A：全版控** | 多人協作、重視完整歷史追溯 |
+| **B：全忽略** | 單人單機、STATUS 純本地即時快照 |
+| **C：混合**（推薦預設） | 單人多機、僅 `STATUS.md` 進版控 |
+
+> 詳見 [Vibe-SDLC.md §9.4](./Vibe-SDLC.md#94-statusmd-版控策略)。若未宣告，A-Main 首次執行 `/vibe-sdlc-status` 時會主動詢問並協助配置。
 
 ### 🤖 Multi Sub Agent 並行開發
 

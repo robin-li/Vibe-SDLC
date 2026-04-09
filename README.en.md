@@ -125,8 +125,11 @@ All spec files are stored in `/docs` as the Single Source of Truth:
 
 | Document | Path | Description |
 |----------|------|-------------|
+| Docs Index | `/docs/00-Docs_Index.md` | Entry point and navigation: lists all spec documents, creation timing, dependencies |
 | PRD | `/docs/01-1-PRD.md` | Product requirements, user stories, feature list |
-| SRD | `/docs/01-2-SRD.md` | Tech stack, architecture, security & performance |
+| SRD | `/docs/01-2-SRD.md` | Non-functional requirements, deployment, security & performance constraints |
+| SDD | `/docs/01-3-SDD.md` | System architecture, component design, data model, Architecture Decision Records (ADR) |
+| GDD | `/docs/01-4-GDD.md` | Game Design Document: core mechanics, balancing, level design (domain-specific) |
 | API Spec | `/docs/01-5-API_Spec.md` + `API_Spec.yaml` | API endpoint docs + OpenAPI contract |
 | UI/UX Design | `/docs/01-6-UI_UX_Design.md` + `/docs/ui/*.html` | Visual and interaction design specs (optional) + HTML + Tailwind wireframe references; follows the [UI_UX_Writing_Guidelines](./skills/vibe-sdlc-spec/references/UI_UX_Writing_Guidelines.md) 9 principles |
 | Dev Plan | `/docs/02-Dev_Plan.md` | Milestones, task breakdown, roles, Git collaboration strategy |
@@ -145,6 +148,18 @@ Issues serve as the sole cross-session communication channel. AI auto-posts comm
 | Blocked | 📋 **Progress Update** — blocker reason |
 | Vibe Check passed | ✅ **Vibe Check Passed** — auto-create PR with link |
 | PR merged | 🎉 **Task Complete** — Dev Plan updated, pending verification Issues listed |
+
+### 📊 STATUS.md Aggregation & Version Control
+
+Each Agent maintains its own status file (`/docs/status/A-*.md`), while A-Main aggregates them into a global `STATUS.md`. Every project **must** choose one of three version control modes and declare it in `CLAUDE.md`:
+
+| Mode | When to use |
+|------|-------------|
+| **A: Full version control** | Multi-person collaboration, full history traceability |
+| **B: Fully ignored** | Single-user single-machine, STATUS as local snapshot only |
+| **C: Hybrid** (recommended default) | Single-user multi-machine, only `STATUS.md` versioned |
+
+> See [Vibe-SDLC.md §9.4](./Vibe-SDLC.md#94-statusmd-版控策略). If not declared, A-Main will proactively ask and help configure on first `/vibe-sdlc-status` call.
 
 ### 🤖 Multi Sub Agent Parallel Development
 
