@@ -54,7 +54,7 @@ Open [Claude Code](https://docs.anthropic.com/en/docs/claude-code) in your proje
 
 The AI will automatically detect project status, generate a progress dashboard, and suggest the next step.
 
-> **💡 Empty folders work out of the box**: If the working directory is a brand-new empty folder, `/vibe-sdlc-spec` enters an interactive Bootstrap flow that helps you set up `git init`, `CLAUDE.md`, `.gitignore`, `README.md`, `/docs` scaffolding, and the persistent `dev/main-agent` branch in one go — no manual pre-initialization required.
+> **💡 Empty folders work out of the box**: If the working directory is a brand-new empty folder, `/vibe-sdlc-spec` enters an interactive Bootstrap flow that helps you set up `git init`, `CLAUDE.md`, `.gitignore`, `README.md`, `/docs` scaffolding, and the A-Main snapshot branch `dev/main-agent` in one go — no manual pre-initialization required.
 
 ### 3. Start Building
 
@@ -168,7 +168,7 @@ Each Agent maintains its own status file (`/docs/status/A-*.md`), while A-Main a
 Native support for highly parallel multi-agent development, using `API_Spec.yaml` as the frontend-backend decoupling contract:
 
 - **Worktree Isolation** — each Sub Agent uses an independent Git Worktree
-- **Branch Strategy** — ⛔ Direct push to main is strictly prohibited. With Issue → `feat/<agent>/<issue-N>-<description>`; No Issue (small fix) → `dev/main-agent`
+- **Branch Strategy** — ⛔ Direct push to main is strictly prohibited. With Issue → `feat/<agent>/<issue-N>-<description>`; No Issue (small fix) → `chore/main-agent/<YYYYMMDD>-<description>` (short-lived). `dev/main-agent` is the A-Main snapshot branch managed by `/vibe-sdlc-status` and **never accepts work commits**
 - **Two-Layer PR Review** — Sub Agent PR → CI → A-Main review → H-Director final review
 - **PR Scope Restriction** — A-Backend can only modify `/backend/**`, violations are rejected
 
@@ -387,7 +387,7 @@ Select (1/2/3/4/5):
 
 | Your report | Suggested option | AI behavior |
 |---|:---:|---|
-| Typo, copy tweak, simple config | **1** | Fix directly on `dev/main-agent` branch and create PR |
+| Typo, copy tweak, simple config | **1** | Fix on a short-lived `chore/main-agent/<date>-*` branch and create PR |
 | Single Bug or single need to handle immediately | **2** | Create Issue → enter P3 → auto-create PR |
 | A batch of feedback to collect first | **3** | Stash in list; batch-create when you say "organize reports" |
 | Confirmed list, start working immediately | **4** | Batch-create Issues → enter P3 in priority order |

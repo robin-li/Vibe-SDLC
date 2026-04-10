@@ -1,6 +1,6 @@
 # Vibe-SDLC：AI 輔助軟體開發生命週期標準作業程序
 
-> **版本**：v8.8 ｜ **最後更新**：2026-04-10
+> **版本**：v8.9 ｜ **最後更新**：2026-04-10
 
 ---
 
@@ -40,7 +40,7 @@
 
 | 選項 | 行為 |
 |------|------|
-| **1 — 直接修正** | 不建 Issue，在 `dev/main-agent` 分支上修正（若分支不存在則從最新 main 建立）。修正完成後達到自然停止點時提交 PR。適合 typo、文案調整、簡單 config 變更等小修。 |
+| **1 — 直接修正** | 不建 Issue，從 `origin/main` 建立 `chore/main-agent/<YYYYMMDD>-<簡述>` 短命分支進行修正。修正完成後達到自然停止點時提交 PR，PR 合併後刪除該分支。適合 typo、文案調整、簡單 config 變更等小修。 |
 | **2 — 建 Issue 再修正** | 先以 `gh issue create` 建立 Issue（含標題、描述、標籤），然後立即進入 P3 開發流程修正。若有對應 Milestone 應掛載。 |
 | **3 — 收集後批量建立** | 將此回報暫存於對話上下文中（使用清單格式追蹤）。當開發者說「建立 Issues」或「整理回報」時，一次性列出所有已收集的回報，確認後批量建立 Issues。 |
 | **4 — 彙整並開發** | 結束收集階段，將所有暫存回報批量建立 Issues（逐一確認標題、標籤、Milestone），建立完成後**立即進入 P3 開發流程**，依優先順序逐一領取 Issue 開始開發。 |
@@ -59,7 +59,7 @@
 
 以下情境**不觸發**（直接執行開發，但仍需透過 PR 提交，嚴禁直接 push main）：
 - 透過 `/vibe-sdlc-dev` 領取既有 Issue 進行開發
-- 開發者明確說「直接改」「快速修一下」等表達**不需事前追蹤為正式 Issue** 的意圖（仍在 `dev/main-agent` 分支上開發並提交 PR）
+- 開發者明確說「直接改」「快速修一下」等表達**不需事前追蹤為正式 Issue** 的意圖（走 `chore/main-agent/<date>-*` 短命分支開發並提交 PR）
 - 純粹的程式碼問答、架構討論（無實際修改需求）
 
 ---
@@ -87,7 +87,7 @@
 |----------|----------|
 | 規格審查 | 交叉比對 PRD / SRD / SDD / API Spec / Dev Plan，產出完整性審查報告 |
 | 任務建立 | 根據 Dev Plan 自動建立 GitHub Issues，並建立 Project 看板 |
-| 程式開發 | 在對應分支上實作程式碼（per-issue 分支或 `dev/main-agent`），遵循 SRD 技術規範 |
+| 程式開發 | 在對應分支上實作程式碼（feature 分支或 `chore/main-agent/*` 短命分支），遵循 SRD 技術規範 |
 | 測試生成 | 撰寫並執行單元測試，確保本地驗證通過 |
 | 自主排查 | 遇到問題、Bug 或錯誤時，優先自行調查與解決，無法解決時才上報開發者 |
 | PR 管理 | Vibe Check 通過後自動推送分支、建立 PR（含 `Closes #N`）、回報 PR 連結 |
@@ -223,7 +223,7 @@ sequenceDiagram
   - L1 `git init`、L3 `.gitignore` / `README.md`
   - L3.5 `CLAUDE.md`（由 `templates/CLAUDE.md.template` 填入專案名稱與一句話描述；既有 CLAUDE.md 則提議 append `## Vibe-SDLC 流程`區塊，不覆寫）
   - L4 `/docs/` 目錄、L5 `/docs/00-Docs_Index.md` 骨架
-  - 常駐分支 `dev/main-agent`
+  - A-Main 快照分支 `dev/main-agent`（僅承載 STATUS / dashboard 快照，不接受工作 commit）
   - GitHub remote 提供 A/B/C 三選項：A 由 AI 代為執行 `gh repo create`（需互動確認 repo 名稱、owner、可見性與最終指令）、B 輸出完整手動指令由使用者自行執行、C 先跳過留到後續處理
 - `/vibe-sdlc` 偵測到 git / docs / CLAUDE.md 三者全缺時，會直接引導使用者改呼叫 `/vibe-sdlc-spec`，避免兩個 skill 重複處理
 
@@ -714,7 +714,7 @@ flowchart LR
 | 3 | **開發者** | Code Review，核准後點擊 Merge | Merge commit |
 | 4 | **GitHub** | 觸發 CD pipeline（如已配置） | 部署 |
 | 5 | **AI 助手** | **切回 main + pull**：`git checkout main && git pull origin main` | 工作目錄同步 |
-| 5a | **AI 助手** | **清理已合併分支**：`git branch -d <branch>` + `git push origin --delete <branch>`（含 `dev/main-agent` 和 per-issue 分支） | 分支清理 |
+| 5a | **AI 助手** | **清理已合併分支**：`git branch -d <branch>` + `git push origin --delete <branch>`（feature / chore 分支）。**`dev/main-agent` 為永久快照分支，永遠不刪除** | 分支清理 |
 | 6 | **AI 助手** | 將 `02-Dev_Plan.md` 中對應任務標記為 `[x] Completed`，提交更新並推送 | Dev Plan 更新 |
 | 6a | **AI 助手** | 若 PR 內容涉及規格變更（如新增/修改 API、變更資料模型、調整功能行為），同步更新對應規格文件（PRD/SRD/SDD/API Spec）並更新版本修訂記錄 | 規格文件同步 |
 | 7 | **AI 助手** | 更新看板狀態為 `Done`，並在 Issue 發佈「🎉 任務完成」Comment（含 PR 編號、Dev Plan 更新確認、待驗證 Issues 清單） | 狀態更新 |
@@ -918,6 +918,7 @@ STATUS.md 版控模式：C（混合）— STATUS.md 進版控、A-*.md 忽略
 
 | 版本 | 日期 | 修訂內容 |
 |------|------|---------|
+| v8.9 | 2026-04-10 | **重新定義 `dev/main-agent` 分支角色**：從「常駐工作分支」降級為「A-Main 快照分支」，零工作 commit 累積、允許 force-update、由 `/vibe-sdlc-status` 管理。新增 `chore/main-agent/<YYYYMMDD>-<簡述>` 短命分支承接無 Issue 小修（取代舊版 `dev/main-agent` 的「停車場」角色）。新增 Phase 3「Push 被拒的處置規則」與「PR 合併後 HEAD 收尾檢查」。動機：解決多 session 併發下 `dev/main-agent` 角色衝突導致 push 被拒、`gh pr merge --delete-branch` 後不知不覺停在 main 等問題。連動更新 `/vibe-sdlc-dev`、`/vibe-sdlc-status`、`/vibe-sdlc-spec`、`/vibe-sdlc-pr`、`/vibe-sdlc-release`、`/vibe-sdlc` 與 CLAUDE.md 模板 |
 | v8.8 | 2026-04-10 | §4.2 前置條件改為支援空專案：新增「空專案初始化 (Bootstrap)」說明，`/vibe-sdlc-spec` 偵測 L1–L5 缺失後互動式建立 git repo / CLAUDE.md（由 `templates/CLAUDE.md.template` 填入）/ .gitignore / README.md / docs 骨架 / 常駐分支 `dev/main-agent`；`/vibe-sdlc` 在 git+docs+CLAUDE.md 三者全缺時直接引導改呼叫 `/vibe-sdlc-spec`；GitHub remote 提供 A（AI 代建）/B（輸出手動指令）/C（跳過）三選項，A 在 `gh repo create` 執行前需互動確認 repo 名稱、owner、可見性與最終指令 |
 | v8.7 | 2026-04-10 | §4.3 交付物表格補 SDD/GDD/UI Wireframe 與類型欄；新增 §4.5「UI/UX 設計文件撰寫準則」小節引用 `UI_UX_Writing_Guidelines.md` 9 條準則；§4.4 操作步驟加入 UI/UX 撰寫步驟；§3 sequenceDiagram Phase 1 段加入 UI/UX 規格撰寫步驟；§6.2 前置條件補 `/docs/ui/*.html`；附錄 B 補 SDD/GDD/UI Wireframe/STATUS.md；修正多處 UTF-8 亂碼、§6.5 步驟編號、附錄 A 過時 LGTM 提示詞 |
 | v8.6 | 2026-04-09 | §9.4 新增「STATUS.md 版控策略」小節，定義 A/B/C 三種模式；§2.1 補開發者「機制選型」職責；§4.6 Dev Plan 階段加 STATUS.md 版控模式選型提醒 |
